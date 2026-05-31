@@ -31,14 +31,15 @@ pip install -r scripts/requirements.txt
 
 ### 仓库设置
 
-- Settings → Pages → Source: `gh-pages` branch
+- Settings → Pages → Source: `GitHub Actions`
 - Settings → Secrets → Actions: 添加 `PERPLEXITY_API_KEY`（AI 更新用）
 
 ### deploy.yml 流程
 
 ```
 push to main → checkout → npm ci → npm run validate → npm run build
-→ peaceiris/actions-gh-pages@v3 (deploy dist/ to gh-pages branch)
+→ actions/upload-pages-artifact (upload dist/)
+→ actions/deploy-pages (deploy artifact to GitHub Pages)
 ```
 
 仅 `src/`, `data/`, `public/`, `index.html`, `package.json`, `vite.config.ts` 变更时触发。
