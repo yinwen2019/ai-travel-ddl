@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Compass outer ring -->
+  <circle cx="16" cy="16" r="14" stroke="#10B981" stroke-width="2" fill="none" opacity="0.9"/>
+  <!-- North point -->
+  <polygon points="16,3 18.5,13 16,16 13.5,13" fill="#10B981"/>
+  <!-- South point -->
+  <polygon points="16,29 13.5,19 16,16 18.5,19" fill="#10B981" opacity="0.5"/>
+  <!-- East point -->
+  <polygon points="29,16 19,13.5 16,16 19,18.5" fill="#10B981" opacity="0.7"/>
+  <!-- West point -->
+  <polygon points="3,16 13,18.5 16,16 13,13.5" fill="#10B981" opacity="0.7"/>
+  <!-- Center hub -->
+  <circle cx="16" cy="16" r="2.5" fill="#059669"/>
+  <!-- Small inner ring -->
+  <circle cx="16" cy="16" r="5" stroke="#10B981" stroke-width="0.8" fill="none" opacity="0.4"/>
+</svg>

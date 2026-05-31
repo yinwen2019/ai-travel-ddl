@@ -1,0 +1,268 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ========================================
+   全局 CSS 变量 — 色彩 / 字体 / 间距 / 阴影
+   ======================================== */
+
+:root {
+  /* ---- 品牌色 ---- */
+  --color-brand: #10b981;
+  --color-brand-light: #34d399;
+  --color-brand-dark: #059669;
+
+  /* ---- DDL 紧迫度 ---- */
+  --color-expired: #9ca3af;
+  --color-travel: #6366f1;
+  --color-urgent: #ef4444;
+  --color-near: #f59e0b;
+  --color-ample: #10b981;
+
+  /* ---- 进度条 ---- */
+  --color-progress-bg: #e5e7eb;
+  --color-progress-done: #9ca3af;
+  --color-progress-node: #6b7280;
+  --color-progress-node-future: #d1d5db;
+
+  /* ---- 表面色 ---- */
+  --color-surface: #ffffff;
+  --color-surface-secondary: #f9fafb;
+  --color-surface-hover: #f3f4f6;
+  --color-border: #e5e7eb;
+  --color-border-light: #f3f4f6;
+
+  /* ---- 文字色 ---- */
+  --color-text-primary: #111827;
+  --color-text-secondary: #6b7280;
+  --color-text-tertiary: #9ca3af;
+  --color-text-inverse: #ffffff;
+
+  /* ---- 字体 ---- */
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', monospace;
+
+  /* ---- 字号 ---- */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+
+  /* ---- 间距 ---- */
+  --spacing-page: 1rem;
+  --spacing-section: 1.5rem;
+  --spacing-card: 1rem;
+  --spacing-item: 0.5rem;
+
+  /* ---- 阴影 ---- */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+
+  /* ---- 圆角 ---- */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-full: 9999px;
+
+  /* ---- 过渡 ---- */
+  --transition-fast: 150ms ease;
+  --transition-normal: 300ms ease;
+}
+
+/* ---- 深色模式 ---- */
+.dark {
+  --color-brand: #34d399;
+  --color-brand-light: #6ee7b7;
+  --color-brand-dark: #10b981;
+
+  --color-expired: #6b7280;
+  --color-travel: #818cf8;
+  --color-urgent: #f87171;
+  --color-near: #fbbf24;
+  --color-ample: #34d399;
+
+  --color-progress-bg: #374151;
+  --color-progress-done: #6b7280;
+  --color-progress-node: #9ca3af;
+  --color-progress-node-future: #4b5563;
+
+  --color-surface: #111827;
+  --color-surface-secondary: #1f2937;
+  --color-surface-hover: #374151;
+  --color-border: #374151;
+  --color-border-light: #1f2937;
+
+  --color-text-primary: #f9fafb;
+  --color-text-secondary: #9ca3af;
+  --color-text-tertiary: #6b7280;
+  --color-text-inverse: #111827;
+}
+
+/* ========================================
+   基础元素
+   ======================================== */
+
+html {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  transition: background-color var(--transition-normal),
+    color var(--transition-normal);
+}
+
+/* ========================================
+   Tailwind 扩展工具类
+   ======================================== */
+
+@layer components {
+  /* 页面容器 */
+  .container-page {
+    @apply mx-auto max-w-6xl px-4;
+  }
+
+  /* 卡片基础样式 */
+  .card {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-card);
+    transition:
+      box-shadow var(--transition-fast),
+      transform var(--transition-fast);
+  }
+  .card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+  .card.is-ended {
+    opacity: 0.6;
+  }
+
+  /* DDL 色条（卡片左侧） */
+  .ddl-strip {
+    width: 4px;
+    border-radius: var(--radius-full);
+  }
+  .ddl-strip.expired {
+    background-color: var(--color-expired);
+  }
+  .ddl-strip.travel {
+    background-color: var(--color-travel);
+  }
+  .ddl-strip.is-traveling {
+    background: linear-gradient(
+      180deg,
+      #34d399 0%,
+      #38bdf8 52%,
+      #d946ef 100%
+    );
+  }
+  .ddl-strip.urgent {
+    background-color: var(--color-urgent);
+  }
+  .ddl-strip.near {
+    background-color: var(--color-near);
+  }
+  .ddl-strip.ample {
+    background-color: var(--color-ample);
+  }
+
+  /* 骨架屏闪烁 */
+  .skeleton-shimmer {
+    background: linear-gradient(
+      90deg,
+      var(--color-border-light) 25%,
+      var(--color-surface-hover) 50%,
+      var(--color-border-light) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+  }
+
+  /* 响应式列宽 */
+  .col-adaptive {
+    min-width: 280px;
+    max-width: 400;
+    flex: 1 1 auto;
+  }
+
+  /* 导航 chip */
+  .nav-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: var(--radius-full);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    background-color: var(--color-surface-secondary);
+    color: var(--color-text-secondary);
+    border: 1px solid var(--color-border);
+  }
+  .nav-chip:hover {
+    background-color: var(--color-surface-hover);
+  }
+  .nav-chip.active {
+    background-color: var(--color-brand);
+    color: var(--color-text-inverse);
+    border-color: var(--color-brand);
+  }
+}
+
+/* ========================================
+   动画
+   ======================================== */
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease forwards;
+}
+
+/* ========================================
+   滚动条美化（Webkit）
+   ======================================== */
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-text-tertiary);
+  border-radius: var(--radius-full);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-secondary);
+}

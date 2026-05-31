@@ -1,0 +1,284 @@
+{
+  "locations": [
+    {
+      "id": "vancouver-canada",
+      "city": "Vancouver",
+      "country": "Canada",
+      "continent": "North America",
+      "description": "Vancouver is a bustling west coast seaport in British Columbia, surrounded by mountains and offering a blend of urban sophistication and outdoor adventure.",
+      "best_season": "June to September",
+      "climate": {
+        "monthly": [
+          { "month": 1, "name": "Jan", "avg_temp_c": 4, "avg_rainfall_mm": 178 },
+          { "month": 2, "name": "Feb", "avg_temp_c": 5, "avg_rainfall_mm": 114 },
+          { "month": 3, "name": "Mar", "avg_temp_c": 7, "avg_rainfall_mm": 112 },
+          { "month": 4, "name": "Apr", "avg_temp_c": 10, "avg_rainfall_mm": 88 },
+          { "month": 5, "name": "May", "avg_temp_c": 13, "avg_rainfall_mm": 65 },
+          { "month": 6, "name": "Jun", "avg_temp_c": 16, "avg_rainfall_mm": 53 },
+          { "month": 7, "name": "Jul", "avg_temp_c": 18, "avg_rainfall_mm": 35 },
+          { "month": 8, "name": "Aug", "avg_temp_c": 18, "avg_rainfall_mm": 36 },
+          { "month": 9, "name": "Sep", "avg_temp_c": 15, "avg_rainfall_mm": 50 },
+          { "month": 10, "name": "Oct", "avg_temp_c": 10, "avg_rainfall_mm": 120 },
+          { "month": 11, "name": "Nov", "avg_temp_c": 6, "avg_rainfall_mm": 188 },
+          { "month": 12, "name": "Dec", "avg_temp_c": 4, "avg_rainfall_mm": 178 }
+        ]
+      },
+      "food": [
+        { "name": "Pacific Salmon", "description": "Fresh wild salmon, often cedar-planked or candied, a regional icon." },
+        { "name": "Japadog", "description": "Japanese-style hot dogs with unique toppings like terimayo and nori." },
+        { "name": "Nanaimo Bar", "description": "A no-bake layered dessert with chocolate, custard, and coconut-graham crust." }
+      ],
+      "attractions": [
+        { "name": "Stanley Park", "description": "A 400-hectare urban park with the famous Seawall, beaches, and old-growth forest.", "type": "nature" },
+        { "name": "Granville Island", "description": "A vibrant public market, artisan studios, and waterfront dining hub.", "type": "market" },
+        { "name": "Capilano Suspension Bridge", "description": "A 137m bridge suspended 70m above the Capilano River canyon.", "type": "adventure" }
+      ],
+      "travel_tips": "Public transit (SkyTrain) is efficient. Rain gear is essential outside summer months. Taxis and ride-sharing are plentiful downtown.",
+      "language": "English",
+      "currency": "CAD"
+    },
+    {
+      "id": "barcelona-spain",
+      "city": "Barcelona",
+      "country": "Spain",
+      "continent": "Europe",
+      "description": "Barcelona is a cosmopolitan Mediterranean city known for Gaudí's architecture, vibrant street life, and world-class cuisine.",
+      "best_season": "May to October",
+      "climate": {
+        "monthly": [
+          { "month": 1, "name": "Jan", "avg_temp_c": 13, "avg_rainfall_mm": 41 },
+          { "month": 2, "name": "Feb", "avg_temp_c": 14, "avg_rainfall_mm": 29 },
+          { "month": 3, "name": "Mar", "avg_temp_c": 15, "avg_rainfall_mm": 42 },
+          { "month": 4, "name": "Apr", "avg_temp_c": 17, "avg_rainfall_mm": 49 },
+          { "month": 5, "name": "May", "avg_temp_c": 20, "avg_rainfall_mm": 59 },
+          { "month": 6, "name": "Jun", "avg_temp_c": 24, "avg_rainfall_mm": 42 },
+          { "month": 7, "name": "Jul", "avg_temp_c": 27, "avg_rainfall_mm": 20 },
+          { "month": 8, "name": "Aug", "avg_temp_c": 28, "avg_rainfall_mm": 61 },
+          { "month": 9, "name": "Sep", "avg_temp_c": 25, "avg_rainfall_mm": 85 },
+          { "month": 10, "name": "Oct", "avg_temp_c": 21, "avg_rainfall_mm": 91 },
+          { "month": 11, "name": "Nov", "avg_temp_c": 16, "avg_rainfall_mm": 58 },
+          { "month": 12, "name": "Dec", "avg_temp_c": 14, "avg_rainfall_mm": 51 }
+        ]
+      },
+      "food": [
+        { "name": "Paella", "description": "Traditional saffron rice dish with seafood, a Catalan staple." },
+        { "name": "Patatas Bravas", "description": "Crispy fried potato cubes served with spicy tomato sauce and aioli." },
+        { "name": "Crema Catalana", "description": "A creamy custard dessert with a caramelized sugar crust, similar to crème brûlée." }
+      ],
+      "attractions": [
+        { "name": "Sagrada Familia", "description": "Gaudí's unfinished masterpiece basilica, under construction since 1882.", "type": "architecture" },
+        { "name": "Park Güell", "description": "A whimsical public park with Gaudí's colorful mosaic benches and structures.", "type": "park" },
+        { "name": "La Rambla", "description": "Barcelona's iconic tree-lined pedestrian boulevard with shops and street performers.", "type": "street" }
+      ],
+      "travel_tips": "December weather is mild (10–15°C). Metro is excellent; get a T-10 travel card. Watch for pickpockets in tourist areas.",
+      "language": "Spanish, Catalan",
+      "currency": "EUR"
+    },
+    {
+      "id": "singapore-singapore",
+      "city": "Singapore",
+      "country": "Singapore",
+      "continent": "Asia",
+      "description": "Singapore is a futuristic city-state blending Chinese, Malay, and Indian cultures with world-class dining and stunning architecture.",
+      "best_season": "February to April, July to September",
+      "climate": {
+        "monthly": [
+          { "month": 1, "name": "Jan", "avg_temp_c": 30, "avg_rainfall_mm": 238 },
+          { "month": 2, "name": "Feb", "avg_temp_c": 31, "avg_rainfall_mm": 155 },
+          { "month": 3, "name": "Mar", "avg_temp_c": 31, "avg_rainfall_mm": 185 },
+          { "month": 4, "name": "Apr", "avg_temp_c": 31, "avg_rainfall_mm": 175 },
+          { "month": 5, "name": "May", "avg_temp_c": 31, "avg_rainfall_mm": 178 },
+          { "month": 6, "name": "Jun", "avg_temp_c": 31, "avg_rainfall_mm": 163 },
+          { "month": 7, "name": "Jul", "avg_temp_c": 31, "avg_rainfall_mm": 162 },
+          { "month": 8, "name": "Aug", "avg_temp_c": 31, "avg_rainfall_mm": 175 },
+          { "month": 9, "name": "Sep", "avg_temp_c": 31, "avg_rainfall_mm": 170 },
+          { "month": 10, "name": "Oct", "avg_temp_c": 31, "avg_rainfall_mm": 196 },
+          { "month": 11, "name": "Nov", "avg_temp_c": 30, "avg_rainfall_mm": 256 },
+          { "month": 12, "name": "Dec", "avg_temp_c": 30, "avg_rainfall_mm": 318 }
+        ]
+      },
+      "food": [
+        { "name": "Hainanese Chicken Rice", "description": "Poached chicken with fragrant rice cooked in chicken stock, served with chili and ginger sauce." },
+        { "name": "Chili Crab", "description": "Stir-fried crab in a thick, sweet-savory tomato chili sauce, a national dish." },
+        { "name": "Laksa", "description": "Spicy coconut-based noodle soup with shrimp, fish cake, and bean sprouts." }
+      ],
+      "attractions": [
+        { "name": "Gardens by the Bay", "description": "Futuristic nature park with iconic Supertree Grove and climate-controlled conservatories.", "type": "nature" },
+        { "name": "Marina Bay Sands", "description": "Iconic integrated resort with the world's largest rooftop infinity pool and sky park.", "type": "landmark" },
+        { "name": "Hawker Centers", "description": "Open-air food courts offering affordable Michelin-starred street food.", "type": "food" }
+      ],
+      "travel_tips": "MRT is the best way to get around. August is hot and humid (30°C+). Tap water is safe to drink. English is widely spoken.",
+      "language": "English, Mandarin, Malay, Tamil",
+      "currency": "SGD"
+    },
+    {
+      "id": "honolulu-united-states",
+      "city": "Honolulu",
+      "country": "United States",
+      "continent": "North America",
+      "description": "Honolulu, on Oahu Island, is Hawaii's capital and gateway to the islands, known for its iconic Waikiki Beach and rich Polynesian culture.",
+      "best_season": "April to October",
+      "climate": {
+        "monthly": [
+          { "month": 1, "name": "Jan", "avg_temp_c": 26, "avg_rainfall_mm": 58 },
+          { "month": 2, "name": "Feb", "avg_temp_c": 26, "avg_rainfall_mm": 51 },
+          { "month": 3, "name": "Mar", "avg_temp_c": 27, "avg_rainfall_mm": 61 },
+          { "month": 4, "name": "Apr", "avg_temp_c": 28, "avg_rainfall_mm": 28 },
+          { "month": 5, "name": "May", "avg_temp_c": 29, "avg_rainfall_mm": 20 },
+          { "month": 6, "name": "Jun", "avg_temp_c": 30, "avg_rainfall_mm": 10 },
+          { "month": 7, "name": "Jul", "avg_temp_c": 31, "avg_rainfall_mm": 15 },
+          { "month": 8, "name": "Aug", "avg_temp_c": 31, "avg_rainfall_mm": 15 },
+          { "month": 9, "name": "Sep", "avg_temp_c": 31, "avg_rainfall_mm": 23 },
+          { "month": 10, "name": "Oct", "avg_temp_c": 30, "avg_rainfall_mm": 43 },
+          { "month": 11, "name": "Nov", "avg_temp_c": 28, "avg_rainfall_mm": 66 },
+          { "month": 12, "name": "Dec", "avg_temp_c": 26, "avg_rainfall_mm": 76 }
+        ]
+      },
+      "food": [
+        { "name": "Poke", "description": "Fresh raw ahi tuna cubed and seasoned with shoyu, sesame oil, and seaweed." },
+        { "name": "Loco Moco", "description": "White rice topped with a hamburger patty, fried egg, and brown gravy." },
+        { "name": "Shave Ice", "description": "Finely shaved ice drenched in tropical fruit syrups, often with azuki beans and ice cream." }
+      ],
+      "attractions": [
+        { "name": "Waikiki Beach", "description": "Iconic crescent beach with calm waters, Diamond Head backdrop, and surf culture.", "type": "beach" },
+        { "name": "Diamond Head", "description": "A volcanic tuff cone with a hiking trail offering panoramic views of Honolulu.", "type": "hike" },
+        { "name": "Pearl Harbor", "description": "Historic WWII memorial site including the USS Arizona Memorial.", "type": "historic" }
+      ],
+      "travel_tips": "TheBus system covers the island affordably. June is peak summer with minimal rain. Reef-safe sunscreen is required by law.",
+      "language": "English, Hawaiian",
+      "currency": "USD"
+    },
+    {
+      "id": "new-orleans-united-states",
+      "city": "New Orleans",
+      "country": "United States",
+      "continent": "North America",
+      "description": "New Orleans is a vibrant Louisiana city known for its French Quarter, jazz music, and Mardi Gras celebrations.",
+      "best_season": "February to May",
+      "climate": {
+        "monthly": [
+          { "month": 1, "name": "Jan", "avg_temp_c": 12, "avg_rainfall_mm": 130 },
+          { "month": 12, "name": "Dec", "avg_temp_c": 13, "avg_rainfall_mm": 125 }
+        ]
+      },
+      "food": [
+        { "name": "Gumbo", "description": "A rich stew with meat or seafood, okra, and the Cajun holy trinity." }
+      ],
+      "attractions": [
+        { "name": "French Quarter", "description": "Historic district with cast-iron balconies and Bourbon Street.", "type": "historic" }
+      ],
+      "language": "English",
+      "currency": "USD"
+    },
+    {
+      "id": "san-diego-united-states",
+      "city": "San Diego",
+      "country": "United States",
+      "continent": "North America",
+      "description": "San Diego is a sunny coastal city in Southern California known for its beaches, Balboa Park, and laid-back culture.",
+      "best_season": "March to October",
+      "climate": {
+        "monthly": [
+          { "month": 1, "name": "Jan", "avg_temp_c": 14, "avg_rainfall_mm": 50 },
+          { "month": 12, "name": "Dec", "avg_temp_c": 13, "avg_rainfall_mm": 45 }
+        ]
+      },
+      "food": [
+        { "name": "Fish Tacos", "description": "Battered white fish in corn tortillas with cabbage slaw and crema." }
+      ],
+      "attractions": [
+        { "name": "Balboa Park", "description": "1,200-acre cultural park with museums, gardens, and the San Diego Zoo.", "type": "park" }
+      ],
+      "language": "English",
+      "currency": "USD"
+    },
+    {
+      "id": "seattle-united-states",
+      "city": "Seattle",
+      "country": "United States",
+      "continent": "North America",
+      "description": "Seattle is a Pacific Northwest tech hub surrounded by water, mountains, and evergreen forests.",
+      "best_season": "June to September",
+      "climate": {
+        "monthly": [
+          { "month": 1, "name": "Jan", "avg_temp_c": 5, "avg_rainfall_mm": 142 },
+          { "month": 12, "name": "Dec", "avg_temp_c": 4, "avg_rainfall_mm": 137 }
+        ]
+      },
+      "food": [
+        { "name": "Salmon Chowder", "description": "Creamy seafood chowder with wild Pacific salmon, a Seattle classic." }
+      ],
+      "attractions": [
+        { "name": "Pike Place Market", "description": "Iconic waterfront market with flying fish, local crafts, and the original Starbucks.", "type": "market" }
+      ],
+      "language": "English",
+      "currency": "USD"
+    },
+    {
+      "id": "nashville-united-states",
+      "city": "Nashville",
+      "country": "United States",
+      "continent": "North America",
+      "description": "Nashville, Music City, is Tennessee's capital known for its vibrant live music scene and Southern hospitality.",
+      "best_season": "April to October",
+      "climate": {
+        "monthly": [
+          { "month": 1, "name": "Jan", "avg_temp_c": 3, "avg_rainfall_mm": 95 },
+          { "month": 12, "name": "Dec", "avg_temp_c": 5, "avg_rainfall_mm": 108 }
+        ]
+      },
+      "food": [
+        { "name": "Hot Chicken", "description": "Cayenne-spiced fried chicken, a fiery Nashville specialty." }
+      ],
+      "attractions": [
+        { "name": "Broadway", "description": "Iconic strip of honky-tonk bars with live country music all day.", "type": "entertainment" }
+      ],
+      "language": "English",
+      "currency": "USD"
+    },
+    {
+      "id": "bangkok-thailand",
+      "city": "Bangkok",
+      "country": "Thailand",
+      "continent": "Asia",
+      "description": "Bangkok is Thailand's vibrant capital, blending ornate temples, bustling street markets, and a world-renowned food scene.",
+      "best_season": "November to February",
+      "climate": {
+        "monthly": [
+          { "month": 1, "name": "Jan", "avg_temp_c": 27, "avg_rainfall_mm": 13 },
+          { "month": 12, "name": "Dec", "avg_temp_c": 26, "avg_rainfall_mm": 6 }
+        ]
+      },
+      "food": [
+        { "name": "Pad Thai", "description": "Stir-fried rice noodles with shrimp, tofu, bean sprouts, and tamarind sauce." }
+      ],
+      "attractions": [
+        { "name": "Grand Palace", "description": "The former royal residence with the sacred Temple of the Emerald Buddha.", "type": "historic" }
+      ],
+      "language": "Thai",
+      "currency": "THB"
+    },
+    {
+      "id": "vienna-austria",
+      "city": "Vienna",
+      "country": "Austria",
+      "continent": "Europe",
+      "description": "Vienna, Austria's imperial capital, is renowned for its classical music heritage, coffee house culture, and baroque architecture.",
+      "best_season": "April to October",
+      "climate": {
+        "monthly": [
+          { "month": 1, "name": "Jan", "avg_temp_c": 0, "avg_rainfall_mm": 37 },
+          { "month": 12, "name": "Dec", "avg_temp_c": 1, "avg_rainfall_mm": 44 }
+        ]
+      },
+      "food": [
+        { "name": "Wiener Schnitzel", "description": "Thin breaded veal cutlet, a classic Viennese dish served with lemon." }
+      ],
+      "attractions": [
+        { "name": "Schönbrunn Palace", "description": "Baroque imperial summer residence with ornate rooms and vast gardens.", "type": "historic" }
+      ],
+      "language": "German",
+      "currency": "EUR"
+    }
+  ]
+}

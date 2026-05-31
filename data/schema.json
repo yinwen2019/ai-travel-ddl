@@ -1,0 +1,122 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ai-top-conf.github.io/schemas/conferences.json",
+  "title": "AI Top Conference Data Schema",
+  "description": "Schema for validating conferences.json in AI Top Conf project",
+  "type": "object",
+  "required": ["meta", "conferences"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "required": ["version", "last_updated"],
+      "properties": {
+        "version": { "type": "string" },
+        "last_updated": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+        },
+        "description": { "type": "string" },
+        "data_source": { "type": "string" }
+      }
+    },
+    "conferences": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/conference" }
+    }
+  },
+  "definitions": {
+    "conference": {
+      "type": "object",
+      "required": ["id", "name", "full_name", "category", "years"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*$"
+        },
+        "name": { "type": "string", "minLength": 1 },
+        "full_name": { "type": "string", "minLength": 1 },
+        "category": {
+          "type": "string",
+          "enum": ["CV", "NLP", "ML", "AI", "DM"]
+        },
+        "subcategory": { "type": "string" },
+        "aka": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "website": { "type": "string", "format": "uri" },
+        "years": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/yearEntry" }
+        }
+      }
+    },
+    "yearEntry": {
+      "type": "object",
+      "required": ["year", "type", "city", "country", "continent"],
+      "properties": {
+        "year": {
+          "type": "integer",
+          "minimum": 1900,
+          "maximum": 2100
+        },
+        "type": {
+          "type": "string",
+          "enum": ["history", "upcoming"]
+        },
+        "city": { "type": "string", "minLength": 1 },
+        "country": { "type": "string", "minLength": 1 },
+        "continent": {
+          "type": "string",
+          "enum": ["Asia", "Europe", "North America", "South America", "Africa", "Oceania"]
+        },
+        "venue": { "type": "string" },
+        "url": { "type": "string", "format": "uri" },
+        "location_id": { "type": "string" },
+        "abstract_ddl": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/ddlEntry" }
+        },
+        "paper_ddl": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/ddlEntry" }
+        },
+        "notification_date": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+        },
+        "camera_ready": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+        },
+        "start_date": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+        },
+        "end_date": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["verified", "unverified"]
+        }
+      }
+    },
+    "ddlEntry": {
+      "type": "object",
+      "required": ["date", "timezone"],
+      "properties": {
+        "date": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+        },
+        "timezone": {
+          "type": "string",
+          "pattern": "^[A-Z][a-zA-Z_]+/[A-Z][a-zA-Z_]+$"
+        },
+        "note": { "type": "string" }
+      }
+    }
+  }
+}

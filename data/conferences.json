@@ -1,0 +1,2188 @@
+{
+  "meta": {
+    "version": "0.2.0",
+    "last_updated": "2026-05-19T00:00:00Z",
+    "description": "AI top conference data — venues, deadlines, and dates",
+    "data_source": "manually curated"
+  },
+  "conferences": [
+    {
+      "id": "neurips",
+      "name": "NeurIPS",
+      "full_name": "Conference on Neural Information Processing Systems",
+      "category": "ML",
+      "subcategory": "Neural Networks",
+      "aka": [
+        "NIPS"
+      ],
+      "website": "https://neurips.cc",
+      "years": [
+        {
+          "year": 2015,
+          "type": "history",
+          "city": "Montreal",
+          "country": "Canada",
+          "continent": "North America",
+          "url": "https://neurips.cc/Conferences/2015"
+        },
+        {
+          "year": 2016,
+          "type": "history",
+          "city": "Barcelona",
+          "country": "Spain",
+          "continent": "Europe",
+          "url": "https://neurips.cc/Conferences/2016",
+          "location_id": "barcelona-spain"
+        },
+        {
+          "year": 2017,
+          "type": "history",
+          "city": "Long Beach",
+          "country": "United States",
+          "continent": "North America",
+          "url": "https://neurips.cc/Conferences/2017"
+        },
+        {
+          "year": 2018,
+          "type": "history",
+          "city": "Montreal",
+          "country": "Canada",
+          "continent": "North America",
+          "url": "https://neurips.cc/Conferences/2018"
+        },
+        {
+          "year": 2019,
+          "type": "history",
+          "city": "Vancouver",
+          "country": "Canada",
+          "continent": "North America",
+          "url": "https://neurips.cc/Conferences/2019",
+          "location_id": "vancouver-canada"
+        },
+        {
+          "year": 2020,
+          "type": "history",
+          "city": "Virtual",
+          "country": "Online",
+          "continent": "North America",
+          "venue": "Virtual Conference",
+          "url": "https://neurips.cc/Conferences/2020"
+        },
+        {
+          "year": 2021,
+          "type": "history",
+          "city": "Virtual",
+          "country": "Online",
+          "continent": "North America",
+          "venue": "Virtual Conference",
+          "url": "https://neurips.cc/Conferences/2021"
+        },
+        {
+          "year": 2022,
+          "type": "history",
+          "city": "New Orleans",
+          "country": "United States",
+          "continent": "North America",
+          "venue": "Ernest N. Morial Convention Center",
+          "url": "https://neurips.cc/Conferences/2022",
+          "location_id": "new-orleans-united-states"
+        },
+        {
+          "year": 2023,
+          "type": "history",
+          "city": "New Orleans",
+          "country": "United States",
+          "continent": "North America",
+          "venue": "Ernest N. Morial Convention Center",
+          "url": "https://neurips.cc/Conferences/2023",
+          "location_id": "new-orleans-united-states",
+          "abstract_ddl": [
+            {
+              "date": "2023-05-11",
+              "timezone": "Etc/UTC",
+              "note": "Abstract DDL"
+            }
+          ],
+          "paper_ddl": [
+            {
+              "date": "2023-05-17",
+              "timezone": "Etc/UTC",
+              "note": "Full paper DDL"
+            }
+          ],
+          "notification_date": "2023-09-22",
+          "camera_ready": "2023-10-27",
+          "start_date": "2023-12-10",
+          "end_date": "2023-12-16",
+          "status": "verified"
+        },
+        {
+          "year": 2024,
+          "type": "history",
+          "city": "Vancouver",
+          "country": "Canada",
+          "continent": "North America",
+          "venue": "Vancouver Convention Centre",
+          "url": "https://neurips.cc/Conferences/2024",
+          "location_id": "vancouver-canada",
+          "abstract_ddl": [
+            {
+              "date": "2024-05-15",
+              "timezone": "Etc/UTC",
+              "note": "Abstract DDL"
+            }
+          ],
+          "paper_ddl": [
+            {
+              "date": "2024-05-22",
+              "timezone": "Etc/UTC",
+              "note": "Full paper DDL"
+            }
+          ],
+          "notification_date": "2024-09-26",
+          "camera_ready": "2024-10-30",
+          "start_date": "2024-12-10",
+          "end_date": "2024-12-15",
+          "status": "verified"
+        },
+        {
+          "year": 2025,
+          "type": "history",
+          "city": "San Diego",
+          "country": "United States",
+          "continent": "North America",
+          "venue": "San Diego Convention Center",
+          "url": "https://neurips.cc/Conferences/2025",
+          "location_id": "san-diego-united-states",
+          "abstract_ddl": [
+            {
+              "date": "2025-05-11",
+              "timezone": "America/Los_Angeles",
+              "note": "Abstract DDL"
+            }
+          ],
+          "paper_ddl": [
+            {
+              "date": "2025-05-15",
+              "timezone": "America/Los_Angeles",
+              "note": "Full paper DDL"
+            }
+          ],
+          "notification_date": "2025-09-18",
+          "camera_ready": "2025-10-23",
+          "start_date": "2025-12-02",
+          "end_date": "2025-12-07",
+          "status": "verified"
+        },
+        {
+          "year": 2026,
+          "type": "upcoming",
+          "city": "Sydney",
+          "country": "Australia",
+          "continent": "Oceania",
+          "venue": "International Convention Centre",
+          "url": "https://neurips.cc/Conferences/2026",
+          "abstract_ddl": [
+            {
+              "date": "2026-05-04",
+              "timezone": "America/Los_Angeles",
+              "note": "Abstract DDL"
+            }
+          ],
+          "paper_ddl": [
+            {
+              "date": "2026-05-06",
+              "timezone": "America/Los_Angeles",
+              "note": "Full paper DDL"
+            }
+          ],
+          "notification_date": "2026-09-24",
+          "start_date": "2026-12-06",
+          "end_date": "2026-12-12",
+          "status": "verified"
+        }
+      ]
+    },
+    {
+      "id": "cvpr",
+      "name": "CVPR",
+      "full_name": "IEEE/CVF Conference on Computer Vision and Pattern Recognition",
+      "category": "CV",
+      "subcategory": "Computer Vision",
+      "website": "https://cvpr.thecvf.com",
+      "years": [
+        {
+          "year": 2015,
+          "type": "history",
+          "city": "Boston",
+          "country": "United States",
+          "continent": "North America",
+          "url": "https://cvpr2015.thecvf.com"
+        },
+        {
+          "year": 2016,
+          "type": "history",
+          "city": "Las Vegas",
+          "country": "United States",
+          "continent": "North America",
+          "url": "https://cvpr2016.thecvf.com"
+        },
+        {
+          "year": 2017,
+          "type": "history",
+          "city": "Honolulu",
+          "country": "United States",
+          "continent": "North America",
+          "venue": "Hawaii Convention Center",
+          "url": "https://cvpr2017.thecvf.com",
+          "location_id": "honolulu-united-states"
+        },
+        {
+          "year": 2018,
+          "type": "history",
+          "city": "Salt Lake City",
+          "country": "United States",
+          "continent": "North America",
+          "url": "https://cvpr2018.thecvf.com"
+        },
+        {
+          "year": 2019,
+          "type": "history",
+          "city": "Long Beach",
+          "country": "United States",
+          "continent": "North America",
+          "url": "https://cvpr2019.thecvf.com"
+        },
+        {
+          "year": 2020,
+          "type": "history",
+          "city": "Seattle",
+          "country": "United States",
+          "continent": "North America",
+          "venue": "Seattle Convention Center",
+          "url": "https://cvpr2020.thecvf.com",
+          "location_id": "seattle-united-states"
+        },
+        {
+          "year": 2021,
+          "type": "history",
+          "city": "Nashville",
+          "country": "United States",
+          "continent": "North America",
+          "venue": "Music City Center",
+          "url": "https://cvpr2021.thecvf.com",
+          "location_id": "nashville-united-states"
+        },
+        {
+          "year": 2022,
+          "type": "history",
+          "city": "New Orleans",
+          "country": "United States",
+          "continent": "North America",
+          "venue": "Ernest N. Morial Convention Center",
+          "url": "https://cvpr2022.thecvf.com",
+          "location_id": "new-orleans-united-states"
+        },
+        {
+          "year": 2023,
+          "type": "history",
+          "city": "Vancouver",
+          "country": "Canada",
+          "continent": "North America",
+          "venue": "Vancouver Convention Center",
+          "url": "https://cvpr2023.thecvf.com/Conferences/2023",
+          "location_id": "vancouver-canada",
+          "abstract_ddl": [
+            {
+              "date": "2022-11-04",
+              "timezone": "America/Los_Angeles",
+              "note": "Abstract DDL"
+            }
+          ],
+          "paper_ddl": [
+            {
+              "date": "2022-11-11",
+              "timezone": "America/Los_Angeles",
+              "note": "Full paper DDL"
+            }
+          ],
+          "notification_date": "2023-02-27",
+          "camera_ready": "2023-03-24",
+          "start_date": "2023-06-18",
+          "end_date": "2023-06-22",
+          "status": "verified"
+        },
+        {
+          "year": 2024,
+          "type": "history",
+          "city": "Seattle",
+          "country": "United States",
+          "continent": "North America",
+          "venue": "Seattle Convention Center",
+          "url": "https://cvpr.thecvf.com/Conferences/2024",
+          "location_id": "seattle-united-states",
+          "abstract_ddl": [
+            {
+              "date": "2023-11-03",
+              "timezone": "America/Los_Angeles",
+              "note": "Abstract DDL"
+            }
+          ],
+          "paper_ddl": [
+            {
+              "date": "2023-11-17",
+              "timezone": "America/Los_Angeles",
+              "note": "Full paper DDL"
+            }
+          ],
+          "notification_date": "2024-02-26",
+          "start_date": "2024-06-17",
+          "end_date": "2024-06-21",
+          "status": "verified"
+        },
+        {
+          "year": 2025,
+          "type": "history",
+          "city": "Nashville",
+          "country": "United States",
+          "continent": "North America",
+          "venue": "Music City Center",
+          "url": "https://cvpr.thecvf.com/Conferences/2025",
+          "location_id": "nashville-united-states",
+          "abstract_ddl": [
+            {
+              "date": "2024-11-07",
+              "timezone": "America/Los_Angeles",
+              "note": "Abstract DDL"
+            }
+          ],
+          "paper_ddl": [
+            {
+              "date": "2024-11-14",
+              "timezone": "America/Los_Angeles",
+              "note": "Full paper DDL"
+            }
+          ],
+          "notification_date": "2025-02-26",
+          "camera_ready": "2025-03-25",
+          "start_date": "2025-06-11",
+          "end_date": "2025-06-15",
+          "status": "verified"
+        },
+        {
+          "year": 2026,
+          "type": "upcoming",
+          "city": "Denver",
+          "country": "United States",
+          "continent": "North America",
+          "venue": "Denver Convention Center",
+          "url": "https://cvpr.thecvf.com/Conferences/2026",
+          "abstract_ddl": [
+            {
+              "date": "2025-11-07",
+              "timezone": "America/Los_Angeles",
+              "note": "Abstract DDL"
+            }
+          ],
+          "paper_ddl": [
+            {
+              "date": "2025-11-13",
+              "timezone": "America/Los_Angeles",
+              "note": "Full paper DDL"
+            }
+          ],
+          "notification_date": "2026-02-20",
+          "start_date": "2026-06-03",
+          "end_date": "2026-06-07",
+          "status": "verified"
+        }
+      ]
+    },
+    {
+      "id": "acl",
+      "name": "ACL",
+      "full_name": "Annual Meeting of the Association for Computational Linguistics",
+      "category": "NLP",
+      "subcategory": "Natural Language Processing",
+      "aka": [
+        "ACL-IJCNLP"
+      ],
+      "website": "https://aclanthology.org",
+      "years": [
+        {
+          "year": 2015,
+          "type": "history",
+          "city": "Beijing",
+          "country": "China",
+          "continent": "Asia",
+          "url": "https://acl2015.org"
+        },
+        {
+          "year": 2016,
+          "type": "history",
+          "city": "Berlin",
+          "country": "Germany",
+          "continent": "Europe",
+          "url": "https://acl2016.org"
+        },
+        {
+          "year": 2017,
+          "type": "history",
+          "city": "Vancouver",
+          "country": "Canada",
+          "continent": "North America",
+          "url": "https://acl2017.org",
+          "location_id": "vancouver-canada"
+        },
+        {
+          "year": 2018,
+          "type": "history",
+          "city": "Melbourne",
+          "country": "Australia",
+          "continent": "Oceania",
+          "url": "https://acl2018.org"
+        },
+        {
+          "year": 2019,
+          "type": "history",
+          "city": "Florence",
+          "country": "Italy",
+          "continent": "Europe",
+          "url": "https://acl2019.org"
+        },
+        {
+          "year": 2020,
+          "type": "history",
+          "city": "Seattle",
+          "country": "United States",
+          "continent": "North America",
+          "url": "https://acl2020.org",
+          "location_id": "seattle-united-states"
+        },
+        {
+          "year": 2021,
+          "type": "history",
+          "city": "Bangkok",
+          "country": "Thailand",
+          "continent": "Asia",
+          "url": "https://2021.aclweb.org",
+          "location_id": "bangkok-thailand"
+        },
+        {
+          "year": 2022,
+          "type": "history",
+          "city": "Dublin",
+          "country": "Ireland",
+          "continent": "Europe",
+          "url": "https://2022.aclweb.org"
+        },
+        {
+          "year": 2023,
+          "type": "history",
+          "city": "Toronto",
+          "country": "Canada",
+          "continent": "North America",
+          "venue": "The Westin Harbour Castle",
+          "url": "https://2023.aclweb.org",
+          "abstract_ddl": [
+            {
+              "date": "2023-01-13",
+              "timezone": "Etc/UTC",
+              "note": "Abstract DDL"
+            }
+          ],
+          "paper_ddl": [
+            {
+              "date": "2023-01-20",
+              "timezone": "Etc/UTC",
+              "note": "Full paper DDL"
+            }
+          ],
+          "notification_date": "2023-05-01",
+          "camera_ready": "2023-05-25",
+          "start_date": "2023-07-09",
+          "end_date": "2023-07-14",
+          "status": "verified"
+        },
+        {
+          "year": 2024,
+          "type": "history",
+          "city": "Bangkok",
+          "country": "Thailand",
+          "continent": "Asia",
+          "venue": "Centara Grand and Bangkok Convention Centre at CentralWorld",
+          "url": "https://2024.aclweb.org",
+          "location_id": "bangkok-thailand",
+          "paper_ddl": [
+            {
+              "date": "2024-02-15",
+              "timezone": "Etc/UTC",
+              "note": "Full paper DDL"
+            }
+          ],
+          "notification_date": "2024-05-15",
+          "camera_ready": "2024-06-05",
+          "start_date": "2024-08-11",
+          "end_date": "2024-08-16",
+          "status": "verified"
+        },
+        {
+          "year": 2025,
+          "type": "history",
+          "city": "Vienna",
+          "country": "Austria",
+          "continent": "Europe",
+          "venue": "Austria Center Vienna",
+          "url": "https://2025.aclweb.org",
+          "location_id": "vienna-austria",
+          "paper_ddl": [
+            {
+              "date": "2025-02-15",
+              "timezone": "Etc/UTC",
+              "note": "Full paper DDL"
+            }
+          ],
+          "notification_date": "2025-05-15",
+          "camera_ready": "2025-05-30",
+          "start_date": "2025-07-27",
+          "end_date": "2025-08-01",
+          "status": "verified"
+        },
+        {
+          "year": 2026,
+          "type": "upcoming",
+          "city": "San Diego",
+          "country": "United States",
+          "continent": "North America",
+          "venue": "Grand Hyatt Manchester San Diego",
+          "url": "https://2026.aclweb.org",
+          "location_id": "san-diego-united-states",
+          "paper_ddl": [
+            {
+              "date": "2026-01-05",
+              "timezone": "Etc/UTC",
+              "note": "Full paper DDL"
+            }
+          ],
+          "notification_date": "2026-04-04",
+          "camera_ready": "2026-04-19",
+          "start_date": "2026-07-02",
+          "end_date": "2026-07-07",
+          "status": "verified"
+        }
+      ]
+    },
+    {
+      "id": "iccv",
+      "name": "ICCV",
+      "full_name": "IEEE/CVF International Conference on Computer Vision",
+      "category": "CV",
+      "subcategory": "Computer Vision",
+      "website": "https://iccv.thecvf.com",
+      "years": [
+        {
+          "year": 2015,
+          "type": "history",
+          "city": "Santiago",
+          "country": "Chile",
+          "continent": "South America",
+          "url": "https://pamitc.org/iccv15"
+        },
+        {
+          "year": 2017,
+          "type": "history",
+          "city": "Venice",
+          "country": "Italy",
+          "continent": "Europe",
+          "url": "https://iccv2017.thecvf.com"
+        },
+        {
+          "year": 2019,
+          "type": "history",
+          "city": "Seoul",
+          "country": "South Korea",
+          "continent": "Asia",
+          "url": "https://iccv2019.thecvf.com"
+        },
+        {
+          "year": 2021,
+          "type": "history",
+          "city": "Montreal",
+          "country": "Canada",
+          "continent": "North America",
+          "url": "https://iccv2021.thecvf.com"
+        },
+        {
+          "year": 2023,
+          "type": "history",
+          "city": "Paris",
+          "country": "France",
+          "continent": "Europe",
+          "venue": "Paris Convention Center",
+          "url": "https://iccv2023.thecvf.com",
+          "abstract_ddl": [
+            {
+              "date": "2023-03-01",
+              "timezone": "Etc/UTC",
+              "note": "Abstract DDL"
+            }
+          ],
+          "paper_ddl": [
+            {
+              "date": "2023-03-08",
+              "timezone": "Etc/UTC",
+              "note": "Full paper DDL"
+            }
+          ],
+          "notification_date": "2023-07-13",
+          "start_date": "2023-10-02",
+          "end_date": "2023-10-06",
+          "status": "verified"
+        },
+        {
+          "year": 2025,
+          "type": "history",
+          "city": "Honolulu",
+          "country": "United States",
+          "continent": "North America",
+          "venue": "Hawaii Convention Center",
+          "url": "https://iccv.thecvf.com/Conferences/2025",
+          "location_id": "honolulu-united-states",
+          "abstract_ddl": [
+            {
+              "date": "2025-03-03",
+              "timezone": "Pacific/Honolulu",
+              "note": "Abstract DDL"
+            }
+          ],
+          "paper_ddl": [
+            {
+              "date": "2025-03-07",
+              "timezone": "Pacific/Honolulu",
+              "note": "Full paper DDL"
+            }
+          ],
+          "notification_date": "2025-06-25",
+          "start_date": "2025-10-19",
+          "end_date": "2025-10-23",
+          "status": "verified"
+        }
+      ]
+    },
+    {
+      "id": "eccv",
+      "name": "ECCV",
+      "full_name": "European Conference on Computer Vision",
+      "category": "CV",
+      "subcategory": "Computer Vision",
+      "website": "https://eccv.ecva.net",
+      "years": [
+        {
+          "year": 2016,
+          "type": "history",
+          "city": "Amsterdam",
+          "country": "Netherlands",
+          "continent": "Europe",
+          "url": "https://eccv2016.org"
+        },
+        {
+          "year": 2018,
+          "type": "history",
+          "city": "Munich",
+          "country": "Germany",
+          "continent": "Europe",
+          "url": "https://eccv2018.org"
+        },
+        {
+          "year": 2020,
+          "type": "history",
+          "city": "Glasgow",
+          "country": "United Kingdom",
+          "continent": "Europe",
+          "url": "https://eccv2020.eu"
+        },
+        {
+          "year": 2022,
+          "type": "history",
+          "city": "Tel Aviv",
+          "country": "Israel",
+          "continent": "Asia",
+          "venue": "EXPO Tel Aviv",
+          "url": "https://eccv2022.ecva.net"
+        },
+        {
+          "year": 2024,
+          "type": "history",
+          "city": "Milan",
+          "country": "Italy",
+          "continent": "Europe",
+          "venue": "MiCo Milano",
+          "url": "https://eccv2024.ecva.net/Conferences/2024",
+          "abstract_ddl": [
+            {
+              "date": "2024-02-29",
+              "timezone": "Etc/UTC",
+              "note": "Abstract DDL"
+            }
+          ],
+          "paper_ddl": [
+            {
+              "date": "2024-03-07",
+              "timezone": "Etc/UTC",
+              "note": "Full paper DDL"
+            }
+          ],
+          "notification_date": "2024-07-01",
+          "camera_ready": "2024-07-17",
+          "start_date": "2024-09-29",
+          "end_date": "2024-10-04",
+          "status": "verified"
+        },
+        {
+          "year": 2026,
+          "type": "upcoming",
+          "city": "Malmo",
+          "country": "Sweden",
+          "continent": "Europe",
+          "venue": "Malmo Arena and Malmomassan",
+          "url": "https://eccv.ecva.net/Conferences/2026",
+          "abstract_ddl": [
+            {
+              "date": "2026-02-26",
+              "timezone": "Etc/UTC",
+              "note": "Abstract DDL"
+            }
+          ],
+          "paper_ddl": [
+            {
+              "date": "2026-03-05",
+              "timezone": "Etc/UTC",
+              "note": "Full paper DDL"
+            }
+          ],
+          "notification_date": "2026-06-17",
+          "camera_ready": "2026-06-26",
+          "start_date": "2026-09-08",
+          "end_date": "2026-09-12",
+          "status": "verified"
+        }
+      ]
+    },
+    {
+      "id": "emnlp",
+      "name": "EMNLP",
+      "full_name": "Conference on Empirical Methods in Natural Language Processing",
+      "category": "NLP",
+      "subcategory": "Natural Language Processing",
+      "website": "https://2026.emnlp.org",
+      "years": [
+        {
+          "year": 2015,
+          "type": "history",
+          "city": "Lisbon",
+          "country": "Portugal",
+          "continent": "Europe",
+          "url": "https://aclweb.org/anthology/events/emnlp-2015"
+        },
+        {
+          "year": 2016,
+          "type": "history",
+          "city": "Austin",
+          "country": "United States",
+          "continent": "North America",
+          "url": "https://aclweb.org/anthology/events/emnlp-2016"
+        },
+        {
+          "year": 2017,
+          "type": "history",
+          "city": "Copenhagen",
+          "country": "Denmark",
+          "continent": "Europe",
+          "url": "https://aclweb.org/anthology/events/emnlp-2017"
+        },
+        {
+          "year": 2018,
+          "type": "history",
+          "city": "Brussels",
+          "country": "Belgium",
+          "continent": "Europe",
+          "url": "https://aclweb.org/anthology/events/emnlp-2018"
+        },
+        {
+          "year": 2019,
+          "type": "history",
+          "city": "Hong Kong",
+          "country": "China",
+          "continent": "Asia",
+          "url": "https://2019.emnlp.org"
+        },
+        {
+          "year": 2020,
+          "type": "history",
+          "city": "Virtual",
+          "country": "Online",
+          "continent": "North America",
+          "venue": "Virtual Conference",
+          "url": "https://2020.emnlp.org"
+        },
+        {
+          "year": 2021,
+          "type": "history",
+          "city": "Punta Cana",
+          "country": "Dominican Republic",
+          "continent": "North America",
+          "url": "https://2021.emnlp.org"
+        },
+        {
+          "year": 2022,
+          "type": "history",
+          "city": "Abu Dhabi",
+          "country": "United Arab Emirates",
+          "continent": "Asia",
+          "url": "https://2022.emnlp.org"
+        },
+        {
+          "year": 2023,
+          "type": "history",
+          "city": "Singapore",
+          "country": "Singapore",
+          "continent": "Asia",
+          "venue": "Suntec Singapore Convention and Exhibition Centre",
+          "url": "https://2023.emnlp.org",
+          "location_id": "singapore-singapore",
+          "paper_ddl": [
+            {
+              "date": "2023-06-23",
+              "timezone": "Etc/UTC",
+              "note": "Full paper DDL"
+            }
+          ],
+          "notification_date": "2023-10-06",
+          "camera_ready": "2023-10-20",
+          "start_date": "2023-12-06",
+          "end_date": "2023-12-10",
+          "status": "verified"
+        },
+        {
+          "year": 2024,
+          "type": "history",
+          "city": "Miami",
+          "country": "United States",
+          "continent": "North America",
+          "venue": "Hyatt Regency Miami",
+          "url": "https://2024.emnlp.org",
+          "paper_ddl": [
+            {
+              "date": "2024-06-15",
+              "timezone": "Etc/UTC",
+              "note": "Full paper DDL"
+            }
+          ],
+          "notification_date": "2024-09-20",
+          "camera_ready": "2024-10-03",
+          "start_date": "2024-11-12",
+          "end_date": "2024-11-16",
+          "status": "verified"
+        },
+        {
+          "year": 2025,
+          "type": "history",
+          "city": "Suzhou",
+          "country": "China",
+          "continent": "Asia",
+          "venue": "Suzhou International Expo Centre",
+          "url": "https://2025.emnlp.org",
+          "paper_ddl": [
+            {
+              "date": "2025-05-19",
+              "timezone": "Etc/UTC",
+              "note": "Full paper DDL"
+            }
+          ],
+          "notification_date": "2025-08-20",
+          "camera_ready": "2025-09-19",
+          "start_date": "2025-11-05",
+          "end_date": "2025-11-09",
+          "status": "verified"
+        },
+        {
+          "year": 2026,
+          "type": "upcoming",
+          "city": "Budapest",
+          "country": "Hungary",
+          "continent": "Europe",
+          "url": "https://2026.emnlp.org",
+          "paper_ddl": [
+            {
+              "date": "2026-05-25",
+              "timezone": "Etc/UTC",
+              "note": "Full paper DDL"
+            }
+          ],
+          "notification_date": "2026-08-20",
+          "camera_ready": "2026-09-20",
+          "start_date": "2026-10-24",
+          "end_date": "2026-10-29",
+          "status": "verified"
+        }
+      ]
+    },
+    {
+      "id": "naacl",
+      "name": "NAACL",
+      "full_name": "Annual Conference of the Nations of the Americas Chapter of the Association for Computational Linguistics",
+      "category": "NLP",
+      "subcategory": "Natural Language Processing",
+      "website": "https://2025.naacl.org",
+      "years": [
+        {
+          "year": 2015,
+          "type": "history",
+          "city": "Denver",
+          "country": "United States",
+          "continent": "North America",
+          "venue": "Sheraton Denver Downtown Hotel",
+          "url": "https://naacl.org/naacl-hlt-2015"
+        },
+        {
+          "year": 2016,
+          "type": "history",
+          "city": "San Diego",
+          "country": "United States",
+          "continent": "North America",
+          "venue": "Sheraton San Diego Hotel and Marina",
+          "url": "https://naacl.org/naacl-hlt-2016",
+          "location_id": "san-diego-united-states"
+        },
+        {
+          "year": 2018,
+          "type": "history",
+          "city": "New Orleans",
+          "country": "United States",
+          "continent": "North America",
+          "venue": "Hyatt Regency New Orleans",
+          "url": "https://naacl.org/naacl-hlt-2018",
+          "location_id": "new-orleans-united-states"
+        },
+        {
+          "year": 2019,
+          "type": "history",
+          "city": "Minneapolis",
+          "country": "United States",
+          "continent": "North America",
+          "venue": "Hyatt Regency Minneapolis",
+          "url": "https://naacl2019.org"
+        },
+        {
+          "year": 2021,
+          "type": "history",
+          "city": "Virtual",
+          "country": "Online",
+          "continent": "North America",
+          "venue": "Virtual Conference",
+          "url": "https://2021.naacl.org"
+        },
+        {
+          "year": 2022,
+          "type": "history",
+          "city": "Seattle",
+          "country": "United States",
+          "continent": "North America",
+          "url": "https://2022.naacl.org",
+          "location_id": "seattle-united-states"
+        },
+        {
+          "year": 2024,
+          "type": "history",
+          "city": "Mexico City",
+          "country": "Mexico",
+          "continent": "North America",
+          "venue": "Hilton Mexico City Reforma",
+          "url": "https://2024.naacl.org",
+          "paper_ddl": [
+            {
+              "date": "2023-12-15",
+              "timezone": "Etc/UTC",
+              "note": "Full paper DDL"
+            }
+          ],
+          "notification_date": "2024-03-13",
+          "camera_ready": "2024-04-01",
+          "start_date": "2024-06-16",
+          "end_date": "2024-06-21",
+          "status": "verified"
+        },
+        {
+          "year": 2025,
+          "type": "history",
+          "city": "Albuquerque",
+          "country": "United States",
+          "continent": "North America",
+          "venue": "Albuquerque Convention Center",
+          "url": "https://2025.naacl.org",
+          "paper_ddl": [
+            {
+              "date": "2024-10-15",
+              "timezone": "Etc/UTC",
+              "note": "Full paper DDL"
+            }
+          ],
+          "notification_date": "2025-01-22",
+          "camera_ready": "2025-02-24",
+          "start_date": "2025-04-29",
+          "end_date": "2025-05-04",
+          "status": "verified"
+        }
+      ]
+    },
+    {
+      "id": "icml",
+      "name": "ICML",
+      "full_name": "International Conference on Machine Learning",
+      "category": "ML",
+      "subcategory": "Machine Learning",
+      "website": "https://icml.cc",
+      "years": [
+        {
+          "year": 2015,
+          "type": "history",
+          "city": "Lille",
+          "country": "France",
+          "continent": "Europe",
+          "url": "https://icml.cc/Conferences/2015"
+        },
+        {
+          "year": 2016,
+          "type": "history",
+          "city": "New York",
+          "country": "United States",
+          "continent": "North America",
+          "url": "https://icml.cc/Conferences/2016"
+        },
+        {
+          "year": 2017,
+          "type": "history",
+          "city": "Sydney",
+          "country": "Australia",
+          "continent": "Oceania",
+          "url": "https://icml.cc/Conferences/2017"
+        },
+        {
+          "year": 2018,
+          "type": "history",
+          "city": "Stockholm",
+          "country": "Sweden",
+          "continent": "Europe",
+          "url": "https://icml.cc/Conferences/2018"
+        },
+        {
+          "year": 2019,
+          "type": "history",
+          "city": "Long Beach",
+          "country": "United States",
+          "continent": "North America",
+          "url": "https://icml.cc/Conferences/2019"
+        },
+        {
+          "year": 2020,
+          "type": "history",
+          "city": "Virtual",
+          "country": "Online",
+          "continent": "North America",
+          "venue": "Virtual Conference",
+          "url": "https://icml.cc/Conferences/2020"
+        },
+        {
+          "year": 2021,
+          "type": "history",
+          "city": "Virtual",
+          "country": "Online",
+          "continent": "North America",
+          "venue": "Virtual Conference",
+          "url": "https://icml.cc/Conferences/2021"
+        },
+        {
+          "year": 2022,
+          "type": "history",
+          "city": "Baltimore",
+          "country": "United States",
+          "continent": "North America",
+          "venue": "Baltimore Convention Center",
+          "url": "https://icml.cc/Conferences/2022"
+        },
+        {
+          "year": 2023,
+          "type": "history",
+          "city": "Honolulu",
+          "country": "United States",
+          "continent": "North America",
+          "venue": "Hawaii Convention Center",
+          "url": "https://icml.cc/Conferences/2023",
+          "location_id": "honolulu-united-states",
+          "paper_ddl": [
+            {
+              "date": "2023-01-26",
+              "timezone": "America/New_York",
+              "note": "Full paper DDL"
+            }
+          ],
+          "notification_date": "2023-04-24",
+          "camera_ready": "2023-05-31",
+          "start_date": "2023-07-23",
+          "end_date": "2023-07-29",
+          "status": "verified"
+        },
+        {
+          "year": 2024,
+          "type": "history",
+          "city": "Vienna",
+          "country": "Austria",
+          "continent": "Europe",
+          "venue": "Messe Wien Exhibition Congress Center",
+          "url": "https://icml.cc/Conferences/2024",
+          "location_id": "vienna-austria",
+          "paper_ddl": [
+            {
+              "date": "2024-02-01",
+              "timezone": "Etc/UTC",
+              "note": "Full paper DDL"
+            }
+          ],
+          "notification_date": "2024-05-01",
+          "camera_ready": "2024-05-29",
+          "start_date": "2024-07-21",
+          "end_date": "2024-07-27",
+          "status": "verified"
+        },
+        {
+          "year": 2025,
+          "type": "history",
+          "city": "Vancouver",
+          "country": "Canada",
+          "continent": "North America",
+          "venue": "Vancouver Convention Center",
+          "url": "https://icml.cc/Conferences/2025",
+          "location_id": "vancouver-canada",
+          "abstract_ddl": [
+            {
+              "date": "2025-01-23",
+              "timezone": "Etc/UTC",
+              "note": "Abstract DDL"
+            }
+          ],
+          "paper_ddl": [
+            {
+              "date": "2025-01-30",
+              "timezone": "Etc/UTC",
+              "note": "Full paper DDL"
+            }
+          ],
+          "notification_date": "2025-05-01",
+          "camera_ready": "2025-06-09",
+          "start_date": "2025-07-13",
+          "end_date": "2025-07-19",
+          "status": "verified"
+        },
+        {
+          "year": 2026,
+          "type": "upcoming",
+          "city": "Seoul",
+          "country": "South Korea",
+          "continent": "Asia",
+          "venue": "Coex Convention and Exhibition Center",
+          "url": "https://icml.cc/Conferences/2026",
+          "abstract_ddl": [
+            {
+              "date": "2026-01-23",
+              "timezone": "Etc/UTC",
+              "note": "Abstract DDL"
+            }
+          ],
+          "paper_ddl": [
+            {
+              "date": "2026-01-28",
+              "timezone": "Etc/UTC",
+              "note": "Full paper DDL"
+            }
+          ],
+          "notification_date": "2026-04-30",
+          "start_date": "2026-07-06",
+          "end_date": "2026-07-11",
+          "status": "verified"
+        }
+      ]
+    },
+    {
+      "id": "iclr",
+      "name": "ICLR",
+      "full_name": "International Conference on Learning Representations",
+      "category": "ML",
+      "subcategory": "Representation Learning",
+      "website": "https://iclr.cc",
+      "years": [
+        {
+          "year": 2015,
+          "type": "history",
+          "city": "San Diego",
+          "country": "United States",
+          "continent": "North America",
+          "url": "https://iclr.cc/Conferences/2015",
+          "location_id": "san-diego-united-states"
+        },
+        {
+          "year": 2016,
+          "type": "history",
+          "city": "San Juan",
+          "country": "Puerto Rico",
+          "continent": "North America",
+          "url": "https://iclr.cc/Conferences/2016"
+        },
+        {
+          "year": 2017,
+          "type": "history",
+          "city": "Toulon",
+          "country": "France",
+          "continent": "Europe",
+          "url": "https://iclr.cc/Conferences/2017"
+        },
+        {
+          "year": 2018,
+          "type": "history",
+          "city": "Vancouver",
+          "country": "Canada",
+          "continent": "North America",
+          "url": "https://iclr.cc/Conferences/2018",
+          "location_id": "vancouver-canada"
+        },
+        {
+          "year": 2019,
+          "type": "history",
+          "city": "New Orleans",
+          "country": "United States",
+          "continent": "North America",
+          "url": "https://iclr.cc/Conferences/2019",
+          "location_id": "new-orleans-united-states"
+        },
+        {
+          "year": 2020,
+          "type": "history",
+          "city": "Virtual",
+          "country": "Online",
+          "continent": "North America",
+          "venue": "Virtual Conference",
+          "url": "https://iclr.cc/Conferences/2020"
+        },
+        {
+          "year": 2021,
+          "type": "history",
+          "city": "Virtual",
+          "country": "Online",
+          "continent": "North America",
+          "venue": "Virtual Conference",
+          "url": "https://iclr.cc/Conferences/2021"
+        },
+        {
+          "year": 2022,
+          "type": "history",
+          "city": "Virtual",
+          "country": "Online",
+          "continent": "North America",
+          "venue": "Virtual Conference",
+          "url": "https://iclr.cc/Conferences/2022"
+        },
+        {
+          "year": 2023,
+          "type": "history",
+          "city": "Kigali",
+          "country": "Rwanda",
+          "continent": "Africa",
+          "venue": "Kigali Convention Centre",
+          "url": "https://iclr.cc/Conferences/2023",
+          "abstract_ddl": [
+            {
+              "date": "2022-09-21",
+              "timezone": "Etc/UTC",
+              "note": "Abstract DDL"
+            }
+          ],
+          "paper_ddl": [
+            {
+              "date": "2022-09-28",
+              "timezone": "Etc/UTC",
+              "note": "Full paper DDL"
+            }
+          ],
+          "notification_date": "2023-01-20",
+          "start_date": "2023-05-01",
+          "end_date": "2023-05-05",
+          "status": "verified"
+        },
+        {
+          "year": 2024,
+          "type": "history",
+          "city": "Vienna",
+          "country": "Austria",
+          "continent": "Europe",
+          "venue": "Messe Wien Exhibition Congress Center",
+          "url": "https://iclr.cc/Conferences/2024",
+          "location_id": "vienna-austria",
+          "abstract_ddl": [
+            {
+              "date": "2023-09-23",
+              "timezone": "Etc/UTC",
+              "note": "Abstract DDL"
+            }
+          ],
+          "paper_ddl": [
+            {
+              "date": "2023-09-28",
+              "timezone": "Etc/UTC",
+              "note": "Full paper DDL"
+            }
+          ],
+          "notification_date": "2024-01-15",
+          "camera_ready": "2024-04-14",
+          "start_date": "2024-05-07",
+          "end_date": "2024-05-11",
+          "status": "verified"
+        },
+        {
+          "year": 2025,
+          "type": "history",
+          "city": "Singapore",
+          "country": "Singapore",
+          "continent": "Asia",
+          "venue": "Singapore EXPO",
+          "url": "https://iclr.cc/Conferences/2025",
+          "location_id": "singapore-singapore",
+          "abstract_ddl": [
+            {
+              "date": "2024-09-27",
+              "timezone": "Etc/UTC",
+              "note": "Abstract DDL"
+            }
+          ],
+          "paper_ddl": [
+            {
+              "date": "2024-10-01",
+              "timezone": "Etc/UTC",
+              "note": "Full paper DDL"
+            }
+          ],
+          "notification_date": "2025-01-22",
+          "camera_ready": "2025-03-14",
+          "start_date": "2025-04-24",
+          "end_date": "2025-04-28",
+          "status": "verified"
+        },
+        {
+          "year": 2026,
+          "type": "history",
+          "city": "Rio de Janeiro",
+          "country": "Brazil",
+          "continent": "South America",
+          "url": "https://iclr.cc/Conferences/2026",
+          "abstract_ddl": [
+            {
+              "date": "2025-09-19",
+              "timezone": "Etc/UTC",
+              "note": "Abstract DDL"
+            }
+          ],
+          "paper_ddl": [
+            {
+              "date": "2025-09-24",
+              "timezone": "Etc/UTC",
+              "note": "Full paper DDL"
+            }
+          ],
+          "notification_date": "2026-01-25",
+          "start_date": "2026-04-23",
+          "end_date": "2026-04-27",
+          "status": "verified"
+        }
+      ]
+    },
+    {
+      "id": "aaai",
+      "name": "AAAI",
+      "full_name": "AAAI Conference on Artificial Intelligence",
+      "category": "AI",
+      "subcategory": "Artificial Intelligence",
+      "website": "https://aaai.org/conference/aaai",
+      "years": [
+        {
+          "year": 2015,
+          "type": "history",
+          "city": "Austin",
+          "country": "United States",
+          "continent": "North America",
+          "url": "https://aaai.org/conference/aaai/aaai-15"
+        },
+        {
+          "year": 2016,
+          "type": "history",
+          "city": "Phoenix",
+          "country": "United States",
+          "continent": "North America",
+          "url": "https://aaai.org/conference/aaai/aaai-16"
+        },
+        {
+          "year": 2017,
+          "type": "history",
+          "city": "San Francisco",
+          "country": "United States",
+          "continent": "North America",
+          "url": "https://aaai.org/conference/aaai/aaai-17"
+        },
+        {
+          "year": 2018,
+          "type": "history",
+          "city": "New Orleans",
+          "country": "United States",
+          "continent": "North America",
+          "url": "https://aaai.org/conference/aaai/aaai-18",
+          "location_id": "new-orleans-united-states"
+        },
+        {
+          "year": 2019,
+          "type": "history",
+          "city": "Honolulu",
+          "country": "United States",
+          "continent": "North America",
+          "url": "https://aaai.org/conference/aaai/aaai-19",
+          "location_id": "honolulu-united-states"
+        },
+        {
+          "year": 2020,
+          "type": "history",
+          "city": "New York",
+          "country": "United States",
+          "continent": "North America",
+          "url": "https://aaai.org/conference/aaai/aaai-20"
+        },
+        {
+          "year": 2021,
+          "type": "history",
+          "city": "Virtual",
+          "country": "Online",
+          "continent": "North America",
+          "venue": "Virtual Conference",
+          "url": "https://aaai.org/conference/aaai/aaai-21"
+        },
+        {
+          "year": 2022,
+          "type": "history",
+          "city": "Vancouver",
+          "country": "Canada",
+          "continent": "North America",
+          "venue": "Vancouver Convention Centre",
+          "url": "https://aaai.org/conference/aaai/aaai-22",
+          "location_id": "vancouver-canada"
+        },
+        {
+          "year": 2023,
+          "type": "history",
+          "city": "Washington",
+          "country": "United States",
+          "continent": "North America",
+          "venue": "Walter E. Washington Convention Center",
+          "url": "https://aaai.org/conference/aaai/aaai-23",
+          "abstract_ddl": [
+            {
+              "date": "2022-08-08",
+              "timezone": "Etc/UTC",
+              "note": "Abstract DDL"
+            }
+          ],
+          "paper_ddl": [
+            {
+              "date": "2022-08-15",
+              "timezone": "Etc/UTC",
+              "note": "Full paper DDL"
+            }
+          ],
+          "notification_date": "2022-11-18",
+          "camera_ready": "2022-12-19",
+          "start_date": "2023-02-07",
+          "end_date": "2023-02-14",
+          "status": "verified"
+        },
+        {
+          "year": 2024,
+          "type": "history",
+          "city": "Vancouver",
+          "country": "Canada",
+          "continent": "North America",
+          "venue": "Vancouver Convention Centre",
+          "url": "https://aaai.org/conference/aaai/aaai-24",
+          "location_id": "vancouver-canada",
+          "abstract_ddl": [
+            {
+              "date": "2023-08-08",
+              "timezone": "Etc/UTC",
+              "note": "Abstract DDL"
+            }
+          ],
+          "paper_ddl": [
+            {
+              "date": "2023-08-15",
+              "timezone": "Etc/UTC",
+              "note": "Full paper DDL"
+            }
+          ],
+          "notification_date": "2023-12-09",
+          "camera_ready": "2024-01-09",
+          "start_date": "2024-02-20",
+          "end_date": "2024-02-27",
+          "status": "verified"
+        },
+        {
+          "year": 2025,
+          "type": "history",
+          "city": "Philadelphia",
+          "country": "United States",
+          "continent": "North America",
+          "venue": "Pennsylvania Convention Center",
+          "url": "https://aaai.org/conference/aaai/aaai-25",
+          "abstract_ddl": [
+            {
+              "date": "2024-08-07",
+              "timezone": "Etc/UTC",
+              "note": "Abstract DDL"
+            }
+          ],
+          "paper_ddl": [
+            {
+              "date": "2024-08-15",
+              "timezone": "Etc/UTC",
+              "note": "Full paper DDL"
+            }
+          ],
+          "notification_date": "2024-12-09",
+          "camera_ready": "2025-01-10",
+          "start_date": "2025-02-25",
+          "end_date": "2025-03-04",
+          "status": "verified"
+        },
+        {
+          "year": 2026,
+          "type": "upcoming",
+          "city": "Singapore",
+          "country": "Singapore",
+          "continent": "Asia",
+          "venue": "Singapore EXPO",
+          "url": "https://aaai.org/conference/aaai/aaai-26",
+          "location_id": "singapore-singapore",
+          "abstract_ddl": [
+            {
+              "date": "2025-08-01",
+              "timezone": "Etc/UTC",
+              "note": "Abstract DDL"
+            }
+          ],
+          "paper_ddl": [
+            {
+              "date": "2025-08-07",
+              "timezone": "Etc/UTC",
+              "note": "Full paper DDL"
+            }
+          ],
+          "notification_date": "2025-11-03",
+          "camera_ready": "2025-11-13",
+          "start_date": "2026-01-20",
+          "end_date": "2026-01-27",
+          "status": "verified"
+        }
+      ]
+    },
+    {
+      "id": "mm",
+      "name": "MM",
+      "full_name": "ACM International Conference on Multimedia",
+      "category": "AI",
+      "subcategory": "Multimedia",
+      "aka": [
+        "ACM MM"
+      ],
+      "website": "https://2026.acmmm.org",
+      "years": [
+        {
+          "year": 2015,
+          "type": "history",
+          "city": "Brisbane",
+          "country": "Australia",
+          "continent": "Oceania",
+          "url": "https://www.acmmm.org/2015"
+        },
+        {
+          "year": 2016,
+          "type": "history",
+          "city": "Amsterdam",
+          "country": "Netherlands",
+          "continent": "Europe",
+          "url": "https://www.acmmm.org/2016"
+        },
+        {
+          "year": 2017,
+          "type": "history",
+          "city": "Mountain View",
+          "country": "United States",
+          "continent": "North America",
+          "url": "https://www.acmmm.org/2017"
+        },
+        {
+          "year": 2018,
+          "type": "history",
+          "city": "Seoul",
+          "country": "South Korea",
+          "continent": "Asia",
+          "url": "https://www.acmmm.org/2018"
+        },
+        {
+          "year": 2019,
+          "type": "history",
+          "city": "Nice",
+          "country": "France",
+          "continent": "Europe",
+          "url": "https://www.acmmm.org/2019"
+        },
+        {
+          "year": 2020,
+          "type": "history",
+          "city": "Seattle",
+          "country": "United States",
+          "continent": "North America",
+          "url": "https://www.acmmm.org/2020",
+          "location_id": "seattle-united-states"
+        },
+        {
+          "year": 2021,
+          "type": "history",
+          "city": "Chengdu",
+          "country": "China",
+          "continent": "Asia",
+          "url": "https://2021.acmmm.org"
+        },
+        {
+          "year": 2022,
+          "type": "history",
+          "city": "Lisbon",
+          "country": "Portugal",
+          "continent": "Europe",
+          "url": "https://2022.acmmm.org"
+        },
+        {
+          "year": 2023,
+          "type": "history",
+          "city": "Ottawa",
+          "country": "Canada",
+          "continent": "North America",
+          "venue": "Shaw Centre",
+          "url": "https://www.acmmm2023.org",
+          "abstract_ddl": [
+            {
+              "date": "2023-04-21",
+              "timezone": "Etc/UTC",
+              "note": "Abstract DDL"
+            }
+          ],
+          "paper_ddl": [
+            {
+              "date": "2023-04-28",
+              "timezone": "Etc/UTC",
+              "note": "Full paper DDL"
+            }
+          ],
+          "notification_date": "2023-07-21",
+          "camera_ready": "2023-08-18",
+          "start_date": "2023-10-29",
+          "end_date": "2023-11-03",
+          "status": "verified"
+        },
+        {
+          "year": 2024,
+          "type": "history",
+          "city": "Melbourne",
+          "country": "Australia",
+          "continent": "Oceania",
+          "venue": "Melbourne Convention and Exhibition Centre",
+          "url": "https://2024.acmmm.org",
+          "abstract_ddl": [
+            {
+              "date": "2024-04-08",
+              "timezone": "Etc/UTC",
+              "note": "Abstract DDL"
+            }
+          ],
+          "paper_ddl": [
+            {
+              "date": "2024-04-12",
+              "timezone": "Etc/UTC",
+              "note": "Full paper DDL"
+            }
+          ],
+          "notification_date": "2024-07-15",
+          "camera_ready": "2024-08-19",
+          "start_date": "2024-10-28",
+          "end_date": "2024-11-01",
+          "status": "verified"
+        },
+        {
+          "year": 2025,
+          "type": "history",
+          "city": "Dublin",
+          "country": "Ireland",
+          "continent": "Europe",
+          "venue": "The Convention Centre Dublin",
+          "url": "https://acmmm2025.org",
+          "abstract_ddl": [
+            {
+              "date": "2025-04-04",
+              "timezone": "Etc/UTC",
+              "note": "Abstract DDL"
+            }
+          ],
+          "paper_ddl": [
+            {
+              "date": "2025-04-11",
+              "timezone": "Etc/UTC",
+              "note": "Full paper DDL"
+            }
+          ],
+          "notification_date": "2025-07-15",
+          "camera_ready": "2025-08-08",
+          "start_date": "2025-10-27",
+          "end_date": "2025-10-31",
+          "status": "verified"
+        },
+        {
+          "year": 2026,
+          "type": "upcoming",
+          "city": "Rio de Janeiro",
+          "country": "Brazil",
+          "continent": "South America",
+          "url": "https://2026.acmmm.org",
+          "abstract_ddl": [
+            {
+              "date": "2026-03-25",
+              "timezone": "Etc/UTC",
+              "note": "Abstract DDL"
+            }
+          ],
+          "paper_ddl": [
+            {
+              "date": "2026-04-01",
+              "timezone": "Etc/UTC",
+              "note": "Full paper DDL"
+            }
+          ],
+          "notification_date": "2026-07-09",
+          "camera_ready": "2026-08-06",
+          "start_date": "2026-11-10",
+          "end_date": "2026-11-14",
+          "status": "verified"
+        }
+      ]
+    },
+    {
+      "id": "ijcai",
+      "name": "IJCAI",
+      "full_name": "International Joint Conference on Artificial Intelligence",
+      "category": "AI",
+      "subcategory": "Artificial Intelligence",
+      "website": "https://www.ijcai.org",
+      "years": [
+        {
+          "year": 2015,
+          "type": "history",
+          "city": "Buenos Aires",
+          "country": "Argentina",
+          "continent": "South America",
+          "url": "https://ijcai-15.org"
+        },
+        {
+          "year": 2016,
+          "type": "history",
+          "city": "New York",
+          "country": "United States",
+          "continent": "North America",
+          "url": "https://ijcai-16.org"
+        },
+        {
+          "year": 2017,
+          "type": "history",
+          "city": "Melbourne",
+          "country": "Australia",
+          "continent": "Oceania",
+          "url": "https://ijcai-17.org"
+        },
+        {
+          "year": 2018,
+          "type": "history",
+          "city": "Stockholm",
+          "country": "Sweden",
+          "continent": "Europe",
+          "url": "https://ijcai-18.org"
+        },
+        {
+          "year": 2019,
+          "type": "history",
+          "city": "Macao",
+          "country": "China",
+          "continent": "Asia",
+          "url": "https://ijcai19.org"
+        },
+        {
+          "year": 2020,
+          "type": "history",
+          "city": "Yokohama",
+          "country": "Japan",
+          "continent": "Asia",
+          "url": "https://ijcai20.org"
+        },
+        {
+          "year": 2021,
+          "type": "history",
+          "city": "Montreal",
+          "country": "Canada",
+          "continent": "North America",
+          "url": "https://ijcai-21.org"
+        },
+        {
+          "year": 2022,
+          "type": "history",
+          "city": "Shenzhen",
+          "country": "China",
+          "continent": "Asia",
+          "url": "https://ijcai-22.org"
+        },
+        {
+          "year": 2023,
+          "type": "history",
+          "city": "Macao",
+          "country": "China",
+          "continent": "Asia",
+          "venue": "The Venetian Macao",
+          "url": "https://ijcai-23.org",
+          "abstract_ddl": [
+            {
+              "date": "2023-01-11",
+              "timezone": "Etc/UTC",
+              "note": "Abstract DDL"
+            }
+          ],
+          "paper_ddl": [
+            {
+              "date": "2023-01-18",
+              "timezone": "Etc/UTC",
+              "note": "Full paper DDL"
+            }
+          ],
+          "notification_date": "2023-04-19",
+          "camera_ready": "2023-05-10",
+          "start_date": "2023-08-19",
+          "end_date": "2023-08-25",
+          "status": "verified"
+        },
+        {
+          "year": 2024,
+          "type": "history",
+          "city": "Jeju",
+          "country": "South Korea",
+          "continent": "Asia",
+          "venue": "International Convention Center Jeju",
+          "url": "https://ijcai24.org",
+          "abstract_ddl": [
+            {
+              "date": "2024-01-10",
+              "timezone": "Etc/UTC",
+              "note": "Abstract DDL"
+            }
+          ],
+          "paper_ddl": [
+            {
+              "date": "2024-01-17",
+              "timezone": "Etc/UTC",
+              "note": "Full paper DDL"
+            }
+          ],
+          "notification_date": "2024-04-16",
+          "camera_ready": "2024-05-07",
+          "start_date": "2024-08-03",
+          "end_date": "2024-08-09",
+          "status": "verified"
+        },
+        {
+          "year": 2025,
+          "type": "history",
+          "city": "Montreal",
+          "country": "Canada",
+          "continent": "North America",
+          "venue": "Palais des congres de Montreal",
+          "url": "https://2025.ijcai.org",
+          "abstract_ddl": [
+            {
+              "date": "2025-01-16",
+              "timezone": "Etc/UTC",
+              "note": "Abstract DDL"
+            }
+          ],
+          "paper_ddl": [
+            {
+              "date": "2025-01-23",
+              "timezone": "Etc/UTC",
+              "note": "Full paper DDL"
+            }
+          ],
+          "notification_date": "2025-04-28",
+          "start_date": "2025-08-16",
+          "end_date": "2025-08-22",
+          "status": "verified"
+        },
+        {
+          "year": 2026,
+          "type": "upcoming",
+          "city": "Bremen",
+          "country": "Germany",
+          "continent": "Europe",
+          "venue": "Congress Centrum Bremen",
+          "url": "https://2026.ijcai.org",
+          "abstract_ddl": [
+            {
+              "date": "2026-01-12",
+              "timezone": "Etc/UTC",
+              "note": "Abstract DDL"
+            }
+          ],
+          "paper_ddl": [
+            {
+              "date": "2026-01-19",
+              "timezone": "Etc/UTC",
+              "note": "Full paper DDL"
+            }
+          ],
+          "notification_date": "2026-04-29",
+          "camera_ready": "2026-05-20",
+          "start_date": "2026-08-15",
+          "end_date": "2026-08-21",
+          "status": "verified"
+        }
+      ]
+    },
+    {
+      "id": "kdd",
+      "name": "KDD",
+      "full_name": "ACM SIGKDD Conference on Knowledge Discovery and Data Mining",
+      "category": "DM",
+      "subcategory": "Data Mining",
+      "website": "https://kdd.org",
+      "years": [
+        {
+          "year": 2015,
+          "type": "history",
+          "city": "Sydney",
+          "country": "Australia",
+          "continent": "Oceania",
+          "url": "https://www.kdd.org/kdd2015"
+        },
+        {
+          "year": 2016,
+          "type": "history",
+          "city": "San Francisco",
+          "country": "United States",
+          "continent": "North America",
+          "url": "https://www.kdd.org/kdd2016"
+        },
+        {
+          "year": 2017,
+          "type": "history",
+          "city": "Halifax",
+          "country": "Canada",
+          "continent": "North America",
+          "url": "https://www.kdd.org/kdd2017"
+        },
+        {
+          "year": 2018,
+          "type": "history",
+          "city": "London",
+          "country": "United Kingdom",
+          "continent": "Europe",
+          "url": "https://www.kdd.org/kdd2018"
+        },
+        {
+          "year": 2019,
+          "type": "history",
+          "city": "Anchorage",
+          "country": "United States",
+          "continent": "North America",
+          "venue": "Dena'ina Convention Center and William A. Egan Civic and Convention Center",
+          "url": "https://www.kdd.org/kdd2019"
+        },
+        {
+          "year": 2020,
+          "type": "history",
+          "city": "San Diego",
+          "country": "United States",
+          "continent": "North America",
+          "url": "https://www.kdd.org/kdd2020",
+          "location_id": "san-diego-united-states"
+        },
+        {
+          "year": 2021,
+          "type": "history",
+          "city": "Singapore",
+          "country": "Singapore",
+          "continent": "Asia",
+          "url": "https://www.kdd.org/kdd2021",
+          "location_id": "singapore-singapore"
+        },
+        {
+          "year": 2022,
+          "type": "history",
+          "city": "Washington",
+          "country": "United States",
+          "continent": "North America",
+          "venue": "Walter E. Washington Convention Center",
+          "url": "https://www.kdd.org/kdd2022"
+        },
+        {
+          "year": 2023,
+          "type": "history",
+          "city": "Long Beach",
+          "country": "United States",
+          "continent": "North America",
+          "venue": "Long Beach Convention and Entertainment Center",
+          "url": "https://www.kdd.org/kdd2023",
+          "paper_ddl": [
+            {
+              "date": "2023-02-02",
+              "timezone": "Etc/UTC",
+              "note": "Full paper DDL"
+            }
+          ],
+          "notification_date": "2023-05-16",
+          "camera_ready": "2023-06-04",
+          "start_date": "2023-08-06",
+          "end_date": "2023-08-10",
+          "status": "verified"
+        },
+        {
+          "year": 2024,
+          "type": "history",
+          "city": "Barcelona",
+          "country": "Spain",
+          "continent": "Europe",
+          "venue": "Barcelona International Convention Centre",
+          "url": "https://kdd2024.kdd.org",
+          "location_id": "barcelona-spain",
+          "abstract_ddl": [
+            {
+              "date": "2023-08-03",
+              "timezone": "Etc/UTC",
+              "note": "Abstract DDL"
+            },
+            {
+              "date": "2024-02-08",
+              "timezone": "Etc/UTC",
+              "note": "Abstract DDL"
+            }
+          ],
+          "paper_ddl": [
+            {
+              "date": "2023-08-10",
+              "timezone": "Etc/UTC",
+              "note": "Full paper DDL"
+            },
+            {
+              "date": "2024-02-15",
+              "timezone": "Etc/UTC",
+              "note": "Full paper DDL"
+            }
+          ],
+          "notification_date": "2024-05-16",
+          "camera_ready": "2024-06-18",
+          "start_date": "2024-08-25",
+          "end_date": "2024-08-29",
+          "status": "verified"
+        },
+        {
+          "year": 2025,
+          "type": "history",
+          "city": "Toronto",
+          "country": "Canada",
+          "continent": "North America",
+          "venue": "Metro Toronto Convention Centre",
+          "url": "https://kdd2025.kdd.org",
+          "abstract_ddl": [
+            {
+              "date": "2024-08-01",
+              "timezone": "Etc/UTC",
+              "note": "Abstract DDL"
+            },
+            {
+              "date": "2025-02-03",
+              "timezone": "Etc/UTC",
+              "note": "Abstract DDL"
+            }
+          ],
+          "paper_ddl": [
+            {
+              "date": "2024-08-08",
+              "timezone": "Etc/UTC",
+              "note": "Full paper DDL"
+            },
+            {
+              "date": "2025-02-10",
+              "timezone": "Etc/UTC",
+              "note": "Full paper DDL"
+            }
+          ],
+          "notification_date": "2025-05-16",
+          "camera_ready": "2025-06-13",
+          "start_date": "2025-08-03",
+          "end_date": "2025-08-07",
+          "status": "verified"
+        },
+        {
+          "year": 2026,
+          "type": "upcoming",
+          "city": "Jeju",
+          "country": "South Korea",
+          "continent": "Asia",
+          "venue": "International Convention Center Jeju",
+          "url": "https://kdd2026.kdd.org",
+          "abstract_ddl": [
+            {
+              "date": "2025-07-31",
+              "timezone": "Etc/UTC",
+              "note": "Abstract DDL"
+            },
+            {
+              "date": "2026-02-02",
+              "timezone": "Etc/UTC",
+              "note": "Abstract DDL"
+            }
+          ],
+          "paper_ddl": [
+            {
+              "date": "2025-08-07",
+              "timezone": "Etc/UTC",
+              "note": "Full paper DDL"
+            },
+            {
+              "date": "2026-02-09",
+              "timezone": "Etc/UTC",
+              "note": "Full paper DDL"
+            }
+          ],
+          "notification_date": "2026-05-13",
+          "camera_ready": "2026-06-15",
+          "start_date": "2026-08-09",
+          "end_date": "2026-08-13",
+          "status": "verified"
+        }
+      ]
+    }
+  ]
+}
