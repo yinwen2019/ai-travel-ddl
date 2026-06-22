@@ -18,10 +18,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: 'npm'
@@ -74,5 +74,5 @@ jobs:
             自动归档/创建/补全 upcoming 会议数据（REQ-E02）。
           branch: bot/update-upcoming-conferences
           delete-branch: true
-          title: data(conferences): update upcoming conference data
-          body: ${{ steps.summary.outputs.body }}
+          title: "data(conferences): update upcoming conference data"
+          body: "${{ steps.summary.outputs.body }}"
