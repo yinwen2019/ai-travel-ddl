@@ -18,6 +18,8 @@ from typing import Protocol
 import requests
 from dotenv import load_dotenv
 
+from .source_policy import UNTRUSTED_DOMAINS, is_trusted_url, is_untrusted_url
+
 TAVILY_URL = "https://api.tavily.com/search"
 
 # 指数退避：2s -> 4s -> 8s，最多 3 次
@@ -30,14 +32,24 @@ DEFAULT_MAX_RESULTS = 5
 class SearchClient(Protocol):
     """搜索客户端协议：给定查询，返回拼好的网页正文上下文文本。"""
 
-    def search(self, query: str, max_results: int = DEFAULT_MAX_RESULTS) -> str:  # pragma: no cover
+    def search(
+        self,
+        query: str,
+        max_results: int = DEFAULT_MAX_RESULTS,
+        trusted_domains: set[str] | None = None,
+    ) -> str:  # pragma: no cover
         ...
 
 
 class NullSearchClient:
     """无搜索 Key 时的占位：返回空串（退化为裸模型查询）。"""
 
-    def search(self, query: str, max_results: int = DEFAULT_MAX_RESULTS) -> str:
+    def search(
+        self,
+        query: str,
+        max_results: int = DEFAULT_MAX_RESULTS,
+        trusted_domains: set[str] | None = None,
+    ) -> str:
         return ""
 
 
@@ -48,13 +60,21 @@ class TavilyClient:
         self._api_key = api_key
         self._timeout = timeout
 
-    def search(self, query: str, max_results: int = DEFAULT_MAX_RESULTS) -> str:
+    def search(
+        self,
+        query: str,
+        max_results: int = DEFAULT_MAX_RESULTS,
+        trusted_domains: set[str] | None = None,
+    ) -> str:
         payload = {
             "query": query,
             "max_results": max_results,
             "search_depth": "basic",
-            "include_answer": True,
+            "include_answer": False,
+            "exclude_domains": sorted(UNTRUSTED_DOMAINS),
         }
+        if trusted_domains:
+            payload["include_domains"] = sorted(trusted_domains)
         headers = {
             "Authorization": f"Bearer {self._api_key}",
             "Content-Type": "application/json",
@@ -80,27 +100,32 @@ class TavilyClient:
             except ValueError as exc:
                 last_error = f"响应解析失败: {exc}"
                 continue
-            return _format_context(data)
+            return _format_context(data, trusted_domains=trusted_domains)
 
         if last_error:
             print(f"[search_client] Tavily 搜索失败（已重试 {len(_RETRY_BACKOFFS)} 次）: {last_error}")
         return ""
 
 
-def _format_context(data: object) -> str:
-    """把 Tavily 响应拼成喂给 LLM 的上下文文本（answer + 每条结果的 title/url/content）。"""
+def _format_context(data: object, trusted_domains: set[str] | None = None) -> str:
+    """把 Tavily 响应拼成喂给 LLM 的上下文文本。
+
+    搜索摘要是模型生成文本，不作为事实来源；这里只保留真实搜索结果。
+    当传入 trusted_domains 时，非可信域名结果会被丢弃。
+    """
     if not isinstance(data, dict):
         return ""
     parts: list[str] = []
-    answer = data.get("answer")
-    if isinstance(answer, str) and answer.strip():
-        parts.append(f"## 搜索摘要\n{answer.strip()}")
     for i, res in enumerate(data.get("results", []) or [], 1):
         if not isinstance(res, dict):
             continue
         title = res.get("title", "") or ""
         url = res.get("url", "") or ""
         content = res.get("content", "") or ""
+        if is_untrusted_url(url):
+            continue
+        if trusted_domains and not is_trusted_url(url, trusted_domains):
+            continue
         parts.append(f"## [{i}] {title}\nURL: {url}\n{content}")
     return "\n\n".join(parts).strip()
 

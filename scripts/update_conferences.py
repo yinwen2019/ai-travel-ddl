@@ -34,6 +34,7 @@ from lib.merger import merge_upcoming
 from lib.parser import parse_ai_response
 from lib.prompt_builder import build_prompt
 from lib.schedule import last_known_year, next_edition_year
+from lib.source_policy import build_search_query, is_trusted_url, trusted_domains
 from lib.validator import run_validate
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -51,7 +52,12 @@ class AIClient(Protocol):
 class SearchClient(Protocol):
     """搜索客户端协议（与 lib.search_client.SearchClient 一致，此处复述以解耦导入）。"""
 
-    def search(self, query: str, max_results: int = 5) -> str:  # pragma: no cover - 协议定义
+    def search(
+        self,
+        query: str,
+        max_results: int = 5,
+        trusted_domains: set[str] | None = None,
+    ) -> str:  # pragma: no cover - 协议定义
         ...
 
 
@@ -132,6 +138,33 @@ def _create_next_upcoming(conferences: list, today: str) -> int:
     return created
 
 
+def _filter_ai_fields_by_context(
+    ai_fields: dict[str, object],
+    context: str,
+    domains: set[str],
+) -> dict[str, object]:
+    """丢弃缺乏可信上下文支持的高风险字段。"""
+    if not ai_fields or not context.strip():
+        return {}
+
+    filtered = dict(ai_fields)
+    context_lower = context.lower()
+    for key in ("city", "country", "venue"):
+        value = filtered.get(key)
+        if isinstance(value, str) and value.lower() not in context_lower:
+            filtered.pop(key, None)
+
+    url = filtered.get("url")
+    if url is not None and not is_trusted_url(url, domains):
+        filtered.pop("url", None)
+
+    # continent 是从地点推导的字段；地点没有可信支持时也不要单独写入。
+    if "city" not in filtered and "country" not in filtered:
+        filtered.pop("continent", None)
+
+    return filtered
+
+
 def _query_and_merge(
     conferences: list,
     client: AIClient,
@@ -154,21 +187,26 @@ def _query_and_merge(
                 continue
             queried += 1
             # 搜索接地：拿真实网页上下文
-            name = conf.get("name")
             year = entry.get("year")
-            search_query = f"{name} {year} conference submission deadline location dates"
+            domains = trusted_domains(conf)
+            search_query = build_search_query(conf, year)
             try:
-                context = search_client.search(search_query)
+                context = search_client.search(search_query, trusted_domains=domains)
             except Exception as exc:  # noqa: BLE001 - 容错：搜索失败等价于无上下文
                 print(f"[update] 搜索 {conf.get('id')} {year} 失败: {exc}")
                 context = ""
-            system, user = build_prompt(conf, entry, search_context=context)
+            system, user = build_prompt(
+                conf,
+                entry,
+                search_context=context,
+                trusted_domains=domains,
+            )
             try:
                 raw = client.query(system, user)
             except Exception as exc:  # noqa: BLE001 - 容错：查询失败等价于无新数据
                 print(f"[update] 查询 {conf.get('id')} {year} 失败: {exc}")
                 raw = ""
-            ai_fields = parse_ai_response(raw)
+            ai_fields = _filter_ai_fields_by_context(parse_ai_response(raw), context, domains)
             if ai_fields:
                 if merge_upcoming(entry, ai_fields):
                     updated += 1

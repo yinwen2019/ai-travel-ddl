@@ -21,6 +21,7 @@ import pytest
 
 import update_conferences as uc
 from lib.merger import merge_upcoming
+from lib.search_client import _format_context
 
 TODAY = "2026-06-22"
 NOW_UTC = "2026-06-22T00:00:00Z"
@@ -45,10 +46,17 @@ class FakeSearch:
 
     def __init__(self, context: str = "") -> None:
         self.calls: list[str] = []
+        self.trusted_domains_calls: list[set[str] | None] = []
         self._context = context
 
-    def search(self, query: str, max_results: int = 5) -> str:
+    def search(
+        self,
+        query: str,
+        max_results: int = 5,
+        trusted_domains: set[str] | None = None,
+    ) -> str:
         self.calls.append(query)
+        self.trusted_domains_calls.append(trusted_domains)
         return self._context
 
 
@@ -332,7 +340,7 @@ def test_no_change_does_not_write_file(tmp_path, monkeypatch):
 def test_grounded_flow_searches_then_queries(tmp_path, monkeypatch):
     """搜索接地：先搜索拿真实上下文，再调 LLM 基于上下文抽取，最后合并。"""
     entry = placeholder_upcoming(2027)
-    data = make_data([make_conf(years=[entry])])
+    data = make_data([make_conf(conf_id="neurips", years=[entry], website="https://neurips.cc")])
     context = (
         "## 搜索摘要\nNeurIPS 2027 will be held in Los Angeles, United States, "
         "Dec 5-11 2027. Submission deadline May 7 2027, timezone America/Los_Angeles.\n"
@@ -356,12 +364,40 @@ def test_grounded_flow_searches_then_queries(tmp_path, monkeypatch):
 
     assert len(search.calls) == 1  # 先搜索
     assert "2027" in search.calls[0] and "neurips" in search.calls[0].lower()
+    assert search.trusted_domains_calls[0] == {"neurips.cc"}
     assert len(client.calls) == 1  # 再查 LLM
     assert "Los Angeles" in client.calls[0][1]  # 上下文已注入 user prompt
+    assert "Trusted source domains: neurips.cc" in client.calls[0][1]
     e = out["conferences"][0]["years"][0]
     assert e["city"] == "Los Angeles"
     assert e["start_date"] == "2027-12-05"
     assert res.summary["queried"] == 1
+
+
+def test_ai_location_without_context_support_is_dropped(tmp_path, monkeypatch):
+    """AI 返回的地点若不在可信上下文中，不合并，避免把猜测写入数据。"""
+    entry = placeholder_upcoming(2027)
+    data = make_data([make_conf(conf_id="iccv", years=[entry], website="https://iccv.thecvf.com")])
+    context = (
+        "## [1] ICCV 2027\n"
+        "URL: https://iccv.thecvf.com\n"
+        "ICCV 2027 official site. Future announcements will be posted here."
+    )
+    ai = json.dumps(
+        {
+            "city": "Dubai",
+            "country": "United Arab Emirates",
+            "continent": "Asia",
+            "url": "https://iccv.thecvf.com",
+        }
+    )
+    res, out = run_with(data, tmp_path, FakeClient(responses=[ai]), monkeypatch, search=FakeSearch(context))
+    e = out["conferences"][0]["years"][0]
+    assert e["city"] is None
+    assert e["country"] is None
+    assert e["continent"] is None
+    assert e["url"] == "https://iccv.thecvf.com"
+    assert res.summary["updated"] == 1
     assert res.summary["updated"] == 1
 
 
@@ -374,6 +410,28 @@ def test_empty_search_context_omits_block(tmp_path, monkeypatch):
     res, _ = run_with(data, tmp_path, client, monkeypatch, search=search)
     assert "Web search results" not in client.calls[0][1]
     assert res.summary["queried"] == 1
+
+
+def test_search_context_filters_untrusted_domains():
+    """搜索上下文过滤非可信/聚合站结果。"""
+    data = {
+        "results": [
+            {
+                "title": "Fake ICCV 2027",
+                "url": "https://waset.org/iccv-2027-dubai",
+                "content": "ICCV 2027 Dubai",
+            },
+            {
+                "title": "ICCV official",
+                "url": "https://iccv.thecvf.com",
+                "content": "ICCV official announcements",
+            },
+        ]
+    }
+    context = _format_context(data, trusted_domains={"iccv.thecvf.com", "thecvf.com"})
+    assert "waset" not in context.lower()
+    assert "Dubai" not in context
+    assert "iccv.thecvf.com" in context
 
 
 # --------------- 合并规则 ---------------
@@ -421,7 +479,12 @@ def test_query_partial_merge_keeps_missing_fields(tmp_path, monkeypatch):
     entry = placeholder_upcoming(2027)
     data = make_data([make_conf(years=[entry])])
     partial = json.dumps({"city": "Sydney"})  # 仅 city，仍不完整
-    res, out = run_with(data, tmp_path, FakeClient(responses=[partial]), monkeypatch)
+    search = FakeSearch(
+        "## [1] Test Conference\n"
+        "URL: https://example.com/2027\n"
+        "Test Conference 2027 will be held in Sydney."
+    )
+    res, out = run_with(data, tmp_path, FakeClient(responses=[partial]), monkeypatch, search=search)
     e = out["conferences"][0]["years"][0]
     assert e["city"] == "Sydney"
     assert e["country"] is None

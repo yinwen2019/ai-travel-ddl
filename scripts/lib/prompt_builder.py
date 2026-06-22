@@ -19,9 +19,12 @@ SYSTEM_PROMPT = (
     "5. Continent must be one of: Asia, Europe, North America, South America, Africa, Oceania.\n"
     "6. If a field is uncertain, OMIT it entirely. Never fabricate or guess.\n"
     "7. Output a single JSON object with no markdown, no code fences, no commentary.\n"
-    "8. You will be given WEB SEARCH RESULTS as context. Extract facts ONLY from that "
-    "context — do NOT rely on your own training data for specific dates, deadlines, "
-    "locations, or URLs. If the context does not mention a field, OMIT it.\n"
+    "8. You will be given trusted WEB SEARCH RESULTS as context. Extract facts ONLY "
+    "from those source snippets — do NOT rely on your own training data for specific "
+    "dates, deadlines, locations, or URLs. If the context does not explicitly mention "
+    "a field, OMIT it.\n"
+    "9. Never use conference aggregator or fake-conference sites such as WASET, "
+    "WikiCFP, 10times, Conference Alerts, ConferenceIndex, or Resurchify.\n"
     "Allowed keys: city, country, continent, venue, url, start_date, end_date, "
     "notification_date, camera_ready, abstract_ddl, paper_ddl. "
     "abstract_ddl and paper_ddl are arrays of {date, timezone, note?}."
@@ -55,6 +58,7 @@ def build_prompt(
     conference: Mapping[str, object],
     entry: Mapping[str, object],
     search_context: str = "",
+    trusted_domains: set[str] | None = None,
 ) -> tuple[str, str]:
     """构造 (system, user) prompt。entry 为目标 upcoming 年份条目。
 
@@ -75,6 +79,8 @@ def build_prompt(
         lines.append(f"Also known as: {', '.join(str(a) for a in aka)}")
     if isinstance(website, str) and website:
         lines.append(f"Official website: {website}")
+    if trusted_domains:
+        lines.append(f"Trusted source domains: {', '.join(sorted(trusted_domains))}")
     partial = _known_partial(entry)
     if partial:
         lines.append(f"Already known for {year} (do not remove these): {json.dumps(partial, ensure_ascii=False)}")
@@ -85,8 +91,10 @@ def build_prompt(
     lines.append("")
     lines.append(
         f"Return a JSON object for {name} {year} with whichever of these keys you can "
-        "verify from the search results above: city, country, continent, venue, url, "
+        "verify from the trusted search results above: city, country, continent, venue, url, "
         "start_date, end_date, notification_date, camera_ready, abstract_ddl, paper_ddl. "
-        "Omit any key the search results do not support. Output JSON only."
+        "For city/country/venue/dates, the exact fact must be present in the trusted "
+        "source snippets. Omit any key the trusted search results do not support. "
+        "Output JSON only."
     )
     return SYSTEM_PROMPT, "\n".join(lines)
