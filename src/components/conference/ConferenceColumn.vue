@@ -36,6 +36,7 @@ const visibleHistory = computed(() =>
 
 const hasUpcoming = computed(() => sortedUpcoming.value.length > 0)
 const hasHistory = computed(() => sortedHistory.value.length > 0)
+const showHistoryDivider = computed(() => hasHistory.value)
 const canToggleHistory = computed(() => sortedHistory.value.length > 2)
 const hiddenHistoryCount = computed(() =>
   Math.max(sortedHistory.value.length - visibleHistory.value.length, 0),
@@ -77,7 +78,7 @@ const hiddenHistoryCount = computed(() =>
       </template>
 
       <div
-        v-if="hasUpcoming && hasHistory"
+        v-if="showHistoryDivider"
         class="py-1 text-center text-xs text-gray-400"
       >
         — 历史 —

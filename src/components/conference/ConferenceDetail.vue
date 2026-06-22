@@ -19,10 +19,10 @@ const allEntries = computed(() => {
   if (!conference.value) return []
   const entries: {
     year: number
-    city: string
-    country: string
-    continent: string
-    venue?: string
+    city?: string | null
+    country?: string | null
+    continent?: string | null
+    venue?: string | null
     location_id?: string
     isUpcoming: boolean
     abstractDDL: string | null
@@ -31,7 +31,6 @@ const allEntries = computed(() => {
     cameraReady: string | null
     startDate: string | null
     endDate: string | null
-    status: string | null
   }[] = []
 
   for (const y of conference.value.years) {
@@ -49,7 +48,6 @@ const allEntries = computed(() => {
       cameraReady: y.camera_ready ?? null,
       startDate: y.start_date ?? null,
       endDate: y.end_date ?? null,
-      status: y.status ?? null,
     })
   }
 

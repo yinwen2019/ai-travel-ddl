@@ -1,0 +1,78 @@
+name: Update upcoming conference data
+
+# REQ-E02：定时维护 upcoming 会议数据
+# 每周自动归档已结束 upcoming、创建下一届占位、联网补全不完整字段，
+# 有数据变更时创建 PR 供人工审核；无变更时不创建 PR。
+on:
+  schedule:
+    # 每周一 UTC 03:17（避开整点高峰）
+    - cron: '17 3 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: 'npm'
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Install Python dependencies
+        run: pip install -r scripts/requirements.txt
+
+      - name: Run AI update script
+        # 脚本内部会：归档 -> 创建 -> 查询 -> 合并 -> 写回 -> npm run validate -> 失败回滚
+        # 无数据变更时不写文件（不产生 diff），退出码 0
+        env:
+          PERPLEXITY_API_KEY: ${{ secrets.PERPLEXITY_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          AI_API_BASE_URL: ${{ secrets.AI_API_BASE_URL }}
+          AI_MODEL: ${{ secrets.AI_MODEL }}
+          TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+        run: python scripts/update_conferences.py
+
+      - name: Validate JSON
+        run: npm run validate
+
+      - name: Read run summary
+        id: summary
+        run: |
+          if [ -f scripts/update_logs/latest_run.md ]; then
+            {
+              echo "body<<EOF"
+              cat scripts/update_logs/latest_run.md
+              echo "EOF"
+            } >> "$GITHUB_OUTPUT"
+          else
+            echo "body=（无运行摘要）" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create Pull Request
+        # 无 git diff 时该 Action 不会创建 PR（自动满足“无变更不创建 PR”）
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: |
+            data(conferences): update upcoming conference data
+
+            自动归档/创建/补全 upcoming 会议数据（REQ-E02）。
+          branch: bot/update-upcoming-conferences
+          delete-branch: true
+          title: data(conferences): update upcoming conference data
+          body: ${{ steps.summary.outputs.body }}

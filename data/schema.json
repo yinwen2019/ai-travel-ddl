@@ -16,7 +16,22 @@
           "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
         },
         "description": { "type": "string" },
-        "data_source": { "type": "string" }
+        "data_source": { "type": "string" },
+        "last_ai_run": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+        },
+        "ai_run_summary": {
+          "type": "object",
+          "properties": {
+            "archived": { "type": "integer", "minimum": 0 },
+            "created": { "type": "integer", "minimum": 0 },
+            "queried": { "type": "integer", "minimum": 0 },
+            "skipped": { "type": "integer", "minimum": 0 },
+            "updated": { "type": "integer", "minimum": 0 }
+          },
+          "additionalProperties": false
+        }
       }
     },
     "conferences": {
@@ -45,6 +60,7 @@
           "items": { "type": "string" }
         },
         "website": { "type": "string", "format": "uri" },
+        "schedule": { "$ref": "#/definitions/schedule" },
         "years": {
           "type": "array",
           "items": { "$ref": "#/definitions/yearEntry" }
@@ -53,7 +69,7 @@
     },
     "yearEntry": {
       "type": "object",
-      "required": ["year", "type", "city", "country", "continent"],
+      "required": ["year", "type"],
       "properties": {
         "year": {
           "type": "integer",
@@ -64,44 +80,75 @@
           "type": "string",
           "enum": ["history", "upcoming"]
         },
-        "city": { "type": "string", "minLength": 1 },
-        "country": { "type": "string", "minLength": 1 },
+        "city": { "type": ["string", "null"], "minLength": 1 },
+        "country": { "type": ["string", "null"], "minLength": 1 },
         "continent": {
-          "type": "string",
-          "enum": ["Asia", "Europe", "North America", "South America", "Africa", "Oceania"]
+          "type": ["string", "null"],
+          "enum": ["Asia", "Europe", "North America", "South America", "Africa", "Oceania", null]
         },
-        "venue": { "type": "string" },
-        "url": { "type": "string", "format": "uri" },
+        "venue": { "type": ["string", "null"] },
+        "url": { "type": ["string", "null"], "format": "uri" },
         "location_id": { "type": "string" },
         "abstract_ddl": {
-          "type": "array",
+          "type": ["array", "null"],
           "items": { "$ref": "#/definitions/ddlEntry" }
         },
         "paper_ddl": {
-          "type": "array",
+          "type": ["array", "null"],
           "items": { "$ref": "#/definitions/ddlEntry" }
         },
         "notification_date": {
-          "type": "string",
+          "type": ["string", "null"],
           "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
         },
         "camera_ready": {
-          "type": "string",
+          "type": ["string", "null"],
           "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
         },
         "start_date": {
-          "type": "string",
+          "type": ["string", "null"],
           "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
         },
         "end_date": {
-          "type": "string",
+          "type": ["string", "null"],
           "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
-        },
-        "status": {
-          "type": "string",
-          "enum": ["verified", "unverified"]
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "type": { "const": "history" } },
+            "required": ["type"]
+          },
+          "then": {
+            "required": ["year", "type", "city", "country", "continent"],
+            "properties": {
+              "city": { "type": "string", "minLength": 1 },
+              "country": { "type": "string", "minLength": 1 },
+              "continent": {
+                "type": "string",
+                "enum": ["Asia", "Europe", "North America", "South America", "Africa", "Oceania"]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "schedule": {
+      "type": "object",
+      "required": ["frequency"],
+      "properties": {
+        "frequency": {
+          "type": "string",
+          "enum": ["annual", "biennial", "irregular"]
+        },
+        "next_expected_year": {
+          "type": "integer",
+          "minimum": 1900,
+          "maximum": 2100
+        }
+      },
+      "additionalProperties": false
     },
     "ddlEntry": {
       "type": "object",

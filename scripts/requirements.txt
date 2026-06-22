@@ -1,0 +1,4 @@
+# AI 数据更新脚本依赖
+# 安装：pip install -r scripts/requirements.txt
+requests>=2.31
+python-dotenv>=1.0

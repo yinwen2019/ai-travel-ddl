@@ -1,9 +1,17 @@
 {
   "meta": {
     "version": "0.2.0",
-    "last_updated": "2026-05-19T00:00:00Z",
+    "last_updated": "2026-06-22T11:37:28Z",
     "description": "AI top conference data — venues, deadlines, and dates",
-    "data_source": "manually curated"
+    "data_source": "manually curated",
+    "last_ai_run": "2026-06-22T11:36:48Z",
+    "ai_run_summary": {
+      "archived": 0,
+      "created": 0,
+      "queried": 5,
+      "skipped": 8,
+      "updated": 5
+    }
   },
   "conferences": [
     {
@@ -113,8 +121,7 @@
           "notification_date": "2023-09-22",
           "camera_ready": "2023-10-27",
           "start_date": "2023-12-10",
-          "end_date": "2023-12-16",
-          "status": "verified"
+          "end_date": "2023-12-16"
         },
         {
           "year": 2024,
@@ -142,8 +149,7 @@
           "notification_date": "2024-09-26",
           "camera_ready": "2024-10-30",
           "start_date": "2024-12-10",
-          "end_date": "2024-12-15",
-          "status": "verified"
+          "end_date": "2024-12-15"
         },
         {
           "year": 2025,
@@ -171,8 +177,7 @@
           "notification_date": "2025-09-18",
           "camera_ready": "2025-10-23",
           "start_date": "2025-12-02",
-          "end_date": "2025-12-07",
-          "status": "verified"
+          "end_date": "2025-12-07"
         },
         {
           "year": 2026,
@@ -198,8 +203,7 @@
           ],
           "notification_date": "2026-09-24",
           "start_date": "2026-12-06",
-          "end_date": "2026-12-12",
-          "status": "verified"
+          "end_date": "2026-12-12"
         }
       ]
     },
@@ -309,8 +313,7 @@
           "notification_date": "2023-02-27",
           "camera_ready": "2023-03-24",
           "start_date": "2023-06-18",
-          "end_date": "2023-06-22",
-          "status": "verified"
+          "end_date": "2023-06-22"
         },
         {
           "year": 2024,
@@ -337,8 +340,7 @@
           ],
           "notification_date": "2024-02-26",
           "start_date": "2024-06-17",
-          "end_date": "2024-06-21",
-          "status": "verified"
+          "end_date": "2024-06-21"
         },
         {
           "year": 2025,
@@ -366,12 +368,11 @@
           "notification_date": "2025-02-26",
           "camera_ready": "2025-03-25",
           "start_date": "2025-06-11",
-          "end_date": "2025-06-15",
-          "status": "verified"
+          "end_date": "2025-06-15"
         },
         {
           "year": 2026,
-          "type": "upcoming",
+          "type": "history",
           "city": "Denver",
           "country": "United States",
           "continent": "North America",
@@ -393,8 +394,22 @@
           ],
           "notification_date": "2026-02-20",
           "start_date": "2026-06-03",
-          "end_date": "2026-06-07",
-          "status": "verified"
+          "end_date": "2026-06-07"
+        },
+        {
+          "year": 2027,
+          "type": "upcoming",
+          "city": "Seattle",
+          "country": "United States",
+          "continent": "North America",
+          "venue": "Seattle Convention Center, Seattle, USA",
+          "url": "https://cvpr.thecvf.com/",
+          "abstract_ddl": [],
+          "paper_ddl": [],
+          "notification_date": null,
+          "camera_ready": null,
+          "start_date": "2027-06-19",
+          "end_date": "2027-06-26"
         }
       ]
     },
@@ -501,8 +516,7 @@
           "notification_date": "2023-05-01",
           "camera_ready": "2023-05-25",
           "start_date": "2023-07-09",
-          "end_date": "2023-07-14",
-          "status": "verified"
+          "end_date": "2023-07-14"
         },
         {
           "year": 2024,
@@ -523,8 +537,7 @@
           "notification_date": "2024-05-15",
           "camera_ready": "2024-06-05",
           "start_date": "2024-08-11",
-          "end_date": "2024-08-16",
-          "status": "verified"
+          "end_date": "2024-08-16"
         },
         {
           "year": 2025,
@@ -545,8 +558,7 @@
           "notification_date": "2025-05-15",
           "camera_ready": "2025-05-30",
           "start_date": "2025-07-27",
-          "end_date": "2025-08-01",
-          "status": "verified"
+          "end_date": "2025-08-01"
         },
         {
           "year": 2026,
@@ -567,8 +579,7 @@
           "notification_date": "2026-04-04",
           "camera_ready": "2026-04-19",
           "start_date": "2026-07-02",
-          "end_date": "2026-07-07",
-          "status": "verified"
+          "end_date": "2026-07-07"
         }
       ]
     },
@@ -636,8 +647,7 @@
           ],
           "notification_date": "2023-07-13",
           "start_date": "2023-10-02",
-          "end_date": "2023-10-06",
-          "status": "verified"
+          "end_date": "2023-10-06"
         },
         {
           "year": 2025,
@@ -664,10 +674,27 @@
           ],
           "notification_date": "2025-06-25",
           "start_date": "2025-10-19",
-          "end_date": "2025-10-23",
-          "status": "verified"
+          "end_date": "2025-10-23"
+        },
+        {
+          "year": 2027,
+          "type": "upcoming",
+          "city": null,
+          "country": null,
+          "continent": null,
+          "venue": null,
+          "url": null,
+          "abstract_ddl": [],
+          "paper_ddl": [],
+          "notification_date": null,
+          "camera_ready": null,
+          "start_date": null,
+          "end_date": null
         }
-      ]
+      ],
+      "schedule": {
+        "frequency": "biennial"
+      }
     },
     {
       "id": "eccv",
@@ -735,8 +762,7 @@
           "notification_date": "2024-07-01",
           "camera_ready": "2024-07-17",
           "start_date": "2024-09-29",
-          "end_date": "2024-10-04",
-          "status": "verified"
+          "end_date": "2024-10-04"
         },
         {
           "year": 2026,
@@ -763,10 +789,12 @@
           "notification_date": "2026-06-17",
           "camera_ready": "2026-06-26",
           "start_date": "2026-09-08",
-          "end_date": "2026-09-12",
-          "status": "verified"
+          "end_date": "2026-09-12"
         }
-      ]
+      ],
+      "schedule": {
+        "frequency": "biennial"
+      }
     },
     {
       "id": "emnlp",
@@ -860,8 +888,7 @@
           "notification_date": "2023-10-06",
           "camera_ready": "2023-10-20",
           "start_date": "2023-12-06",
-          "end_date": "2023-12-10",
-          "status": "verified"
+          "end_date": "2023-12-10"
         },
         {
           "year": 2024,
@@ -881,8 +908,7 @@
           "notification_date": "2024-09-20",
           "camera_ready": "2024-10-03",
           "start_date": "2024-11-12",
-          "end_date": "2024-11-16",
-          "status": "verified"
+          "end_date": "2024-11-16"
         },
         {
           "year": 2025,
@@ -902,8 +928,7 @@
           "notification_date": "2025-08-20",
           "camera_ready": "2025-09-19",
           "start_date": "2025-11-05",
-          "end_date": "2025-11-09",
-          "status": "verified"
+          "end_date": "2025-11-09"
         },
         {
           "year": 2026,
@@ -922,8 +947,7 @@
           "notification_date": "2026-08-20",
           "camera_ready": "2026-09-20",
           "start_date": "2026-10-24",
-          "end_date": "2026-10-29",
-          "status": "verified"
+          "end_date": "2026-10-29"
         }
       ]
     },
@@ -1009,8 +1033,7 @@
           "notification_date": "2024-03-13",
           "camera_ready": "2024-04-01",
           "start_date": "2024-06-16",
-          "end_date": "2024-06-21",
-          "status": "verified"
+          "end_date": "2024-06-21"
         },
         {
           "year": 2025,
@@ -1030,10 +1053,27 @@
           "notification_date": "2025-01-22",
           "camera_ready": "2025-02-24",
           "start_date": "2025-04-29",
-          "end_date": "2025-05-04",
-          "status": "verified"
+          "end_date": "2025-05-04"
+        },
+        {
+          "year": 2027,
+          "type": "upcoming",
+          "city": null,
+          "country": null,
+          "continent": null,
+          "venue": null,
+          "url": null,
+          "abstract_ddl": [],
+          "paper_ddl": [],
+          "notification_date": null,
+          "camera_ready": null,
+          "start_date": null,
+          "end_date": null
         }
-      ]
+      ],
+      "schedule": {
+        "frequency": "biennial"
+      }
     },
     {
       "id": "icml",
@@ -1129,8 +1169,7 @@
           "notification_date": "2023-04-24",
           "camera_ready": "2023-05-31",
           "start_date": "2023-07-23",
-          "end_date": "2023-07-29",
-          "status": "verified"
+          "end_date": "2023-07-29"
         },
         {
           "year": 2024,
@@ -1151,8 +1190,7 @@
           "notification_date": "2024-05-01",
           "camera_ready": "2024-05-29",
           "start_date": "2024-07-21",
-          "end_date": "2024-07-27",
-          "status": "verified"
+          "end_date": "2024-07-27"
         },
         {
           "year": 2025,
@@ -1180,8 +1218,7 @@
           "notification_date": "2025-05-01",
           "camera_ready": "2025-06-09",
           "start_date": "2025-07-13",
-          "end_date": "2025-07-19",
-          "status": "verified"
+          "end_date": "2025-07-19"
         },
         {
           "year": 2026,
@@ -1207,8 +1244,7 @@
           ],
           "notification_date": "2026-04-30",
           "start_date": "2026-07-06",
-          "end_date": "2026-07-11",
-          "status": "verified"
+          "end_date": "2026-07-11"
         }
       ]
     },
@@ -1314,8 +1350,7 @@
           ],
           "notification_date": "2023-01-20",
           "start_date": "2023-05-01",
-          "end_date": "2023-05-05",
-          "status": "verified"
+          "end_date": "2023-05-05"
         },
         {
           "year": 2024,
@@ -1343,8 +1378,7 @@
           "notification_date": "2024-01-15",
           "camera_ready": "2024-04-14",
           "start_date": "2024-05-07",
-          "end_date": "2024-05-11",
-          "status": "verified"
+          "end_date": "2024-05-11"
         },
         {
           "year": 2025,
@@ -1372,8 +1406,7 @@
           "notification_date": "2025-01-22",
           "camera_ready": "2025-03-14",
           "start_date": "2025-04-24",
-          "end_date": "2025-04-28",
-          "status": "verified"
+          "end_date": "2025-04-28"
         },
         {
           "year": 2026,
@@ -1398,8 +1431,22 @@
           ],
           "notification_date": "2026-01-25",
           "start_date": "2026-04-23",
-          "end_date": "2026-04-27",
-          "status": "verified"
+          "end_date": "2026-04-27"
+        },
+        {
+          "year": 2027,
+          "type": "upcoming",
+          "city": null,
+          "country": null,
+          "continent": null,
+          "venue": null,
+          "url": "https://iclr.cc",
+          "abstract_ddl": [],
+          "paper_ddl": [],
+          "notification_date": null,
+          "camera_ready": null,
+          "start_date": null,
+          "end_date": null
         }
       ]
     },
@@ -1505,8 +1552,7 @@
           "notification_date": "2022-11-18",
           "camera_ready": "2022-12-19",
           "start_date": "2023-02-07",
-          "end_date": "2023-02-14",
-          "status": "verified"
+          "end_date": "2023-02-14"
         },
         {
           "year": 2024,
@@ -1534,8 +1580,7 @@
           "notification_date": "2023-12-09",
           "camera_ready": "2024-01-09",
           "start_date": "2024-02-20",
-          "end_date": "2024-02-27",
-          "status": "verified"
+          "end_date": "2024-02-27"
         },
         {
           "year": 2025,
@@ -1562,12 +1607,11 @@
           "notification_date": "2024-12-09",
           "camera_ready": "2025-01-10",
           "start_date": "2025-02-25",
-          "end_date": "2025-03-04",
-          "status": "verified"
+          "end_date": "2025-03-04"
         },
         {
           "year": 2026,
-          "type": "upcoming",
+          "type": "history",
           "city": "Singapore",
           "country": "Singapore",
           "continent": "Asia",
@@ -1591,8 +1635,22 @@
           "notification_date": "2025-11-03",
           "camera_ready": "2025-11-13",
           "start_date": "2026-01-20",
-          "end_date": "2026-01-27",
-          "status": "verified"
+          "end_date": "2026-01-27"
+        },
+        {
+          "year": 2027,
+          "type": "upcoming",
+          "city": "Montréal",
+          "country": "Canada",
+          "continent": "North America",
+          "venue": "Palais des congrès de Montréal",
+          "url": "https://aaai.org/conference/aaai/aaai-27/",
+          "abstract_ddl": [],
+          "paper_ddl": [],
+          "notification_date": null,
+          "camera_ready": null,
+          "start_date": "2027-02-16",
+          "end_date": "2027-02-23"
         }
       ]
     },
@@ -1697,8 +1755,7 @@
           "notification_date": "2023-07-21",
           "camera_ready": "2023-08-18",
           "start_date": "2023-10-29",
-          "end_date": "2023-11-03",
-          "status": "verified"
+          "end_date": "2023-11-03"
         },
         {
           "year": 2024,
@@ -1725,8 +1782,7 @@
           "notification_date": "2024-07-15",
           "camera_ready": "2024-08-19",
           "start_date": "2024-10-28",
-          "end_date": "2024-11-01",
-          "status": "verified"
+          "end_date": "2024-11-01"
         },
         {
           "year": 2025,
@@ -1753,8 +1809,7 @@
           "notification_date": "2025-07-15",
           "camera_ready": "2025-08-08",
           "start_date": "2025-10-27",
-          "end_date": "2025-10-31",
-          "status": "verified"
+          "end_date": "2025-10-31"
         },
         {
           "year": 2026,
@@ -1780,8 +1835,7 @@
           "notification_date": "2026-07-09",
           "camera_ready": "2026-08-06",
           "start_date": "2026-11-10",
-          "end_date": "2026-11-14",
-          "status": "verified"
+          "end_date": "2026-11-14"
         }
       ]
     },
@@ -1882,8 +1936,7 @@
           "notification_date": "2023-04-19",
           "camera_ready": "2023-05-10",
           "start_date": "2023-08-19",
-          "end_date": "2023-08-25",
-          "status": "verified"
+          "end_date": "2023-08-25"
         },
         {
           "year": 2024,
@@ -1910,8 +1963,7 @@
           "notification_date": "2024-04-16",
           "camera_ready": "2024-05-07",
           "start_date": "2024-08-03",
-          "end_date": "2024-08-09",
-          "status": "verified"
+          "end_date": "2024-08-09"
         },
         {
           "year": 2025,
@@ -1937,8 +1989,7 @@
           ],
           "notification_date": "2025-04-28",
           "start_date": "2025-08-16",
-          "end_date": "2025-08-22",
-          "status": "verified"
+          "end_date": "2025-08-22"
         },
         {
           "year": 2026,
@@ -1965,8 +2016,7 @@
           "notification_date": "2026-04-29",
           "camera_ready": "2026-05-20",
           "start_date": "2026-08-15",
-          "end_date": "2026-08-21",
-          "status": "verified"
+          "end_date": "2026-08-21"
         }
       ]
     },
@@ -2064,8 +2114,7 @@
           "notification_date": "2023-05-16",
           "camera_ready": "2023-06-04",
           "start_date": "2023-08-06",
-          "end_date": "2023-08-10",
-          "status": "verified"
+          "end_date": "2023-08-10"
         },
         {
           "year": 2024,
@@ -2103,8 +2152,7 @@
           "notification_date": "2024-05-16",
           "camera_ready": "2024-06-18",
           "start_date": "2024-08-25",
-          "end_date": "2024-08-29",
-          "status": "verified"
+          "end_date": "2024-08-29"
         },
         {
           "year": 2025,
@@ -2141,8 +2189,7 @@
           "notification_date": "2025-05-16",
           "camera_ready": "2025-06-13",
           "start_date": "2025-08-03",
-          "end_date": "2025-08-07",
-          "status": "verified"
+          "end_date": "2025-08-07"
         },
         {
           "year": 2026,
@@ -2179,8 +2226,7 @@
           "notification_date": "2026-05-13",
           "camera_ready": "2026-06-15",
           "start_date": "2026-08-09",
-          "end_date": "2026-08-13",
-          "status": "verified"
+          "end_date": "2026-08-13"
         }
       ]
     }

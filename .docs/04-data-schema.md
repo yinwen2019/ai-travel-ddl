@@ -5,10 +5,12 @@
 ### 顶层结构
 ```json
 {
-  "meta": { "version", "last_updated", "description?", "data_source?" },
+  "meta": { "version", "last_updated", "description?", "data_source?", "last_ai_run?", "ai_run_summary?" },
   "conferences": [ ... ]
 }
 ```
+
+`ai_run_summary`（由 AI 更新脚本写入）：`{ archived, created, queried, skipped, updated }` 五个非负整数计数。
 
 ### conference 对象
 
@@ -21,7 +23,15 @@
 | subcategory | string | 否 | 子分类 |
 | aka | string[] | 否 | 历史别名 |
 | website | string | 否 | 官网 |
+| schedule | object | 否 | 会议周期，见下方 schedule；缺失时脚本默认 annual |
 | years | array | 是 | 历年举办信息（统一列表，按 year 升序） |
+
+### schedule 对象
+
+| 字段 | 类型 | 必填 | 说明 |
+|---|---|---|---|
+| frequency | enum | 是 | `"annual"` / `"biennial"` / `"irregular"` |
+| next_expected_year | number | 否 | 仅 `irregular` 使用；缺失则不自动创建下一届 |
 
 ### yearEntry 对象
 
@@ -31,9 +41,12 @@
 |---|---|---|---|
 | year | number | 是 | 举办年份，1900–2100 |
 | type | enum | 是 | `"history"`（year < 当前年份）/ `"upcoming"`（year >= 当前年份） |
-| city | string | 是 | 举办城市 |
-| country | string | 是 | 国家全称 |
-| continent | enum | 是 | `"Asia"` / `"Europe"` / `"North America"` / `"South America"` / `"Africa"` / `"Oceania"` |
+| city | string | history 必填 / upcoming 可选 | 举办城市 |
+| country | string | history 必填 / upcoming 可选 | 国家全称 |
+| continent | enum | history 必填 / upcoming 可选 | `"Asia"` / `"Europe"` / `"North America"` / `"South America"` / `"Africa"` / `"Oceania"` |
+
+> 条件必填：JSON Schema 用 `if/then` 实现 —— `type=="history"` 时 city/country/continent 必填；
+> `type=="upcoming"` 时允许缺失（占位条目，由 AI 脚本后续补全，见 REQ-E02）。
 | venue | string | 否 | 场馆名称 |
 | url | string | 否 | 该届会议链接 |
 | location_id | string | 否 | 关联 locations.json 的外键 |
@@ -48,7 +61,6 @@
 | camera_ready | string | 否 | Camera-ready 截止日期 |
 | start_date | string | 否 | 会议开始日期 |
 | end_date | string | 否 | 会议结束日期 |
-| status | enum | 否 | `"verified"` / `"unverified"`（数据校验状态） |
 
 ### DDLEntry
 
@@ -84,7 +96,7 @@
 
 **阻断（错误）**：必填字段缺失、类型不匹配、id 重复、枚举值非法、日期/时区/URL 格式非法、year 超出 1900–2100
 
-**警告（不阻断）**：无 upcoming 年份、abstract_ddl/paper_ddl 为空数组、status 为 unverified、location_id 在 locations.json 中不存在、type 与 year 不一致（history 的 year >= 当前年份或 upcoming 的 year < 当前年份）
+**警告（不阻断）**：无 upcoming 年份、abstract_ddl/paper_ddl 为空数组、location_id 在 locations.json 中不存在、type 与 year 不一致（history 的 year >= 当前年份或 upcoming 的 year < 当前年份）
 
 校验时机：`npm run build`（阻断）、`npm run validate`（仅校验）、GitHub Actions CI step
 

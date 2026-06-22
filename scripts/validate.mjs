@@ -126,16 +126,6 @@ for (const c of conferences) {
   }
 }
 
-// 7. status 为 unverified
-for (const c of conferences) {
-  for (const y of c.years || []) {
-    if (y.type === 'upcoming' && y.status === 'unverified') {
-      console.log(`${YELLOW}⚠ ${c.name} (${y.year}): status 为 unverified${RESET}`)
-      hasWarning = true
-    }
-  }
-}
-
 // ============ 结果汇总 ============
 console.log('')
 if (hasError) {

@@ -1,16 +1,15 @@
 <script setup lang="ts">
 defineProps<{
   year: number
-  city: string
-  country: string
-  venue?: string
+  city?: string | null
+  country?: string | null
+  venue?: string | null
   isUpcoming?: boolean
   abstractDDL?: string | null
   paperDDL?: string | null
   notificationDate?: string | null
   startDate?: string | null
   endDate?: string | null
-  status?: string | null
 }>()
 </script>
 
@@ -46,12 +45,6 @@ defineProps<{
             即将举办
           </span>
         </div>
-        <span
-          v-if="status === 'unverified'"
-          class="rounded bg-yellow-50 px-1.5 py-0.5 text-xs text-yellow-700 opacity-70 dark:bg-yellow-900/20 dark:text-yellow-400"
-        >
-          待核实
-        </span>
       </div>
 
       <!-- 举办地 -->

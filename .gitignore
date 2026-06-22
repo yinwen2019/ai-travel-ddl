@@ -4,3 +4,9 @@ dist/
 *.log
 .DS_Store
 .claude/
+
+# Python（AI 数据更新脚本）
+scripts/update_logs/
+scripts/.pytest_cache/
+__pycache__/
+*.pyc

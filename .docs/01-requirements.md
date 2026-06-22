@@ -20,7 +20,7 @@
 
 ### REQ-A03 — upcoming 数据字段 [P0]
 
-包含 A02 字段 + abstract_ddl, paper_ddl, notification_date, camera_ready, start_date, end_date, status。可包含未来多年数据。
+包含 A02 字段 + abstract_ddl, paper_ddl, notification_date, camera_ready, start_date, end_date。可包含未来多年数据。字段未知时保留键并使用 `null` 或空数组表示「待公布」。
 
 ### REQ-A04 — DDL 紧迫度颜色 [P0]
 
@@ -194,9 +194,56 @@ Hover 光点显示 Tooltip（城市名、会议列表含年份与类型、upcomi
 
 Push main → deploy.yml（checkout → install → validate → build → deploy to gh-pages）。
 
-### REQ-E02 — 定时数据更新 [P1]
+### REQ-E02 — 定时维护 upcoming 会议数据 [P1]
 
-GitHub Actions cron 周级触发 AI 更新脚本，自动创建 PR。
+GitHub Actions 定时运行 AI 数据更新脚本（`scripts/update_conferences.py`），自动维护 `data/conferences.json` 中每个会议的 upcoming 条目。脚本职责：
+
+- 将已经结束的 upcoming 转为 history。
+- 当某会议没有 active upcoming 时，根据会议周期（`schedule.frequency`）创建下一届 upcoming。
+- 对字段不完整的 upcoming 联网查询并更新。
+- 没有实际 JSON diff 时不提交 commit、不创建 PR。
+- 有数据变化时创建 Pull Request，人工审核后合并。
+
+#### 核心规则
+
+- 脚本只主动创建或更新 `type="upcoming"` 的条目。
+- 唯一允许修改非 upcoming 状态的行为：当 upcoming 会议已经结束时，将 `type` 从 `"upcoming"` 改为 `"history"`（归档）。
+- 历史条目的地点、DDL、官网等字段不由 AI 自动改写。
+- “过期”指会议 `end_date` 已早于 `today`，**不是** DDL 截止。
+- DDL 已截止但会议尚未结束时仍保持 upcoming，用于 Travel 状态展示。
+- `end_date` 缺失的 upcoming 不自动归档。
+
+#### active upcoming 定义
+
+`type="upcoming"` 且（`end_date` 缺失或 `end_date >= today`）。
+
+#### 下一届创建规则
+
+- `annual`：`next_year = last_known_year + 1`
+- `biennial`：`next_year = last_known_year + 2`
+- `irregular`：使用 `schedule.next_expected_year`；未配置则不自动创建。
+- 无 `schedule` 时默认 `annual`。
+- 创建的占位条目包含前端会读取的 upcoming 字段；未知字符串/日期字段使用 `null`，DDL 列表使用空数组，不写假地点。
+
+#### 已有 upcoming 查询规则
+
+- 新创建的 upcoming 需要查询（通常为占位条目）。
+- 任意 upcoming 只要关键字段不完整就需要查询补全。
+- 任意 upcoming 只要关键字段完整就不查询，避免浪费 AI/API 资源。
+
+#### 关键字段完整定义
+
+一个 upcoming 视为「关键字段完整」当且仅当以下全部满足：
+
+- `city`、`country`、`continent` 均存在
+- `start_date`、`end_date` 均存在
+- `url` 或 `conference.website` 至少存在一个
+- 至少存在一个 `paper_ddl` 或 `abstract_ddl` 条目
+- 每个 DDL entry 都有 `date` 和 `timezone`
+
+#### 运行摘要
+
+脚本在 `meta` 中记录本次运行的 `archived / created / queried / skipped / updated` 计数。
 
 ### REQ-E03 — 构建失败通知 [P2]
 
@@ -246,5 +293,5 @@ CI 失败通过 GitHub 原生通知。
 | REQ-D03 | 开发 | 校验命令 | P0 |
 | REQ-D04 | 开发 | AI 脚本本地运行 | P1 |
 | REQ-E01 | 部署 | 自动部署 | P0 |
-| REQ-E02 | 部署 | 定时数据更新 | P1 |
+| REQ-E02 | 部署 | 定时维护 upcoming 数据 | P1 |
 | REQ-E03 | 部署 | 构建失败通知 | P2 |

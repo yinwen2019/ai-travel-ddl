@@ -13,8 +13,17 @@ export type Continent =
 /** Year entry type */
 export type YearEntryType = 'history' | 'upcoming'
 
-/** Verification status (upcoming entries only) */
-export type VerificationStatus = 'verified' | 'unverified'
+/** Conference recurrence frequency */
+export type Frequency = 'annual' | 'biennial' | 'irregular'
+
+/**
+ * Conference schedule — drives next-edition creation when no active upcoming
+ * exists. `next_expected_year` is only meaningful for `irregular`.
+ */
+export interface Schedule {
+  frequency: Frequency
+  next_expected_year?: number
+}
 
 /** DDL entry (abstract / paper deadline) */
 export interface DDLEntry {
@@ -23,23 +32,26 @@ export interface DDLEntry {
   note?: string
 }
 
-/** Single year entry — unified history and upcoming */
+/**
+ * Single year entry — unified history and upcoming.
+ * 字段统一用 `T | null` 表示「缺失」：history 条目应有真实值（非 null），
+ * upcoming 占位条目可整字段为 null，由 AI 后续补全。前端对 null 渲染「待公布」。
+ */
 export interface YearEntry {
   year: number
   type: YearEntryType
-  city: string
-  country: string
-  continent: Continent
-  venue?: string
-  url?: string
+  city?: string | null
+  country?: string | null
+  continent?: Continent | null
+  venue?: string | null
+  url?: string | null
   location_id?: string
-  abstract_ddl?: DDLEntry[]
-  paper_ddl?: DDLEntry[]
-  notification_date?: string
-  camera_ready?: string
-  start_date?: string
-  end_date?: string
-  status?: VerificationStatus
+  abstract_ddl?: DDLEntry[] | null
+  paper_ddl?: DDLEntry[] | null
+  notification_date?: string | null
+  camera_ready?: string | null
+  start_date?: string | null
+  end_date?: string | null
 }
 
 /** Conference object */
@@ -51,7 +63,17 @@ export interface Conference {
   subcategory?: string
   aka?: string[]
   website?: string
+  schedule?: Schedule
   years: YearEntry[]
+}
+
+/** Summary counts produced by one AI update run */
+export interface AIRunSummary {
+  archived: number
+  created: number
+  queried: number
+  skipped: number
+  updated: number
 }
 
 /** conferences.json top-level meta */
@@ -60,6 +82,8 @@ export interface ConferenceMeta {
   last_updated: string
   description?: string
   data_source?: string
+  last_ai_run?: string
+  ai_run_summary?: AIRunSummary
 }
 
 /** conferences.json root */

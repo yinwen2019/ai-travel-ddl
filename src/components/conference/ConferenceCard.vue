@@ -81,7 +81,7 @@ const relativeDaysText = computed(() => {
   return days >= 0 ? `剩 ${days} 天` : `已截止 ${Math.abs(days)} 天`
 })
 
-function formatMeetingTime(startDate?: string, endDate?: string): string {
+function formatMeetingTime(startDate?: string | null, endDate?: string | null): string {
   if (startDate && endDate) {
     return startDate === endDate ? startDate : `${startDate} 至 ${endDate}`
   }
@@ -108,6 +108,12 @@ const locationHref = computed(() => {
 
 const officialHref = computed(() => {
   return entry.value?.url ?? props.conference.website ?? ''
+})
+
+const locationText = computed(() => {
+  const city = entry.value?.city || '待公布'
+  const country = entry.value?.country || '待公布'
+  return `${city}, ${country}`
 })
 </script>
 
@@ -149,9 +155,9 @@ const officialHref = computed(() => {
           rel="noopener noreferrer"
           class="inline-block bg-gradient-to-r from-amber-700 via-rose-600 to-indigo-600 bg-clip-text font-semibold text-transparent transition-opacity hover:opacity-80 dark:from-amber-300 dark:via-pink-300 dark:to-sky-300"
         >
-          {{ entry.city }}, {{ entry.country }}
+          {{ locationText }}
         </a>
-        <span v-else>{{ entry.city }}, {{ entry.country }}</span>
+        <span v-else>{{ locationText }}</span>
         <a
           v-if="officialHref"
           :href="officialHref"

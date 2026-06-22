@@ -5,10 +5,10 @@ import type { DDLUrgency, ProgressNodeState } from '@/types/view'
 
 const props = defineProps<{
   entry: {
-    abstract_ddl?: { date: string }[]
-    paper_ddl?: { date: string }[]
-    notification_date?: string
-    start_date?: string
+    abstract_ddl?: { date: string }[] | null
+    paper_ddl?: { date: string }[] | null
+    notification_date?: string | null
+    start_date?: string | null
   }
 }>()
 

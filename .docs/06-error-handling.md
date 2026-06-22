@@ -11,7 +11,6 @@
 | abstract_ddl / paper_ddl（空或 null） | 「待公布」 |
 | notification_date | 「录用通知: 待公布」 |
 | start_date / end_date | 「会期: 待公布」 |
-| status = unverified | 半透明「待核实」Tag |
 | conference 对象损坏 | 跳过，不渲染 |
 
 ## JSON 加载失败
@@ -54,7 +53,7 @@
 
 **解析失败**：
 - JSON 解析失败 / 字段类型错误 → 保留旧数据，记日志
-- 部分字段缺失 → 写入但标记 `status: "partial"`
+- 部分字段缺失 → 保留已知字段，缺失字段保持 null 或空数组
 - 日期格式不标准 → 尝试标准化，失败则 null
 
 **历史数据只读**：`year < current_year` 的 history 条目禁止 AI 脚本修改。与旧数据不一致时保留旧值。
