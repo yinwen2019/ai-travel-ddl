@@ -452,6 +452,19 @@ def test_empty_search_context_omits_block(tmp_path, monkeypatch):
     assert res.summary["queried"] == 1
 
 
+def test_prompt_allows_unambiguous_country_continent_inference(tmp_path, monkeypatch):
+    """Prompt 允许从可信城市补全明确国家/洲。"""
+    entry = placeholder_upcoming(2027)
+    data = make_data([make_conf(conf_id="iccv", years=[entry], website="https://iccv.thecvf.com")])
+    context = "## [1] ICCV 2027\nURL: https://iccv.thecvf.com\nICCV 2027 will be held in Hong Kong."
+    client = FakeClient()
+    res, _ = run_with(data, tmp_path, client, monkeypatch, search=FakeSearch(context))
+    system, user = client.calls[0]
+    assert "Hong Kong and Macao are China" in system
+    assert "infer only from a trusted city when the mapping is unambiguous" in user
+    assert res.summary["queried"] == 1
+
+
 def test_search_context_filters_untrusted_domains():
     """搜索上下文过滤非可信/聚合站结果。"""
     data = {
