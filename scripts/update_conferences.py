@@ -29,6 +29,7 @@ from typing import Mapping, MutableMapping, Protocol
 # api_client（依赖 requests）在 main() 中延迟导入。
 from lib.completeness import is_active_upcoming, is_ended, is_key_fields_complete
 from lib.dates import today_iso, utc_now_iso
+from lib.location_inference import build_location_index, infer_location_fields
 from lib.logger import write_run_log, write_summary_md
 from lib.merger import merge_upcoming
 from lib.parser import parse_ai_response
@@ -178,6 +179,7 @@ def _query_and_merge(
     """
     queried = 0
     updated = 0
+    location_index = build_location_index(conferences)
     for conf in conferences:
         for entry in conf.get("years", []):
             if not is_active_upcoming(entry, today):
@@ -206,7 +208,10 @@ def _query_and_merge(
             except Exception as exc:  # noqa: BLE001 - 容错：查询失败等价于无新数据
                 print(f"[update] 查询 {conf.get('id')} {year} 失败: {exc}")
                 raw = ""
-            ai_fields = _filter_ai_fields_by_context(parse_ai_response(raw), context, domains)
+            ai_fields = infer_location_fields(
+                _filter_ai_fields_by_context(parse_ai_response(raw), context, domains),
+                location_index,
+            )
             if ai_fields:
                 if merge_upcoming(entry, ai_fields):
                     updated += 1

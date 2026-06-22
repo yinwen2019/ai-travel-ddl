@@ -398,6 +398,46 @@ def test_ai_location_without_context_support_is_dropped(tmp_path, monkeypatch):
     assert e["continent"] is None
     assert e["url"] == "https://iccv.thecvf.com"
     assert res.summary["updated"] == 1
+
+
+def test_known_city_infers_country_and_continent(tmp_path, monkeypatch):
+    """可信来源只给 city 时，从本地历史地点索引补全 country/continent。"""
+    entry = placeholder_upcoming(2027)
+    history_hong_kong = {
+        "year": 2019,
+        "type": "history",
+        "city": "Hong Kong",
+        "country": "China",
+        "continent": "Asia",
+    }
+    data = make_data(
+        [
+            make_conf(
+                conf_id="iccv",
+                years=[history_hong_kong, entry],
+                website="https://iccv.thecvf.com",
+            )
+        ]
+    )
+    context = (
+        "## [1] ICCV 2027\n"
+        "URL: https://iccv.thecvf.com\n"
+        "ICCV 2027 will take place in Hong Kong from Oct 2 to Oct 8, 2027."
+    )
+    ai = json.dumps(
+        {
+            "city": "Hong Kong",
+            "start_date": "2027-10-02",
+            "end_date": "2027-10-08",
+        }
+    )
+    res, out = run_with(data, tmp_path, FakeClient(responses=[ai]), monkeypatch, search=FakeSearch(context))
+    e = next(y for y in out["conferences"][0]["years"] if y["year"] == 2027)
+    assert e["city"] == "Hong Kong"
+    assert e["country"] == "China"
+    assert e["continent"] == "Asia"
+    assert e["start_date"] == "2027-10-02"
+    assert res.summary["updated"] == 1
     assert res.summary["updated"] == 1
 
 
