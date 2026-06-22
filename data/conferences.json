@@ -1,16 +1,16 @@
 {
   "meta": {
     "version": "0.2.0",
-    "last_updated": "2026-06-22T11:37:28Z",
+    "last_updated": "2026-06-22T14:08:00Z",
     "description": "AI top conference data — venues, deadlines, and dates",
     "data_source": "manually curated",
-    "last_ai_run": "2026-06-22T11:36:48Z",
+    "last_ai_run": "2026-06-22T14:08:00Z",
     "ai_run_summary": {
       "archived": 0,
       "created": 0,
       "queried": 5,
       "skipped": 8,
-      "updated": 5
+      "updated": 1
     }
   },
   "conferences": [
@@ -679,17 +679,17 @@
         {
           "year": 2027,
           "type": "upcoming",
-          "city": null,
-          "country": null,
-          "continent": null,
+          "city": "Hong Kong",
+          "country": "China",
+          "continent": "Asia",
           "venue": null,
-          "url": null,
+          "url": "https://iccv.thecvf.com",
           "abstract_ddl": [],
           "paper_ddl": [],
           "notification_date": null,
           "camera_ready": null,
-          "start_date": null,
-          "end_date": null
+          "start_date": "2027-10-02",
+          "end_date": "2027-10-08"
         }
       ],
       "schedule": {
