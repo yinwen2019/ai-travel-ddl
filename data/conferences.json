@@ -1,15 +1,15 @@
 {
   "meta": {
     "version": "0.2.0",
-    "last_updated": "2026-06-22T14:08:00Z",
+    "last_updated": "2026-07-27T06:42:02Z",
     "description": "AI top conference data — venues, deadlines, and dates",
     "data_source": "manually curated",
-    "last_ai_run": "2026-06-22T14:08:00Z",
+    "last_ai_run": "2026-07-27T06:42:02Z",
     "ai_run_summary": {
-      "archived": 0,
-      "created": 0,
-      "queried": 5,
-      "skipped": 8,
+      "archived": 2,
+      "created": 2,
+      "queried": 7,
+      "skipped": 6,
       "updated": 1
     }
   },
@@ -562,7 +562,7 @@
         },
         {
           "year": 2026,
-          "type": "upcoming",
+          "type": "history",
           "city": "San Diego",
           "country": "United States",
           "continent": "North America",
@@ -580,6 +580,21 @@
           "camera_ready": "2026-04-19",
           "start_date": "2026-07-02",
           "end_date": "2026-07-07"
+        },
+        {
+          "year": 2027,
+          "type": "upcoming",
+          "city": null,
+          "country": "Japan",
+          "continent": "Asia",
+          "venue": null,
+          "url": "https://2027.aclweb.org",
+          "abstract_ddl": [],
+          "paper_ddl": [],
+          "notification_date": null,
+          "camera_ready": null,
+          "start_date": "2027-08-17",
+          "end_date": "2027-08-22"
         }
       ]
     },
@@ -1222,7 +1237,7 @@
         },
         {
           "year": 2026,
-          "type": "upcoming",
+          "type": "history",
           "city": "Seoul",
           "country": "South Korea",
           "continent": "Asia",
@@ -1245,6 +1260,21 @@
           "notification_date": "2026-04-30",
           "start_date": "2026-07-06",
           "end_date": "2026-07-11"
+        },
+        {
+          "year": 2027,
+          "type": "upcoming",
+          "city": null,
+          "country": null,
+          "continent": null,
+          "venue": null,
+          "url": null,
+          "abstract_ddl": [],
+          "paper_ddl": [],
+          "notification_date": null,
+          "camera_ready": null,
+          "start_date": null,
+          "end_date": null
         }
       ]
     },
