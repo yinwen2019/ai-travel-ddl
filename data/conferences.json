@@ -1,13 +1,13 @@
 {
   "meta": {
     "version": "0.2.0",
-    "last_updated": "2026-07-27T06:42:02Z",
+    "last_updated": "2026-08-03T06:34:23Z",
     "description": "AI top conference data — venues, deadlines, and dates",
     "data_source": "manually curated",
-    "last_ai_run": "2026-07-27T06:42:02Z",
+    "last_ai_run": "2026-08-03T06:34:23Z",
     "ai_run_summary": {
-      "archived": 2,
-      "created": 2,
+      "archived": 0,
+      "created": 0,
       "queried": 7,
       "skipped": 6,
       "updated": 1
@@ -1073,17 +1073,17 @@
         {
           "year": 2027,
           "type": "upcoming",
-          "city": null,
-          "country": null,
-          "continent": null,
+          "city": "San Francisco",
+          "country": "United States",
+          "continent": "North America",
           "venue": null,
           "url": null,
           "abstract_ddl": [],
           "paper_ddl": [],
           "notification_date": null,
           "camera_ready": null,
-          "start_date": null,
-          "end_date": null
+          "start_date": "2027-06-01",
+          "end_date": "2027-06-05"
         }
       ],
       "schedule": {
