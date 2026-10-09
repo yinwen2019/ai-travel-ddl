@@ -1,16 +1,16 @@
 {
   "meta": {
     "version": "0.2.0",
-    "last_updated": "2026-08-17T04:01:59Z",
+    "last_updated": "2026-09-14T08:54:45Z",
     "description": "AI top conference data — venues, deadlines, and dates",
     "data_source": "manually curated",
-    "last_ai_run": "2026-08-17T04:01:59Z",
+    "last_ai_run": "2026-09-14T08:54:45Z",
     "ai_run_summary": {
-      "archived": 1,
-      "created": 1,
-      "queried": 8,
-      "skipped": 5,
-      "updated": 2
+      "archived": 2,
+      "created": 2,
+      "queried": 10,
+      "skipped": 3,
+      "updated": 0
     }
   },
   "conferences": [
@@ -781,7 +781,7 @@
         },
         {
           "year": 2026,
-          "type": "upcoming",
+          "type": "history",
           "city": "Malmo",
           "country": "Sweden",
           "continent": "Europe",
@@ -805,6 +805,21 @@
           "camera_ready": "2026-06-26",
           "start_date": "2026-09-08",
           "end_date": "2026-09-12"
+        },
+        {
+          "year": 2028,
+          "type": "upcoming",
+          "city": null,
+          "country": null,
+          "continent": null,
+          "venue": null,
+          "url": null,
+          "abstract_ddl": [],
+          "paper_ddl": [],
+          "notification_date": null,
+          "camera_ready": null,
+          "start_date": null,
+          "end_date": null
         }
       ],
       "schedule": {
@@ -2023,7 +2038,7 @@
         },
         {
           "year": 2026,
-          "type": "upcoming",
+          "type": "history",
           "city": "Bremen",
           "country": "Germany",
           "continent": "Europe",
@@ -2047,6 +2062,21 @@
           "camera_ready": "2026-05-20",
           "start_date": "2026-08-15",
           "end_date": "2026-08-21"
+        },
+        {
+          "year": 2027,
+          "type": "upcoming",
+          "city": null,
+          "country": null,
+          "continent": null,
+          "venue": null,
+          "url": null,
+          "abstract_ddl": [],
+          "paper_ddl": [],
+          "notification_date": null,
+          "camera_ready": null,
+          "start_date": null,
+          "end_date": null
         }
       ]
     },
