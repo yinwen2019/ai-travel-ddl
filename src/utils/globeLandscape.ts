@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import type { FeatureCollection, Polygon, MultiPolygon, Position } from 'geojson'
+import type { GlobeGeometryData } from '@/types/globe'
 
 /** Coordinates follow the same orientation as ThreeGlobe. */
 export function globeVector(lat: number, lng: number, radius = 100): THREE.Vector3 {
@@ -13,52 +13,24 @@ export function globeVector(lat: number, lng: number, radius = 100): THREE.Vecto
 }
 
 /** Builds local country boundaries and graticules above either basemap. */
-export function createLandscape(data: FeatureCollection<Polygon | MultiPolygon>): {
+export function createLandscape(data: GlobeGeometryData): {
   group: THREE.Group
   setTerrain: (enabled: boolean) => void
 } {
   const group = new THREE.Group()
-  const borders: number[] = []
-  function traceRing(ring: Position[]) {
-    ring.forEach(([lng, lat], i) => {
-      if (i === 0) return
-      const [prevLng, prevLat] = ring[i - 1]
-      // 跨日期变更线的边不连接，避免画出横穿地球的长线。
-      if (Math.abs(lng - prevLng) > 180) return
-      const count = Math.max(
-        1,
-        Math.ceil(Math.max(Math.abs(lng - prevLng), Math.abs(lat - prevLat))),
-      )
-      for (let step = 0; step < count; step++) {
-        for (const t of [step / count, (step + 1) / count]) {
-          borders.push(
-            ...globeVector(
-              prevLat + (lat - prevLat) * t,
-              prevLng + (lng - prevLng) * t,
-              100.12,
-            ).toArray(),
-          )
-        }
-      }
-    })
-  }
-  for (const feature of data.features) {
-    const polygons =
-      feature.geometry.type === 'Polygon'
-        ? [feature.geometry.coordinates]
-        : feature.geometry.coordinates
-    for (const polygon of polygons) {
-      polygon.forEach(traceRing)
-    }
-  }
   const borderGeometry = new THREE.BufferGeometry()
-  borderGeometry.setAttribute('position', new THREE.Float32BufferAttribute(borders, 3))
+  borderGeometry.setAttribute('position', new THREE.BufferAttribute(data.positions, 3, true))
+  borderGeometry.setIndex(new THREE.BufferAttribute(data.borders, 1))
+  borderGeometry.boundingSphere = new THREE.Sphere(new THREE.Vector3(), 1.001)
   const borderMaterial = new THREE.LineBasicMaterial({
     color: '#a4c6ca',
     transparent: true,
     opacity: 0.32,
   })
-  group.add(new THREE.LineSegments(borderGeometry, borderMaterial))
+  const borderLines = new THREE.LineSegments(borderGeometry, borderMaterial)
+  borderLines.scale.setScalar(100.12)
+  borderLines.raycast = () => {}
+  group.add(borderLines)
   // 经线和纬线与球面保持相同深度关系，背面会被球体遮挡。
   const grid: number[] = []
   for (let lat = -60; lat <= 60; lat += 30) {
@@ -82,7 +54,9 @@ export function createLandscape(data: FeatureCollection<Polygon | MultiPolygon>)
     transparent: true,
     opacity: 0.1,
   })
-  group.add(new THREE.LineSegments(gridGeometry, gridMaterial))
+  const gridLines = new THREE.LineSegments(gridGeometry, gridMaterial)
+  gridLines.raycast = () => {}
+  group.add(gridLines)
   return {
     group,
     setTerrain(enabled) {

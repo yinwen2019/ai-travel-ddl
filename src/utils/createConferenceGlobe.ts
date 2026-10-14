@@ -1,7 +1,6 @@
 import Globe from 'globe.gl'
 import * as THREE from 'three'
-import type { FeatureCollection, Polygon, MultiPolygon } from 'geojson'
-import type { ConferenceGlobe, ConferenceGlobeOptions } from '@/types/globe'
+import type { ConferenceGlobe, ConferenceGlobeOptions, GlobeGeometryData } from '@/types/globe'
 import type { CityData, CityKey } from '@/types/worldView'
 import { CATEGORY_COLORS } from '@/constants'
 import { GLOBE_LANDMARKS } from '@/data/globeLandmarks'
@@ -14,18 +13,16 @@ import {
   worldUnitsPerPixel,
 } from './globeProjection'
 import { createLandmark } from './globeLandmarks'
-import worldLandUrl from '@/assets/maps/world-land.geojson?url'
+import { waitForGlobeFrame } from './waitForGlobeFrame'
 
 /** Mounts the globe independently of Vue and the conference data pipeline. */
 export async function createConferenceGlobe(
   host: HTMLElement,
   options: ConferenceGlobeOptions,
   signal: AbortSignal,
+  geometry: GlobeGeometryData,
 ): Promise<ConferenceGlobe> {
   let compact = host.clientWidth < 768
-  const response = await fetch(worldLandUrl, { signal })
-  if (!response.ok) throw new Error('地球轮廓加载失败')
-  const land: FeatureCollection<Polygon | MultiPolygon> = await response.json()
   signal.throwIfAborted()
   const globe = new Globe(host, {
     animateIn: false,
@@ -173,7 +170,7 @@ export async function createConferenceGlobe(
       anchor.appendChild(text)
       return anchor
     })
-  const basemap = createBasemap(globe, land, compact, signal)
+  const basemap = createBasemap(globe, geometry, compact, signal)
   const sky = new THREE.Group()
   const starPositions: number[] = []
   const starCount = compact ? 180 : 450
@@ -340,6 +337,18 @@ export async function createConferenceGlobe(
   }
   goTo(25, 105, compact ? 2.4 : 1.8)
   return {
+    async ready() {
+      await waitForGlobeFrame(
+        () =>
+          nodes.size === cities.length && [...nodes.values()].every((node) => !!node.root.parent),
+        signal,
+      )
+      updateAppearance(performance.now())
+      await renderer.compileAsync(globe.scene(), globe.camera())
+      signal.throwIfAborted()
+      const frame = renderer.info.render.frame
+      await waitForGlobeFrame(() => renderer.info.render.frame > frame, signal)
+    },
     resize(width, height) {
       compact = width < 768
       globe.width(width).height(height)

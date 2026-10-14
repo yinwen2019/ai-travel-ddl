@@ -32,6 +32,9 @@
   inset: 0;
   cursor: grab;
 }
+.globe-shell.is-loading .globe-canvas {
+  visibility: hidden;
+}
 .globe-canvas:active {
   cursor: grabbing;
 }
@@ -362,12 +365,23 @@
   font-size: 14px;
   z-index: 4;
 }
-.globe-loading-orb {
-  width: 76px;
-  height: 76px;
-  border: 1px solid #4b8b9c;
+.globe-loading-indicator {
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--globe-line);
+  border-top-color: #83d4d2;
   border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, #24637b, #091e30 70%);
+  animation: globe-loading-turn 1s linear infinite;
+}
+@keyframes globe-loading-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .globe-loading-indicator {
+    animation: none;
+  }
 }
 .globe-failure {
   text-align: center;

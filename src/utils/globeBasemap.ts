@@ -1,7 +1,6 @@
 import * as THREE from 'three'
 import type Globe from 'globe.gl'
-import type { FeatureCollection, Polygon, MultiPolygon } from 'geojson'
-import type { GlobeBasemap } from '@/types/globe'
+import type { GlobeBasemap, GlobeGeometryData } from '@/types/globe'
 import { createLandscape } from './globeLandscape'
 import terrainUrl from '@/assets/maps/natural-earth-terrain.webp?url'
 import mobileTerrainUrl from '@/assets/maps/natural-earth-terrain-mobile.webp?url'
@@ -9,27 +8,28 @@ import mobileTerrainUrl from '@/assets/maps/natural-earth-terrain-mobile.webp?ur
 /** Keeps vector geometry resident and loads a local terrain texture on demand. */
 export function createBasemap(
   globe: InstanceType<typeof Globe>,
-  land: FeatureCollection<Polygon | MultiPolygon>,
+  geometry: GlobeGeometryData,
   compact: boolean,
   signal: AbortSignal,
 ) {
   const surface = new THREE.MeshBasicMaterial({ color: '#102c43' })
   const continents = new THREE.MeshBasicMaterial({ color: '#54818a' })
-  const landscape = createLandscape(land)
+  const landscape = createLandscape(geometry)
+  const landGeometry = new THREE.BufferGeometry()
+  landGeometry.setAttribute('position', new THREE.BufferAttribute(geometry.positions, 3, true))
+  landGeometry.setIndex(new THREE.BufferAttribute(geometry.indices, 1))
+  landGeometry.boundingSphere = new THREE.Sphere(new THREE.Vector3(), 1.001)
+  const landMesh = new THREE.Mesh(landGeometry, continents)
+  landMesh.scale.setScalar(100.1)
+  // 底图只用于展示；不对整片大陆进行逐三角形的鼠标命中计算。
+  landMesh.raycast = () => {}
   let texture: THREE.Texture | null = null
   let bitmap: ImageBitmap | null = null
   let pending: Promise<THREE.Texture> | null = null
   let disposed = false
   let revision = 0
-  globe
-    .globeMaterial(surface)
-    .polygonsData(land.features)
-    .polygonAltitude(0.001)
-    .polygonCapCurvatureResolution(1)
-    .polygonCapMaterial(continents)
-    .polygonSideColor(() => '#00000000')
-    .polygonsTransitionDuration(0)
-  globe.scene().add(landscape.group)
+  globe.globeMaterial(surface)
+  globe.scene().add(landMesh, landscape.group)
 
   async function loadTerrain(): Promise<THREE.Texture> {
     const response = await fetch(compact ? mobileTerrainUrl : terrainUrl, { signal })
@@ -63,7 +63,7 @@ export function createBasemap(
       surface.map = map
       surface.color.set(map ? '#ffffff' : '#102c43')
       surface.needsUpdate = true
-      continents.visible = !map
+      landMesh.visible = !map
       landscape.setTerrain(!!map)
     },
     destroy() {

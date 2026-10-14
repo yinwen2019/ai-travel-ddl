@@ -2,6 +2,12 @@ import type { CityData, CityKey, LatLngBounds } from './worldView'
 
 export type GlobeBasemap = 'vector' | 'terrain'
 
+export interface GlobeGeometryData {
+  positions: Int16Array
+  indices: Uint32Array
+  borders: Uint32Array
+}
+
 export interface ConferenceGlobeOptions {
   cities: CityData[]
   onHover: (city: CityData | null) => void
@@ -10,6 +16,7 @@ export interface ConferenceGlobeOptions {
 }
 
 export interface ConferenceGlobe {
+  ready: () => Promise<void>
   resize: (width: number, height: number) => void
   setCities: (cities: CityData[]) => void
   setActive: (highlighted: CityKey | null, pinned: CityKey | null) => void

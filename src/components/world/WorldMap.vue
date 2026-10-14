@@ -5,6 +5,7 @@ import type { ConferenceGlobe, GlobeBasemap } from '@/types/globe'
 import WorldLegend from './WorldLegend.vue'
 import WorldCityPanel from './WorldCityPanel.vue'
 import { GLOBE_LANDMARKS } from '@/data/globeLandmarks'
+import { loadGlobeGeometry } from '@/utils/loadGlobeGeometry'
 import '@/styles/globe.css'
 
 const props = defineProps<{
@@ -135,7 +136,10 @@ async function init() {
   basemapLoading.value = false
   basemapError.value = ''
   try {
-    const { createConferenceGlobe } = await import('@/utils/createConferenceGlobe')
+    const [{ createConferenceGlobe }, geometry] = await Promise.all([
+      import('@/utils/createConferenceGlobe'),
+      loadGlobeGeometry(current.signal),
+    ])
     if (disposed || current.signal.aborted || !host.value) return
     const instance = await createConferenceGlobe(
       host.value,
@@ -155,6 +159,7 @@ async function init() {
         },
       },
       current.signal,
+      geometry,
     )
     if (disposed || current.signal.aborted) {
       instance.destroy()
@@ -163,13 +168,17 @@ async function init() {
     globe = instance
     globe.setActive(props.highlightedCity, props.pinnedCity)
     globe.setLandmarks(landmarks.value)
+    if (selectedCity.value) globe.flyToCity(selectedCity.value)
+    await globe.ready()
+    if (disposed || current.signal.aborted) return
     syncMotion()
     setVisibility()
     loading.value = false
-    if (selectedCity.value) globe.flyToCity(selectedCity.value)
   } catch (error) {
     if (current.signal.aborted || disposed) return
     console.warn('[WorldGlobe] 场景无法加载', error)
+    globe?.destroy()
+    globe = null
     failed.value = true
     loading.value = false
     emit('map-error')
@@ -253,7 +262,7 @@ defineExpose({ flyToBounds })
   <section
     ref="shell"
     class="globe-shell"
-    :class="{ 'is-fullscreen': fullscreen }"
+    :class="{ 'is-fullscreen': fullscreen, 'is-loading': loading }"
     aria-label="三维世界会议地图"
     :role="fullscreen ? 'dialog' : 'region'"
     :aria-modal="fullscreen || undefined"
@@ -266,7 +275,8 @@ defineExpose({ flyToBounds })
       @pointerleave="globe?.setPaused(false)"
     ></div>
     <div v-if="loading && !failed" class="globe-loading" role="status">
-      <span class="globe-loading-orb"></span><span>正在展开研究的世界…</span>
+      <span class="globe-loading-indicator" aria-hidden="true"></span
+      ><span>正在展开研究的世界…</span>
     </div>
     <div v-if="failed" class="globe-failure" role="status">
       <svg
