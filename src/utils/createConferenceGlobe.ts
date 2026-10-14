@@ -5,7 +5,13 @@ import type { ConferenceGlobe, ConferenceGlobeOptions } from '@/types/globe'
 import type { CityData, CityKey } from '@/types/worldView'
 import { CATEGORY_COLORS } from '@/constants'
 import { GLOBE_LANDMARKS } from '@/data/globeLandmarks'
-import { createLandscape, disposeObject } from './globeLandscape'
+import { createLandscape, disposeObject, globeVector } from './globeLandscape'
+import {
+  MIN_GLOBE_ALTITUDE,
+  MAX_GLOBE_ALTITUDE,
+  markerPixelRadius,
+  worldUnitsPerPixel,
+} from './globeProjection'
 import { createLandmark } from './globeLandmarks'
 import worldLandUrl from '@/assets/maps/world-land.geojson?url'
 
@@ -37,6 +43,9 @@ export async function createConferenceGlobe(
   let interactionUntil = performance.now() + 3000
   let animationFrame = 0
   let labelLevel = -1
+  let labelSignature = ''
+  const labelElements = new Map<CityKey, HTMLSpanElement>()
+  const cameraPoint = new THREE.Vector3()
   let cities = options.cities
   const nodes = new Map<
     CityKey,
@@ -46,6 +55,8 @@ export async function createConferenceGlobe(
       selection: THREE.Mesh
       pin: THREE.Group
       landmark: THREE.Group | null
+      baseSize: number
+      pixelRadius: number
     }
   >()
   globe
@@ -61,11 +72,12 @@ export async function createConferenceGlobe(
       }),
     )
     .showAtmosphere(true)
+    .globeCurvatureResolution(1.5)
     .atmosphereColor('#58bdca')
     .atmosphereAltitude(0.12)
     .objectLabel(() => '')
     .labelLabel(() => '')
-    .objectAltitude(0.005)
+    .objectAltitude(0.0015)
     .objectFacesSurface(true)
     .objectsData(cities)
     .objectThreeObject((entry) => {
@@ -124,7 +136,15 @@ export async function createConferenceGlobe(
         landmark.visible = false
         root.add(landmark)
       }
-      nodes.set(city.cityKey, { root, halo, selection, pin, landmark })
+      nodes.set(city.cityKey, {
+        root,
+        halo,
+        selection,
+        pin,
+        landmark,
+        baseSize: size,
+        pixelRadius: markerPixelRadius(city.sizeTier),
+      })
       return root
     })
     .onObjectClick((entry) => options.onSelect(entry as CityData))
@@ -134,18 +154,25 @@ export async function createConferenceGlobe(
       options.onHover(city)
       updateAppearance(performance.now())
     })
-    .labelsData([])
-    .labelLat('lat')
-    .labelLng('lng')
-    .labelText('city')
-    .labelSize(0.65)
-    .labelDotRadius(0)
-    .labelIncludeDot(true)
-    .labelDotOrientation('right')
-    .labelAltitude(0.018)
-    .labelColor(() => '#d9eceb')
-    .labelsTransitionDuration(0)
-    .onLabelClick((entry) => options.onSelect(entry as CityData))
+    .htmlElementsData([])
+    .htmlLat('lat')
+    .htmlLng('lng')
+    .htmlAltitude(0.0015)
+    .htmlTransitionDuration(0)
+    .htmlElement((entry) => {
+      const city = entry as CityData
+      const anchor = document.createElement('span')
+      anchor.style.width = '1px'
+      anchor.style.height = '1px'
+      anchor.style.pointerEvents = 'none'
+      anchor.setAttribute('aria-hidden', 'true')
+      const text = document.createElement('span')
+      text.className = 'globe-city-label'
+      text.textContent = city.city
+      labelElements.set(city.cityKey, text)
+      anchor.appendChild(text)
+      return anchor
+    })
   const landscape = createLandscape(land, compact)
   globe.scene().add(landscape)
   const sky = new THREE.Group()
@@ -183,7 +210,7 @@ export async function createConferenceGlobe(
   controls.dampingFactor = 0.075
   controls.enablePan = false
   controls.enableZoom = true
-  controls.minDistance = radius * 1.45
+  controls.minDistance = radius * (1 + MIN_GLOBE_ALTITUDE)
   controls.maxDistance = radius * 4.2
   controls.autoRotateSpeed = 0.28
   const renderer = globe.renderer()
@@ -205,20 +232,75 @@ export async function createConferenceGlobe(
   canvas.addEventListener('webglcontextlost', onLoss)
   function refreshLabels() {
     const important = [...cities].sort(
-      (a, b) => b.upcomingCount - a.upcomingCount || b.totalCount - a.totalCount,
+      (a, b) =>
+        Number(b.cityKey === pinned) - Number(a.cityKey === pinned) ||
+        b.upcomingCount - a.upcomingCount ||
+        b.totalCount - a.totalCount,
     )
-    const chosen = labelLevel === 1 ? important.slice(0, compact ? 7 : 12) : []
-    const selected = cities.find((city) => city.cityKey === pinned)
-    if (selected && !chosen.includes(selected)) chosen.push(selected)
-    globe.labelsData(chosen)
+    const chosen: CityData[] = []
+    const rectangles: { left: number; top: number; right: number; bottom: number }[] = []
+    const placements = new Map<CityKey, boolean>()
+    const camera = globe.camera()
+    camera.updateMatrixWorld()
+    for (const city of important) {
+      if (labelLevel !== 1 && city.cityKey !== pinned) continue
+      const position = globeVector(city.lat, city.lng, radius * 1.0015)
+      if (position.dot(camera.position) < radius * radius * 1.002) continue
+      const point = globe.getScreenCoords(city.lat, city.lng, 0.0015)
+      const width = Math.min(150, Math.max(40, city.city.length * 7.2 + 10))
+      const leftSide = point.x + width + 16 > globe.width() - 12
+      const left = leftSide ? point.x - width - 14 : point.x + 14
+      const rect = { left, top: point.y - 10, right: left + width, bottom: point.y + 10 }
+      if (
+        rect.left < 8 ||
+        rect.right > globe.width() - 8 ||
+        rect.top < 8 ||
+        rect.bottom > globe.height() - 8
+      )
+        continue
+      if (
+        rectangles.some(
+          (other) =>
+            rect.left < other.right + 8 &&
+            rect.right + 8 > other.left &&
+            rect.top < other.bottom + 6 &&
+            rect.bottom + 6 > other.top,
+        )
+      )
+        continue
+      rectangles.push(rect)
+      chosen.push(city)
+      placements.set(city.cityKey, leftSide)
+      if (chosen.length >= (compact ? 8 : 14)) break
+    }
+    const signature = chosen.map((city) => city.cityKey).join('|')
+    if (signature !== labelSignature) {
+      labelSignature = signature
+      globe.htmlElementsData(chosen)
+    }
+    // 元素由图层异步创建；重复利用 DOM 标签，避免缩放时不断重建文字几何体。
+    requestAnimationFrame(() => {
+      if (destroyed) return
+      placements.forEach((leftSide, key) =>
+        labelElements.get(key)?.classList.toggle('is-left', leftSide),
+      )
+    })
   }
   function updateAppearance(now: number) {
     if (destroyed) return
     const altitude = globe.pointOfView().altitude
+    const camera = globe.camera()
+    camera.updateMatrixWorld()
     controls.autoRotate = motion && !paused && !pinned && !hovered && now > interactionUntil
     nodes.forEach((node, key) => {
       const active = key === highlighted || key === pinned || key === hovered
-      node.root.scale.setScalar(active ? 1.35 : 1)
+      node.root.getWorldPosition(cameraPoint).applyMatrix4(camera.matrixWorldInverse)
+      const units = worldUnitsPerPixel(
+        -cameraPoint.z,
+        camera.projectionMatrix.elements[5],
+        globe.height(),
+      )
+      node.root.scale.setScalar((units * node.pixelRadius * (active ? 1.35 : 1)) / node.baseSize)
       node.selection.visible = active
       node.pin.visible = key === pinned
       const pulse = motion ? (Math.sin(now / 950) + 1) / 2 : 0.35
@@ -242,11 +324,18 @@ export async function createConferenceGlobe(
     updateAppearance(performance.now())
     if (visible && motion && !destroyed) animationFrame = requestAnimationFrame(tick)
   }
-  globe.onZoom(() => updateAppearance(performance.now()))
+  globe.onZoom(() => {
+    updateAppearance(performance.now())
+    refreshLabels()
+  })
   function goTo(lat: number, lng: number, altitude: number) {
     interact()
     globe.pointOfView(
-      { lat, lng, altitude: THREE.MathUtils.clamp(altitude, 0.45, 3.2) },
+      {
+        lat,
+        lng,
+        altitude: THREE.MathUtils.clamp(altitude, MIN_GLOBE_ALTITUDE, MAX_GLOBE_ALTITUDE),
+      },
       motion ? 950 : 0,
     )
   }
@@ -256,11 +345,14 @@ export async function createConferenceGlobe(
       compact = width < 768
       globe.width(width).height(height)
       globe.globeOffset([!compact && pinned ? -85 : 0, compact && pinned ? -85 : 0])
+      updateAppearance(performance.now())
+      refreshLabels()
     },
     setCities(next) {
       nodes.forEach((node) => disposeObject(node.root))
       nodes.clear()
       cities = next
+      labelSignature = ''
       globe.objectsData(next)
       refreshLabels()
     },
@@ -290,14 +382,14 @@ export async function createConferenceGlobe(
       updateAppearance(performance.now())
     },
     flyToCity(city) {
-      goTo(city.lat, city.lng, compact ? 1.8 : 1.15)
+      goTo(city.lat, city.lng, 0.08)
     },
     flyToBounds(bounds) {
       const span = Math.max(bounds.maxLat - bounds.minLat, bounds.maxLng - bounds.minLng)
       goTo(
         (bounds.minLat + bounds.maxLat) / 2,
         (bounds.minLng + bounds.maxLng) / 2,
-        span > 140 ? 2.6 : Math.max(0.65, span / 65),
+        span > 140 ? 2.6 : Math.max(0.08, span / 65),
       )
     },
     zoom(factor) {
@@ -309,6 +401,7 @@ export async function createConferenceGlobe(
     },
     destroy() {
       destroyed = true
+      labelElements.clear()
       cancelAnimationFrame(animationFrame)
       controls.removeEventListener('start', interact)
       controls.removeEventListener('end', interact)

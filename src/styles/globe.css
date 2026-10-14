@@ -39,6 +39,28 @@
   display: block;
   max-width: 100%;
 }
+.globe-city-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translate(14px, -50%);
+  max-width: 150px;
+  padding: 2px 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #e7f1f3;
+  background: #081724df;
+  border-radius: 3px;
+  font-size: 12px;
+  line-height: 16px;
+  pointer-events: none;
+}
+.globe-city-label.is-left {
+  left: auto;
+  right: 0;
+  transform: translate(-14px, -50%);
+}
 .globe-intro {
   position: absolute;
   top: 28px;
