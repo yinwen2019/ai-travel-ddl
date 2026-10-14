@@ -5,7 +5,8 @@ import type { ConferenceGlobe, ConferenceGlobeOptions } from '@/types/globe'
 import type { CityData, CityKey } from '@/types/worldView'
 import { CATEGORY_COLORS } from '@/constants'
 import { GLOBE_LANDMARKS } from '@/data/globeLandmarks'
-import { createLandscape, disposeObject, globeVector } from './globeLandscape'
+import { disposeObject, globeVector } from './globeLandscape'
+import { createBasemap } from './globeBasemap'
 import {
   MIN_GLOBE_ALTITUDE,
   MAX_GLOBE_ALTITUDE,
@@ -63,14 +64,6 @@ export async function createConferenceGlobe(
     .width(host.clientWidth)
     .height(host.clientHeight)
     .backgroundColor('#050e19')
-    .globeMaterial(
-      new THREE.MeshPhongMaterial({
-        color: '#091e30',
-        emissive: '#03101d',
-        specular: '#28516a',
-        shininess: 12,
-      }),
-    )
     .showAtmosphere(true)
     .globeCurvatureResolution(1.5)
     .atmosphereColor('#58bdca')
@@ -92,6 +85,13 @@ export async function createConferenceGlobe(
       core.scale.z = 0.4
       core.position.z = 0.22
       root.add(core)
+      // 深色细边让历史光点在浅色地形上也能辨认。
+      const rim = new THREE.Mesh(
+        new THREE.RingGeometry(size * 0.95, size * 1.22, 24),
+        new THREE.MeshBasicMaterial({ color: '#102331', side: THREE.DoubleSide }),
+      )
+      rim.position.z = 0.23
+      root.add(rim)
       const halo = new THREE.Mesh(
         new THREE.RingGeometry(size * 1.3, size * 1.7, 32),
         new THREE.MeshBasicMaterial({
@@ -173,8 +173,7 @@ export async function createConferenceGlobe(
       anchor.appendChild(text)
       return anchor
     })
-  const landscape = createLandscape(land, compact)
-  globe.scene().add(landscape)
+  const basemap = createBasemap(globe, land, compact, signal)
   const sky = new THREE.Group()
   const starPositions: number[] = []
   const starCount = compact ? 180 : 450
@@ -381,6 +380,7 @@ export async function createConferenceGlobe(
       landmarksVisible = value
       updateAppearance(performance.now())
     },
+    setBasemap: basemap.setStyle,
     flyToCity(city) {
       goTo(city.lat, city.lng, 0.08)
     },
@@ -401,6 +401,7 @@ export async function createConferenceGlobe(
     },
     destroy() {
       destroyed = true
+      basemap.destroy()
       labelElements.clear()
       cancelAnimationFrame(animationFrame)
       controls.removeEventListener('start', interact)

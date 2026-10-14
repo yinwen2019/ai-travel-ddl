@@ -22,7 +22,7 @@ ai-travel-ddl/
 │   │   ├── common/             # SearchInput, BadgeTag, ProgressBar, EmptyState, SkeletonCard, ErrorBanner, ThemeToggle, ScrollToTop
 │   │   └── views/              # CountdownPage, YearPage, ConferencePage, WorldViewPage
 │   ├── styles/                 # main.css, worldView.css, globe.css
-│   └── assets/                 # maps/world-land.geojson（本地世界底图）
+│   └── assets/                 # maps/（本地 GeoJSON + 地形 WebP）
 ├── public/favicon.svg
 ├── index.html / vite.config.ts / tailwind.config.js / package.json
 └── .env.example
@@ -48,7 +48,7 @@ App.vue
 │   └── WorldViewPage (#/world)
 │       ├── WorldCategoryBar
 │       ├── WorldMap > WorldLegend + WorldCityPanel
-│       │   └── Globe.GL / Three.js > 本地大陆点阵 + 三维光点 + 原创地标
+│       │   └── Globe.GL / Three.js > 本地矢量 / 地形底图 + 三维光点 + 原创地标
 │       └── WorldTable (年份-会议二维表)
 ├── ScrollToTop
 └── AppFooter
@@ -65,7 +65,7 @@ useTheme         ──→ document.documentElement (dark mode class)
 useDDLStatus     ──→ ProgressBar + BadgeTag (传入日期，返回颜色/状态)
 useMultiSelect   ──→ ConferenceFilters ↔ CountdownPage (选取状态共享；MultiSelectNav/CategoryGroup 未接入当前页面)
 cityCoords.ts    ──→ geoDataProcessor (经纬度查询，纯数据层)
-world-land.geojson ──→ createConferenceGlobe → globeLandscape (本地大陆点阵与国界，无外部地图 API)
+world-land.geojson + 地形 WebP ──→ createConferenceGlobe → globeBasemap / globeLandscape（本地矢量陆地、地形、国界，无外部地图 API）
 ```
 
 ## 三层解耦（铁则）

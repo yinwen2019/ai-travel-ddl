@@ -63,18 +63,23 @@
 }
 .globe-intro {
   position: absolute;
-  top: 28px;
-  left: 30px;
+  top: 16px;
+  left: 18px;
+  padding: 12px;
+  border-radius: 8px;
+  background: #0c2031ed;
   pointer-events: none;
 }
 .globe-intro h2 {
   font-size: 22px;
+  line-height: 1.25;
   font-weight: 600;
   letter-spacing: 0.02em;
 }
 .globe-intro p {
   margin-top: 6px;
   font-size: 13px;
+  line-height: 1.4;
   color: var(--globe-muted);
 }
 .globe-topbar {
@@ -84,6 +89,60 @@
   display: flex;
   align-items: center;
   gap: 10px;
+}
+.globe-basemap-control {
+  position: absolute;
+  top: 106px;
+  left: 30px;
+}
+.globe-basemap-switch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 44px;
+  padding: 8px 10px;
+  border: 1px solid var(--globe-line);
+  border-radius: 8px;
+  background: var(--globe-panel);
+  color: var(--globe-ink);
+  font-size: 12px;
+}
+.globe-basemap-switch:hover {
+  background: #1d3b4e;
+}
+.globe-basemap-switch:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+.globe-switch-track {
+  display: block;
+  width: 28px;
+  height: 16px;
+  border-radius: 8px;
+  background: #526b7a;
+}
+.globe-switch-track > span {
+  display: block;
+  width: 12px;
+  height: 12px;
+  margin: 2px;
+  border-radius: 50%;
+  background: #edf5f4;
+}
+.globe-basemap-switch[aria-checked='true'] .globe-switch-track {
+  background: #387e78;
+}
+.globe-basemap-switch[aria-checked='true'] .globe-switch-track > span {
+  transform: translateX(12px);
+}
+.globe-basemap-error {
+  max-width: 180px;
+  margin-top: 8px;
+  padding: 6px 8px;
+  background: var(--globe-panel);
+  color: #efc3a3;
+  font-size: 12px;
 }
 .globe-city-picker {
   display: flex;
@@ -171,6 +230,9 @@
   right: 24px;
   font-size: 12px;
   color: var(--globe-muted);
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: #0c2031ed;
   pointer-events: none;
 }
 .globe-legend-toggle {
@@ -338,8 +400,9 @@
     border-radius: 12px;
   }
   .globe-intro {
-    top: 20px;
-    left: 20px;
+    top: 12px;
+    left: 8px;
+    padding: 8px;
   }
   .globe-intro h2 {
     font-size: 19px;
@@ -355,6 +418,10 @@
     position: absolute;
     right: 0;
     top: 62px;
+  }
+  .globe-basemap-control {
+    top: 82px;
+    left: 16px;
   }
   .globe-city-picker select {
     width: 140px;
@@ -376,7 +443,7 @@
     bottom: 5px;
     left: 12px;
     border-color: transparent;
-    background: transparent;
+    background: var(--globe-panel);
     font-size: 12px;
   }
   .globe-legend-panel {

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import type { CityData, CityKey, LatLngBounds } from '@/types/worldView'
-import type { ConferenceGlobe } from '@/types/globe'
+import type { ConferenceGlobe, GlobeBasemap } from '@/types/globe'
 import WorldLegend from './WorldLegend.vue'
 import WorldCityPanel from './WorldCityPanel.vue'
 import { GLOBE_LANDMARKS } from '@/data/globeLandmarks'
@@ -26,6 +26,9 @@ const playing = ref(true)
 const fullscreen = ref(false)
 const landmarks = ref(true)
 const legend = ref(false)
+const basemap = ref<GlobeBasemap>('vector')
+const basemapLoading = ref(false)
+const basemapError = ref('')
 const hoverCity = ref<CityData | null>(null)
 const cityPanel = ref<InstanceType<typeof WorldCityPanel> | null>(null)
 const cityPicker = ref<HTMLSelectElement | null>(null)
@@ -67,6 +70,21 @@ function closePanel() {
 function onPicker(event: Event) {
   const key = (event.target as HTMLSelectElement).value
   if (key) selectCity(key)
+}
+async function toggleBasemap() {
+  if (!globe || basemapLoading.value) return
+  const instance = globe
+  const next = basemap.value === 'vector' ? 'terrain' : 'vector'
+  basemapLoading.value = true
+  basemapError.value = ''
+  try {
+    await instance.setBasemap(next)
+    if (!disposed && globe === instance) basemap.value = next
+  } catch {
+    if (!disposed && globe === instance) basemapError.value = '地形加载失败，请重试。'
+  } finally {
+    if (!disposed && globe === instance) basemapLoading.value = false
+  }
 }
 function setFullscreen(value: boolean) {
   if (fullscreen.value === value) return
@@ -113,6 +131,9 @@ async function init() {
   globe = null
   loading.value = true
   failed.value = false
+  basemap.value = 'vector'
+  basemapLoading.value = false
+  basemapError.value = ''
   try {
     const { createConferenceGlobe } = await import('@/utils/createConferenceGlobe')
     if (disposed || current.signal.aborted || !host.value) return
@@ -323,6 +344,28 @@ defineExpose({ flyToBounds })
             <path v-else d="M3 8h5V3m8 0v5h5M8 21v-5H3m13 5v-5h5" />
           </svg>
         </button>
+      </div>
+      <div class="globe-basemap-control">
+        <button
+          class="globe-basemap-switch"
+          role="switch"
+          aria-label="柔和地形底图"
+          :aria-checked="basemap === 'terrain'"
+          :aria-busy="basemapLoading"
+          :disabled="loading || basemapLoading"
+          @click="toggleBasemap"
+        >
+          <span>{{ basemapLoading ? '加载地形…' : '柔和地形' }}</span>
+          <span class="globe-switch-track" aria-hidden="true"><span></span></span>
+        </button>
+        <p v-if="basemapError" class="globe-basemap-error" role="status">{{ basemapError }}</p>
+        <span class="sr-only" role="status">{{
+          basemapLoading
+            ? '正在加载地形底图'
+            : basemap === 'terrain'
+              ? '已切换为柔和地形底图'
+              : '当前为简洁色块底图'
+        }}</span>
       </div>
       <div v-if="previewCity && !loading" class="globe-hover-card" aria-live="off">
         <strong>{{ previewCity.city }}</strong
