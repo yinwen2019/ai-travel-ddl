@@ -1,465 +1,462 @@
 <script setup lang="ts">
-import { ref, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
-import L from 'leaflet'
-import 'leaflet/dist/leaflet.css'
-import type { GeoJsonObject } from 'geojson'
-import type { CityData, CityKey, ConferenceRef, LatLngBounds } from '@/types/worldView'
-import { CATEGORY_COLORS, CATEGORY_CONFIG } from '@/constants'
-import worldLandUrl from '@/assets/maps/world-land.geojson?url'
+import { ref, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import type { CityData, CityKey, LatLngBounds } from '@/types/worldView'
+import type { ConferenceGlobe } from '@/types/globe'
 import WorldLegend from './WorldLegend.vue'
-
-// ============================================================
-// Props & Emits
-// ============================================================
+import WorldCityPanel from './WorldCityPanel.vue'
+import { GLOBE_LANDMARKS } from '@/data/globeLandmarks'
+import '@/styles/globe.css'
 
 const props = defineProps<{
   cityIndex: Map<CityKey, CityData>
   highlightedCity: CityKey | null
   pinnedCity: CityKey | null
 }>()
-
 const emit = defineEmits<{
   pin: [cityKey: CityKey]
   'map-error': []
+  hover: [cityKey: CityKey | null]
 }>()
-
-// ============================================================
-// 响应式状态
-// ============================================================
-
-const mapContainer = ref<HTMLDivElement | null>(null)
-const mapLoadFailed = ref(false)
-
-let map: L.Map | null = null
-let baseMapLayer: L.GeoJSON | null = null
-const markers = new Map<CityKey, L.CircleMarker>()
-let darkObserver: MutationObserver | null = null
-const worldBounds = L.latLngBounds([-85, -180], [85, 180])
-
-// ============================================================
-// 颜色读取（从 CSS 变量动态获取，自动适配深色模式）
-// ============================================================
-
-function getCssColor(varName: string): string {
-  const value = getComputedStyle(document.documentElement)
-    .getPropertyValue(varName)
-    .trim()
-  return value || '#9ca3af'
+const shell = ref<HTMLElement | null>(null)
+const host = ref<HTMLElement | null>(null)
+const loading = ref(true)
+const failed = ref(false)
+const reducedMotion = ref(false)
+const playing = ref(true)
+const fullscreen = ref(false)
+const landmarks = ref(true)
+const legend = ref(false)
+const hoverCity = ref<CityData | null>(null)
+const cityPanel = ref<InstanceType<typeof WorldCityPanel> | null>(null)
+const cityPicker = ref<HTMLSelectElement | null>(null)
+let globe: ConferenceGlobe | null = null
+let observer: ResizeObserver | null = null
+let intersection: IntersectionObserver | null = null
+let abort: AbortController | null = null
+let disposed = false
+let motionQuery: MediaQueryList | null = null
+let visible = true
+let previousFocus: HTMLElement | null = null
+let savedOverflow = ''
+const cities = computed(() =>
+  [...props.cityIndex.values()].sort((a, b) => a.city.localeCompare(b.city)),
+)
+const selectedCity = computed(() =>
+  props.pinnedCity ? (props.cityIndex.get(props.pinnedCity) ?? null) : null,
+)
+const previewCity = computed(() => (!selectedCity.value ? hoverCity.value : null))
+const selectedLandmark = computed(() =>
+  GLOBE_LANDMARKS.find((item) => item.cityKey === props.pinnedCity),
+)
+function syncMotion() {
+  globe?.setMotion(playing.value && !reducedMotion.value)
 }
-
-function getDotColor(city: CityData): string {
-  if (city.dotColor === 'history') return getCssColor('--world-dot-history')
-  return CATEGORY_COLORS[city.dotColor]
+function setVisibility() {
+  globe?.setVisible(visible && !document.hidden)
 }
-
-function getDotBorderColor(): string {
-  return getCssColor('--world-dot-border')
+function onMotionChange(event: MediaQueryListEvent) {
+  reducedMotion.value = event.matches
+  syncMotion()
 }
-
-function getBaseMapStyle(): L.PathOptions {
-  return {
-    fillColor: getCssColor('--world-map-land'),
-    color: getCssColor('--world-map-border'),
-    weight: 0.8,
-    fillOpacity: 1,
-    opacity: 1,
+function selectCity(key: CityKey) {
+  emit('pin', key)
+}
+function closePanel() {
+  if (props.pinnedCity) emit('pin', props.pinnedCity)
+}
+function onPicker(event: Event) {
+  const key = (event.target as HTMLSelectElement).value
+  if (key) selectCity(key)
+}
+function setFullscreen(value: boolean) {
+  if (fullscreen.value === value) return
+  fullscreen.value = value
+  if (value) {
+    savedOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+  } else document.body.style.overflow = savedOverflow
+  nextTick(() => shell.value?.querySelector<HTMLButtonElement>('[data-fullscreen]')?.focus())
+}
+function handleKeys(event: KeyboardEvent) {
+  if (event.key === 'Escape') {
+    if (selectedCity.value) closePanel()
+    else if (fullscreen.value) setFullscreen(false)
+    else legend.value = false
   }
-}
-
-// ============================================================
-// 光点大小映射
-// ============================================================
-
-function tierToRadius(tier: number): number {
-  const map: Record<number, number> = { 1: 8, 2: 12, 3: 16, 4: 20, 5: 25 }
-  return map[tier] || 8
-}
-
-// ============================================================
-// Tooltip HTML 构建
-// ============================================================
-
-type TooltipDeadlineKind = 'Abstract' | 'Submission'
-
-interface TooltipDeadline {
-  kind: TooltipDeadlineKind
-  date: string
-}
-
-function getTodayUtcTime(): number {
-  const today = new Date()
-  today.setUTCHours(0, 0, 0, 0)
-  return today.getTime()
-}
-
-function getDateTime(dateStr: string | null): number | null {
-  if (!dateStr) return null
-  const date = new Date(`${dateStr}T00:00:00Z`)
-  if (Number.isNaN(date.getTime())) return null
-  return date.getTime()
-}
-
-function getTooltipDeadline(ref: ConferenceRef): string {
-  const todayTime = getTodayUtcTime()
-  const deadlines: TooltipDeadline[] = [
-    ...(ref.abstractDdl ?? []).map((ddl) => ({
-      kind: 'Abstract' as const,
-      date: ddl.date,
-    })),
-    ...(ref.paperDdl ?? []).map((ddl) => ({
-      kind: 'Submission' as const,
-      date: ddl.date,
-    })),
-  ]
-
-  const nextDeadline = deadlines
-    .filter((ddl) => {
-      const dateTime = getDateTime(ddl.date)
-      return dateTime != null && dateTime >= todayTime
-    })
-    .sort((a, b) => {
-      const aTime = getDateTime(a.date) ?? Number.POSITIVE_INFINITY
-      const bTime = getDateTime(b.date) ?? Number.POSITIVE_INFINITY
-      return aTime - bTime
-    })[0]
-
-  if (nextDeadline) {
-    return `<br/><span class="text-xs" style="color: var(--color-urgent)">${nextDeadline.kind}: ${nextDeadline.date}</span>`
-  }
-
-  const startTime = getDateTime(ref.startDate)
-  const endTime = getDateTime(ref.endDate)
-  if (
-    ref.startDate &&
-    (startTime == null || startTime >= todayTime || (endTime != null && endTime >= todayTime))
-  ) {
-    return `<br/><span class="text-xs" style="color: var(--color-travel)">Travel: ${ref.startDate}</span>`
-  }
-
-  return ''
-}
-
-function buildTooltipContent(city: CityData): string {
-  const confs = [...city.conferences].sort((a, b) => {
-    if (a.type !== b.type) return a.type === 'upcoming' ? -1 : 1
-    return b.year - a.year
-  })
-
-  const lines = confs.map((ref) => {
-    const catLabel = CATEGORY_CONFIG[ref.category]?.short || ref.category
-    const typeLabel = ref.type === 'upcoming' ? 'upcoming' : 'history'
-    let line = `<span class="text-xs text-gray-400">[${catLabel}]</span> <strong>${ref.conferenceName}</strong> — ${ref.year} <em>(${typeLabel})</em>`
-
-    // DDL 信息（仅 upcoming）
-    if (ref.type === 'upcoming') {
-      line += getTooltipDeadline(ref)
+  // 页面全屏时只在场景控件中循环焦点，避免跳到背后的年表。
+  if (event.key === 'Tab' && fullscreen.value && shell.value) {
+    const elements = [
+      ...shell.value.querySelectorAll<HTMLElement>(
+        'button:not(:disabled), select, a[href], [tabindex="0"]',
+      ),
+    ].filter((element) => element.offsetParent !== null)
+    const first = elements[0]
+    const last = elements[elements.length - 1]
+    if (
+      event.shiftKey &&
+      (document.activeElement === first || !shell.value.contains(document.activeElement))
+    ) {
+      event.preventDefault()
+      last?.focus()
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault()
+      first?.focus()
     }
-
-    return `<div style="margin-bottom:2px;line-height:1.4">${line}</div>`
-  })
-
-  return `
-    <div style="font-weight:700;margin-bottom:4px;font-size:0.9rem">${city.city}, ${city.country}</div>
-    <div style="font-size:0.75rem;color:var(--color-text-secondary);margin-bottom:4px">
-      共 ${city.totalCount} 场 · 历史 ${city.historyCount} · 即将 ${city.upcomingCount}
-    </div>
-    ${lines.join('')}
-  `
-}
-
-// ============================================================
-// Marker 创建/更新
-// ============================================================
-
-function createMarkers(): void {
-  if (!map) return
-
-  // 清除旧标记
-  for (const [, marker] of markers) {
-    map.removeLayer(marker)
-  }
-  markers.clear()
-  // 创建新标记
-  const cities = Array.from(props.cityIndex.values())
-
-  for (const city of cities) {
-    const radius = tierToRadius(city.sizeTier)
-    const color = getDotColor(city)
-    const borderColor = getDotBorderColor()
-
-    const marker = L.circleMarker([city.lat, city.lng], {
-      radius,
-      fillColor: color,
-      color: borderColor,
-      weight: 1.5,
-      fillOpacity: 0.85,
-    })
-
-    // Tooltip
-    const tooltip = L.tooltip({
-      direction: 'auto',
-      offset: [0, -radius - 4],
-      className: 'world-tooltip',
-      opacity: 0.95,
-    }).setContent(buildTooltipContent(city))
-
-    marker.bindTooltip(tooltip)
-
-    // 事件处理
-    marker.on('mouseover', () => {
-      if (!props.pinnedCity || props.pinnedCity !== city.cityKey) {
-        marker.openTooltip()
-      }
-      highlightMarker(city.cityKey, true)
-    })
-
-    marker.on('mouseout', () => {
-      if (!props.pinnedCity || props.pinnedCity !== city.cityKey) {
-        marker.closeTooltip()
-      }
-      highlightMarker(city.cityKey, false)
-    })
-
-    marker.on('click', () => {
-      emit('pin', city.cityKey)
-      // fly-to 由父组件处理（在 togglePin 后通过 watch 触发）
-    })
-
-    marker.addTo(map)
-    markers.set(city.cityKey, marker)
-  }
-
-  // 恢复固定状态
-  if (props.pinnedCity && markers.has(props.pinnedCity)) {
-    const m = markers.get(props.pinnedCity)!
-    m.openTooltip()
   }
 }
-
-// ============================================================
-// 高亮控制
-// ============================================================
-
-function highlightMarker(cityKey: CityKey, on: boolean): void {
-  const marker = markers.get(cityKey)
-  if (!marker) return
-
-  if (on) {
-    const city = props.cityIndex.get(cityKey)
-    const baseRadius = city ? tierToRadius(city.sizeTier) : 8
-    marker.setRadius(baseRadius * 1.5)
-    marker.bringToFront()
-    marker.setStyle({ fillOpacity: 1, weight: 3 })
-  } else {
-    const city = props.cityIndex.get(cityKey)
-    const baseRadius = city ? tierToRadius(city.sizeTier) : 8
-    marker.setRadius(baseRadius)
-    marker.setStyle({ fillOpacity: 0.85, weight: 1.5 })
-  }
-}
-
-// ============================================================
-// Fly-to（父组件通过 defineExpose 调用）
-// ============================================================
-
-function flyToBounds(bounds: LatLngBounds): void {
-  if (!map) return
-  const leafletBounds = L.latLngBounds(
-    [bounds.minLat, bounds.minLng],
-    [bounds.maxLat, bounds.maxLng],
-  )
-  map.flyToBounds(leafletBounds, { padding: [40, 40], duration: 1.2 })
-}
-
-function flyToCity(lat: number, lng: number): void {
-  if (!map) return
-  map.flyTo([lat, lng], Math.max(map.getZoom(), 6), { duration: 0.8 })
-}
-
-// ============================================================
-// 刷新标记颜色（深色模式切换时调用）
-// ============================================================
-
-function refreshMarkerColors(): void {
-  for (const [key, marker] of markers) {
-    const city = props.cityIndex.get(key)
-    if (!city) continue
-    const color = getDotColor(city)
-    const borderColor = getDotBorderColor()
-    marker.setStyle({ fillColor: color, color: borderColor })
-  }
-}
-
-function refreshBaseMapStyle(): void {
-  if (!baseMapLayer) return
-  baseMapLayer.setStyle(getBaseMapStyle())
-}
-
-async function addLocalBaseMap(): Promise<void> {
-  if (!map) return
-
-  const response = await fetch(worldLandUrl)
-  if (!response.ok) {
-    throw new Error(`Local world map failed to load: ${response.status}`)
-  }
-
-  const data = (await response.json()) as GeoJsonObject
-  baseMapLayer = L.geoJSON(data, {
-    interactive: false,
-    style: getBaseMapStyle,
-  }).addTo(map)
-}
-
-function destroyMap(): void {
-  markers.clear()
-  baseMapLayer = null
-
-  if (map) {
-    map.remove()
-    map = null
-  }
-}
-
-async function initializeMap(): Promise<void> {
-  if (!mapContainer.value) return
-
-  destroyMap()
-  mapLoadFailed.value = false
-
+async function init() {
+  if (!host.value) return
+  abort?.abort()
+  abort = new AbortController()
+  const current = abort
+  globe?.destroy()
+  globe = null
+  loading.value = true
+  failed.value = false
   try {
-    // 初始化地图
-    map = L.map(mapContainer.value, {
-      center: [25, 0],
-      zoom: 2,
-      minZoom: 1,
-      maxZoom: 8,
-      maxBounds: worldBounds,
-      maxBoundsViscosity: 0.8,
-      scrollWheelZoom: true,
-      zoomControl: false,
-      preferCanvas: false,
-      attributionControl: false,
-    })
-
-    L.control.zoom({ position: 'topright' }).addTo(map)
-
-    await addLocalBaseMap()
-
-    // 创建标记
-    createMarkers()
-
-    // 深色模式监听
-    if (!darkObserver) {
-      darkObserver = new MutationObserver(() => {
-        refreshBaseMapStyle()
-        refreshMarkerColors()
-      })
-      darkObserver.observe(document.documentElement, {
-        attributes: true,
-        attributeFilter: ['class'],
-      })
+    const { createConferenceGlobe } = await import('@/utils/createConferenceGlobe')
+    if (disposed || current.signal.aborted || !host.value) return
+    const instance = await createConferenceGlobe(
+      host.value,
+      {
+        cities: cities.value,
+        onHover(city) {
+          hoverCity.value = city
+          emit('hover', city?.cityKey ?? null)
+        },
+        onSelect(city) {
+          selectCity(city.cityKey)
+        },
+        onError() {
+          failed.value = true
+          globe?.setVisible(false)
+          emit('map-error')
+        },
+      },
+      current.signal,
+    )
+    if (disposed || current.signal.aborted) {
+      instance.destroy()
+      return
     }
-  } catch {
-    destroyMap()
-    mapLoadFailed.value = true
+    globe = instance
+    globe.setActive(props.highlightedCity, props.pinnedCity)
+    globe.setLandmarks(landmarks.value)
+    syncMotion()
+    setVisibility()
+    loading.value = false
+    if (selectedCity.value) globe.flyToCity(selectedCity.value)
+  } catch (error) {
+    if (current.signal.aborted || disposed) return
+    console.warn('[WorldGlobe] 场景无法加载', error)
+    failed.value = true
+    loading.value = false
     emit('map-error')
   }
 }
-
-async function retryMap(): Promise<void> {
-  mapLoadFailed.value = false
-  await nextTick()
-  await initializeMap()
+function flyToBounds(bounds: LatLngBounds) {
+  globe?.flyToBounds(bounds)
+  shell.value?.scrollIntoView({
+    behavior: reducedMotion.value ? 'instant' : 'smooth',
+    block: 'center',
+  })
 }
-
-// ============================================================
-// 生命周期
-// ============================================================
-
-onMounted(async () => {
-  await nextTick()
-  await initializeMap()
-})
-
-onBeforeUnmount(() => {
-  if (darkObserver) {
-    darkObserver.disconnect()
-    darkObserver = null
-  }
-  destroyMap()
-})
-
-// ============================================================
-// Watch Props
-// ============================================================
-
-// 数据变更 → 重建标记
-watch(
-  () => props.cityIndex,
-  () => {
-    createMarkers()
-  },
-  { deep: true },
-)
-
-// 高亮城市变更
 watch(
   () => props.highlightedCity,
-  (newVal, oldVal) => {
-    if (oldVal) highlightMarker(oldVal, false)
-    if (newVal) highlightMarker(newVal, true)
-  },
+  () => globe?.setActive(props.highlightedCity, props.pinnedCity),
 )
-
-// 固定城市变更 → 打开/关闭 tooltip + flyTo
 watch(
   () => props.pinnedCity,
-  (newVal, oldVal) => {
-    // 关闭旧固定
-    if (oldVal) {
-      const oldMarker = markers.get(oldVal)
-      if (oldMarker) {
-        oldMarker.closeTooltip()
-      }
-    }
-
-    // 打开新固定
-    if (newVal) {
-      const newMarker = markers.get(newVal)
-      if (newMarker) {
-        newMarker.openTooltip()
-        // 平滑居中
-        const city = props.cityIndex.get(newVal)
-        if (city) {
-          flyToCity(city.lat, city.lng)
-        }
-      }
+  (key) => {
+    globe?.setActive(props.highlightedCity, key)
+    const city = key ? props.cityIndex.get(key) : null
+    if (city) {
+      const active = document.activeElement
+      if (active instanceof HTMLElement && !active.closest('.globe-city-detail'))
+        previousFocus = active
+      globe?.flyToCity(city)
+      shell.value?.scrollIntoView({
+        behavior: reducedMotion.value ? 'instant' : 'smooth',
+        block: 'center',
+      })
+      nextTick(() => cityPanel.value?.focus())
+    } else {
+      nextTick(() => {
+        const canRestore =
+          previousFocus?.isConnected && (!fullscreen.value || shell.value?.contains(previousFocus))
+        const target = canRestore ? previousFocus : cityPicker.value
+        target?.focus({ preventScroll: true })
+      })
     }
   },
 )
-
+watch(cities, () => globe?.setCities(cities.value))
+watch(playing, syncMotion)
+watch(landmarks, (value) => globe?.setLandmarks(value))
+onMounted(() => {
+  motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+  reducedMotion.value = motionQuery.matches
+  motionQuery.addEventListener('change', onMotionChange)
+  document.addEventListener('visibilitychange', setVisibility)
+  document.addEventListener('keydown', handleKeys)
+  observer = new ResizeObserver(([entry]) => {
+    if (entry.contentRect.width && entry.contentRect.height)
+      globe?.resize(entry.contentRect.width, entry.contentRect.height)
+  })
+  if (host.value) observer.observe(host.value)
+  intersection = new IntersectionObserver(
+    ([entry]) => {
+      visible = entry.isIntersecting
+      setVisibility()
+    },
+    { threshold: 0.05 },
+  )
+  if (shell.value) intersection.observe(shell.value)
+  init()
+})
+onBeforeUnmount(() => {
+  disposed = true
+  abort?.abort()
+  observer?.disconnect()
+  intersection?.disconnect()
+  motionQuery?.removeEventListener('change', onMotionChange)
+  document.removeEventListener('visibilitychange', setVisibility)
+  document.removeEventListener('keydown', handleKeys)
+  if (fullscreen.value) document.body.style.overflow = savedOverflow
+  globe?.destroy()
+})
 defineExpose({ flyToBounds })
 </script>
 
 <template>
-  <div class="world-map-container">
-    <!-- 地图实例 -->
+  <section
+    ref="shell"
+    class="globe-shell"
+    :class="{ 'is-fullscreen': fullscreen }"
+    aria-label="三维世界会议地图"
+    :role="fullscreen ? 'dialog' : 'region'"
+    :aria-modal="fullscreen || undefined"
+    :aria-busy="loading"
+  >
     <div
-      v-if="!mapLoadFailed"
-      ref="mapContainer"
-      class="h-full w-full"
+      ref="host"
+      class="globe-canvas"
+      @pointerenter="globe?.setPaused(true)"
+      @pointerleave="globe?.setPaused(false)"
     ></div>
-
-    <!-- 地图加载失败占位 -->
-    <div v-else class="world-map-error">
-      <div class="world-map-error-icon">🗺️</div>
-      <div class="world-map-error-text">地图加载失败</div>
-      <button class="world-map-error-retry" @click="retryMap">
-        重试
+    <div v-if="loading && !failed" class="globe-loading" role="status">
+      <span class="globe-loading-orb"></span><span>正在展开研究的世界…</span>
+    </div>
+    <div v-if="failed" class="globe-failure" role="status">
+      <svg
+        width="40"
+        height="40"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.2"
+        aria-hidden="true"
+      >
+        <circle cx="12" cy="12" r="9" />
+        <path d="M3 12h18M12 3c-5 5-5 13 0 18 5-5 5-13 0-18" />
+      </svg>
+      <h2>暂时无法展开 3D 地球</h2>
+      <p>请重试，或继续使用下方年表查看会议。</p>
+      <button class="globe-button" @click="init">重新加载</button>
+      <button
+        v-if="fullscreen"
+        class="globe-button"
+        aria-label="退出全屏地图"
+        @click="setFullscreen(false)"
+      >
+        退出全屏
       </button>
     </div>
-
-    <!-- 图例 -->
-    <WorldLegend />
-  </div>
+    <template v-if="!failed">
+      <div class="globe-intro">
+        <h2>研究的足迹</h2>
+        <p>{{ cityIndex.size }} 座城市，连接每一次相遇。</p>
+      </div>
+      <div class="globe-topbar">
+        <label class="globe-city-picker"
+          ><svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.7"
+            aria-hidden="true"
+          >
+            <circle cx="10.5" cy="10.5" r="6.5" />
+            <path d="m16 16 4.5 4.5" /></svg
+          ><span class="sr-only">定位举办城市</span
+          ><select
+            ref="cityPicker"
+            :value="pinnedCity || ''"
+            :disabled="loading"
+            @change="onPicker"
+          >
+            <option value="">定位城市</option>
+            <option v-for="city in cities" :key="city.cityKey" :value="city.cityKey">
+              {{ city.city }} · {{ city.totalCount }} 场
+            </option>
+          </select></label
+        >
+        <button
+          class="globe-icon-button"
+          data-fullscreen
+          :aria-label="fullscreen ? '退出全屏地图' : '全屏查看地图'"
+          :aria-pressed="fullscreen"
+          @click="setFullscreen(!fullscreen)"
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            aria-hidden="true"
+          >
+            <path v-if="!fullscreen" d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5" />
+            <path v-else d="M3 8h5V3m8 0v5h5M8 21v-5H3m13 5v-5h5" />
+          </svg>
+        </button>
+      </div>
+      <div v-if="previewCity && !loading" class="globe-hover-card" aria-live="off">
+        <strong>{{ previewCity.city }}</strong
+        ><span>{{ previewCity.country }} · 共 {{ previewCity.totalCount }} 场</span
+        ><span>点击查看会议</span>
+      </div>
+      <div v-if="selectedCity" class="globe-city-detail">
+        <WorldCityPanel ref="cityPanel" :city="selectedCity" @close="closePanel" />
+        <p v-if="selectedLandmark && landmarks" class="globe-landmark-note">
+          {{ selectedLandmark.name }} · 城市地标示意，非会议场馆
+        </p>
+      </div>
+      <div class="globe-tools" aria-label="地球显示控制">
+        <button
+          class="globe-icon-button"
+          :aria-label="playing && !reducedMotion ? '暂停地球动画' : '播放地球动画'"
+          :aria-pressed="playing && !reducedMotion"
+          :disabled="loading || reducedMotion"
+          :title="reducedMotion ? '已遵循系统减少动态效果设置' : ''"
+          @click="playing = !playing"
+        >
+          <svg
+            width="17"
+            height="17"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.7"
+            aria-hidden="true"
+          >
+            <path v-if="playing && !reducedMotion" d="M8 5v14M16 5v14" />
+            <path v-else d="m8 5 11 7-11 7Z" />
+          </svg>
+        </button>
+        <span class="globe-tool-divider"></span>
+        <button
+          class="globe-icon-button"
+          aria-label="放大地球"
+          :disabled="loading"
+          @click="globe?.zoom(0.72)"
+        >
+          <svg
+            width="17"
+            height="17"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.7"
+            aria-hidden="true"
+          >
+            <path d="M12 5v14M5 12h14" />
+          </svg>
+        </button>
+        <button
+          class="globe-icon-button"
+          aria-label="缩小地球"
+          :disabled="loading"
+          @click="globe?.zoom(1.4)"
+        >
+          <svg
+            width="17"
+            height="17"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.7"
+            aria-hidden="true"
+          >
+            <path d="M5 12h14" />
+          </svg>
+        </button>
+        <button
+          class="globe-icon-button"
+          aria-label="恢复全球视角"
+          :disabled="loading"
+          @click="globe?.reset()"
+        >
+          <svg
+            width="17"
+            height="17"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            aria-hidden="true"
+          >
+            <path d="M4 10a8 8 0 1 1 1.5 7M4 4v6h6" />
+          </svg>
+        </button>
+        <span class="globe-tool-divider"></span>
+        <button
+          class="globe-icon-button"
+          aria-label="显示卡通地标"
+          :aria-pressed="landmarks"
+          :disabled="loading"
+          @click="landmarks = !landmarks"
+        >
+          <svg
+            width="17"
+            height="17"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            aria-hidden="true"
+          >
+            <path d="M3 21h18M7 21V9l5-6 5 6v12M7 13h10M12 3v18" />
+          </svg>
+        </button>
+      </div>
+      <button
+        class="globe-legend-toggle"
+        :aria-expanded="legend"
+        aria-controls="globe-legend"
+        @click="legend = !legend"
+      >
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          aria-hidden="true"
+        >
+          <circle cx="12" cy="12" r="9" />
+          <path d="M12 11v6m0-10v1" /></svg
+        >图例
+      </button>
+      <div v-if="legend" id="globe-legend" class="globe-legend-panel">
+        <WorldLegend />
+        <p>大小表示累计场次；放大查看地标。</p>
+      </div>
+      <p class="globe-hint">拖动探索<span> · 放大遇见城市地标</span></p>
+    </template>
+  </section>
 </template>

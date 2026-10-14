@@ -18,7 +18,7 @@ function dismissError() {
 </script>
 
 <template>
-  <div class="flex min-h-screen flex-col bg-white dark:bg-gray-900">
+  <div class="app-shell">
     <AppHeader />
 
     <!-- 错误边界 -->
@@ -30,10 +30,7 @@ function dismissError() {
     />
 
     <!-- 主内容区 -->
-    <main
-      v-else
-      class="flex-1 animate-fade-in"
-    >
+    <main v-else class="min-w-0 flex-1">
       <router-view />
     </main>
 

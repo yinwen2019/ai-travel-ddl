@@ -7,8 +7,7 @@ const data = rawData as ConferenceData
 function safeConferences(): Conference[] {
   if (!data || !Array.isArray(data.conferences)) return []
   return data.conferences.filter(
-    (c): c is Conference =>
-      !!c && typeof c.id === 'string' && typeof c.name === 'string',
+    (c): c is Conference => !!c && typeof c.id === 'string' && typeof c.name === 'string',
   )
 }
 
@@ -31,5 +30,7 @@ export function useConferences() {
     })
   }
 
-  return { conferences, getById, search }
+  const lastUpdated = computed(() => data.meta?.last_updated ?? null)
+
+  return { conferences, getById, search, lastUpdated }
 }

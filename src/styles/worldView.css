@@ -1,346 +1,200 @@
-/* ========================================
-   世界视图 — CSS 变量与组件样式
-   前缀 --world-
-   ======================================== */
-
 :root {
-  /* 光点颜色 */
-  --world-dot-history: #9ca3af;
-  --world-dot-upcoming: #f59e0b;
-  --world-dot-border: #ffffff;
-  --world-dot-highlight-scale: 1.5;
-
-  /* 本地世界底图 */
-  --world-map-water: #dbeafe;
-  --world-map-land: #f8fafc;
-  --world-map-border: #cbd5e1;
-
-  /* 表格 */
-  --world-upcoming-row-bg: rgba(251, 191, 36, 0.08);
-  --world-upcoming-row-border: rgba(251, 191, 36, 0.25);
-  --world-table-header-bg: #f9fafb;
-  --world-table-border: #e5e7eb;
-  --world-table-sticky-shadow: 4px 0 8px -4px rgba(0, 0, 0, 0.08);
-
-  /* 图例 */
-  --world-legend-bg: rgba(255, 255, 255, 0.9);
-  --world-legend-text: #111827;
-  --world-legend-border: #e5e7eb;
-
-  /* 地图容器 */
-  --world-map-height: 65vh;
-  --world-map-min-height: 480px;
+  --world-dot-history: #8a8f8d;
+  --world-dot-upcoming: #d39754;
+  --world-dot-border: #fffefb;
+  --world-map-water: #dfe7e5;
+  --world-map-land: #f8f6f0;
+  --world-map-border: #c8cec8;
+  --world-upcoming-row-bg: #f8efe1;
+  --world-upcoming-row-border: #eedec5;
+  --world-table-header-bg: #eeebe4;
+  --world-table-border: var(--color-border);
+  --world-legend-bg: #fffefb;
+  --world-legend-text: var(--color-text-primary);
+  --world-legend-border: var(--color-border);
 }
-
 .dark {
-  --world-dot-history: #6b7280;
-  --world-dot-upcoming: #fbbf24;
-  --world-dot-border: #1f2937;
-
-  --world-map-water: #0f172a;
-  --world-map-land: #1f2937;
-  --world-map-border: #4b5563;
-
-  --world-upcoming-row-bg: rgba(251, 191, 36, 0.12);
-  --world-upcoming-row-border: rgba(251, 191, 36, 0.3);
-  --world-table-header-bg: #1f2937;
-  --world-table-border: #374151;
-  --world-table-sticky-shadow: 4px 0 8px -4px rgba(0, 0, 0, 0.3);
-
-  --world-legend-bg: rgba(17, 24, 39, 0.9);
-  --world-legend-text: #f9fafb;
-  --world-legend-border: #374151;
+  --world-dot-history: #9ba29c;
+  --world-dot-upcoming: #d9ac6c;
+  --world-dot-border: #2e2c29;
+  --world-map-water: #283633;
+  --world-map-land: #3e4440;
+  --world-map-border: #626c64;
+  --world-upcoming-row-bg: #3d352b;
+  --world-upcoming-row-border: #51432f;
+  --world-table-header-bg: #35322e;
+  --world-legend-bg: #2e2c29;
 }
-
-/* ========================================
-   地图容器
-   ======================================== */
-
-.world-map-container {
-  height: var(--world-map-height);
-  min-height: var(--world-map-min-height);
-  position: relative;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  border: 1px solid var(--color-border);
-}
-
-.world-map-container .leaflet-container {
-  background: var(--world-map-water);
-}
-
-@media (max-width: 767px) {
-  .world-map-container {
-    height: 50vh;
-    min-height: 320px;
-  }
-}
-
-/* Leaflet 控件深色适配 */
-.dark .leaflet-control-zoom a {
-  background-color: var(--color-surface-secondary);
-  color: var(--color-text-primary);
-  border-color: var(--color-border);
-}
-
-.dark .leaflet-control-attribution {
-  background-color: rgba(17, 24, 39, 0.7);
-  color: var(--color-text-secondary);
-}
-
-.dark .leaflet-control-attribution a {
-  color: var(--color-brand-light);
-}
-
-/* ========================================
-   光点标记样式（Leaflet 内联样式为主，此为补充）
-   ======================================== */
-
-/* Tooltip 自定义样式（通过 Leaflet className 选项绑定） */
-.leaflet-tooltip.world-tooltip {
-  background-color: var(--color-surface);
-  color: var(--color-text-primary);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  padding: 0.625rem 0.75rem;
-  font-size: var(--text-sm);
-  box-shadow: var(--shadow-md);
-  min-width: 220px;
-  max-width: 1000px;
-  white-space: normal;
-}
-
-.leaflet-tooltip.world-tooltip::before {
-  border-top-color: var(--color-border);
-}
-
-.dark .leaflet-tooltip.world-tooltip {
-  background-color: var(--color-surface-secondary);
-  color: var(--color-text-primary);
-  border-color: var(--color-border);
-}
-
-.dark .leaflet-tooltip.world-tooltip::before {
-  border-top-color: var(--color-border);
-}
-
-/* ========================================
-   图例
-   ======================================== */
-
 .world-legend {
   position: absolute;
-  bottom: 12px;
-  left: 12px;
+  bottom: 16px;
+  left: 16px;
   z-index: 1000;
   background: var(--world-legend-bg);
-  backdrop-filter: blur(8px);
   border: 1px solid var(--world-legend-border);
-  border-radius: var(--radius-md);
-  padding: 0.625rem 0.75rem;
-  font-size: var(--text-xs);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 12px;
   color: var(--world-legend-text);
   line-height: 1.6;
-  box-shadow: var(--shadow-sm);
-  user-select: none;
   display: flex;
-  gap: 1rem;
+  gap: 24px;
+  pointer-events: auto;
 }
-
 .world-legend-section {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
 }
-
 .world-legend-title {
   font-weight: 600;
-  margin-bottom: 2px;
-  font-size: var(--text-xs);
+  margin-bottom: 4px;
   color: var(--color-text-secondary);
 }
-
 .world-legend-row {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
-
 .world-legend-dot {
   display: inline-block;
   border-radius: 50%;
   flex-shrink: 0;
 }
-
-.world-legend-dot--history {
-  background-color: var(--world-dot-history);
+.world-mobile-legend {
+  display: none;
 }
-
-.world-legend-dot--upcoming {
-  background-color: var(--world-dot-upcoming);
+.world-category-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
-
-/* ========================================
-   年表
-   ======================================== */
-
+.world-category-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  color: var(--color-text-secondary);
+  background: var(--color-canvas);
+  font-size: 14px;
+}
+.world-category-chip[aria-pressed='true'] {
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  border-color: var(--color-text-secondary);
+}
+.world-category-chip:not(:disabled):hover {
+  background: var(--color-surface-hover);
+}
+.world-category-chip:disabled {
+  cursor: default;
+}
 .world-table-wrapper {
   overflow-x: auto;
   border: 1px solid var(--world-table-border);
-  border-radius: var(--radius-lg);
-  background-color: var(--color-surface);
+  border-radius: 12px;
+  background: var(--color-surface);
 }
-
 .world-table {
   width: 100%;
-  border-collapse: collapse;
-  font-size: var(--text-sm);
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 14px;
   white-space: nowrap;
 }
-
-/* 年份列（sticky left） */
+.world-table th {
+  background: var(--world-table-header-bg);
+  padding: 0;
+  text-align: center;
+  font-weight: 600;
+  border-bottom: 1px solid var(--world-table-border);
+  border-right: 1px solid var(--world-table-border);
+}
 .world-table .year-col {
   position: sticky;
   left: 0;
   z-index: 2;
-  background-color: var(--color-surface);
+  background: var(--color-surface);
   font-weight: 600;
   text-align: center;
-  min-width: 64px;
-  padding: 0.5rem 0.75rem;
-  border-right: 2px solid var(--world-table-border);
+  min-width: 72px;
+  padding: 12px;
+  border-right: 1px solid var(--world-table-border);
+  font-variant-numeric: tabular-nums;
 }
-
 .world-table thead .year-col {
   z-index: 4;
-  background-color: var(--world-table-header-bg);
+  background: var(--world-table-header-bg);
 }
-
-/* 列头 */
-.world-table th {
-  background-color: var(--world-table-header-bg);
-  padding: 0.5rem 0.75rem;
-  text-align: center;
-  font-weight: 600;
-  border-bottom: 2px solid var(--world-table-border);
-  border-right: 1px solid var(--world-table-border);
-  cursor: pointer;
-  transition: background-color var(--transition-fast);
-  user-select: none;
-}
-
-.world-table th:hover {
-  background-color: var(--color-surface-hover);
-}
-
-/* 分类分组表头 */
 .world-table .category-group-header {
-  background-color: var(--world-table-header-bg);
-  font-size: var(--text-xs);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 0.375rem 0.5rem;
-  border-bottom: 1px solid var(--world-table-border);
-  border-right: 1px solid var(--world-table-border);
+  padding: 10px 12px;
+  color: var(--color-text-secondary);
+  font-size: 12px;
 }
-
-/* 数据单元格 */
 .world-table td {
-  padding: 0.5rem 0.75rem;
+  padding: 0;
   text-align: center;
   border-bottom: 1px solid var(--color-border-light);
   border-right: 1px solid var(--color-border-light);
   color: var(--color-text-primary);
-  transition: background-color var(--transition-fast);
-  cursor: default;
 }
-
-.world-table td:hover {
-  background-color: var(--color-surface-hover);
+.world-table tbody tr:last-child td,
+.world-table tbody tr:last-child th {
+  border-bottom: 0;
 }
-
-/* upcoming 行橙色背景 */
-.world-table tr.row-upcoming .year-col {
-  background-color: var(--world-upcoming-row-bg);
-  border-left: 3px solid var(--world-dot-upcoming);
+.world-table td.cell-empty {
+  color: var(--color-text-secondary);
+  padding: 12px;
 }
-
-.world-table tr.row-upcoming td {
-  background-color: var(--world-upcoming-row-bg);
-}
-
-.world-table tr.row-upcoming td:hover {
-  background-color: var(--world-upcoming-row-border);
-}
-
-/* 空单元格 */
-.world-table .cell-empty {
-  color: var(--color-text-tertiary);
-}
-
-/* 分类颜色指示器（列头小圆点） */
-.world-table .category-indicator {
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  margin-right: 4px;
-  vertical-align: middle;
-}
-
-/* ========================================
-   地图错误占位
-   ======================================== */
-
-.world-map-error {
-  display: flex;
-  flex-direction: column;
+.world-table-button {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 100%;
-  color: var(--color-text-secondary);
-  background-color: var(--color-surface-secondary);
-  gap: 0.75rem;
+  gap: 7px;
+  min-height: 44px;
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 14px;
 }
-
-.world-map-error-icon {
-  font-size: 2.5rem;
-  opacity: 0.5;
+.world-table-button:focus-visible {
+  outline-offset: -3px;
 }
-
-.world-map-error-text {
-  font-size: var(--text-sm);
+.world-table-button:hover,
+.world-table .is-highlighted {
+  background: var(--color-surface-hover);
 }
-
-.world-map-error-retry {
-  padding: 0.375rem 1rem;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
-  background-color: var(--color-surface);
-  color: var(--color-text-primary);
-  cursor: pointer;
-  font-size: var(--text-sm);
-  transition: all var(--transition-fast);
+.world-table tr.row-upcoming td,
+.world-table tr.row-upcoming .year-col {
+  background: var(--world-upcoming-row-bg);
 }
-
-.world-map-error-retry:hover {
-  background-color: var(--color-surface-hover);
+.world-table tr.row-upcoming .year-col {
+  color: var(--color-near-text);
 }
-
-/* ========================================
-   信息横幅
-   ======================================== */
-
+.world-table .category-indicator {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
 .world-info-banner {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.625rem 1rem;
-  border-radius: var(--radius-md);
-  background-color: var(--world-upcoming-row-bg);
-  border: 1px solid var(--world-upcoming-row-border);
-  font-size: var(--text-sm);
+  padding: 12px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
   color: var(--color-text-secondary);
-  margin-bottom: 1rem;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+@media (max-width: 767px) {
+  .world-category-bar {
+    gap: 6px;
+  }
+  .world-category-chip {
+    flex: 1 1 auto;
+    padding-inline: 10px;
+  }
 }

@@ -115,103 +115,92 @@ const locationText = computed(() => {
   const country = entry.value?.country || '待公布'
   return `${city}, ${country}`
 })
+
+const isPending = computed(
+  () =>
+    !isHistoricalDisplay.value &&
+    !isMeetingInProgress.value &&
+    !isTravel.value &&
+    !displayDDL.value,
+)
+const deadlineLabel = computed(() => {
+  if (!displayDDL.value) return ''
+  return (
+    displayDDL.value.note?.trim() ||
+    (entry.value?.abstract_ddl?.includes(displayDDL.value) ? '摘要截止' : '正文截止')
+  )
+})
+const statusStyle = computed(() => {
+  const name = isPending.value ? 'expired' : urgency.value
+  return {
+    '--status-text': `var(--color-${name}-text)`,
+    '--status-indicator': `var(--color-${name})`,
+  }
+})
 </script>
 
 <template>
-  <div
-    class="card flex gap-2"
-    :class="{ 'is-ended': isEnded }"
-  >
-    <!-- 左侧 DDL 紧迫度色条 -->
-    <div
-      class="ddl-strip shrink-0"
-      :class="[urgency, { 'is-traveling': isMeetingInProgress }]"
-    />
-
-    <div class="flex-1 space-y-1.5">
-      <!-- 会议缩写 + 年份（左） | 类别标签（右） -->
-      <div class="flex items-center justify-between">
-        <h3 class="text-xs font-bold text-gray-900 dark:text-white">
-          {{ conference.name }} {{ year }}
-        </h3>
-        <BadgeTag
-          :label="conference.category"
-          :category="conference.category"
-        />
-      </div>
-
-      <!-- 开会时间 -->
-      <p class="text-xs leading-relaxed text-gray-500 dark:text-gray-400">
-        <span class="text-gray-400">开会时间 </span>
-        <span>{{ meetingTimeText }}</span>
-      </p>
-
-      <!-- 举办地 + 官网 -->
-      <p v-if="entry" class="text-xs text-gray-500 dark:text-gray-400">
-        <a
-          v-if="locationHref"
-          :href="locationHref"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="inline-block bg-gradient-to-r from-amber-700 via-rose-600 to-indigo-600 bg-clip-text font-semibold text-transparent transition-opacity hover:opacity-80 dark:from-amber-300 dark:via-pink-300 dark:to-sky-300"
+  <article class="card conference-card" :class="{ 'is-ended': isEnded }" :style="statusStyle">
+    <div class="card-top">
+      <h3 class="card-title">
+        <router-link :to="`/conference/${conference.id}`"
+          >{{ conference.name }} {{ year }}</router-link
         >
-          {{ locationText }}
-        </a>
-        <span v-else>{{ locationText }}</span>
-        <a
-          v-if="officialHref"
-          :href="officialHref"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="ml-2 font-medium text-gray-500 transition-colors hover:text-gray-900 hover:underline dark:text-gray-400 dark:hover:text-gray-200"
-        >
-          官网 ↗
-        </a>
-      </p>
-      <p v-else class="text-xs text-gray-400">地点待公布</p>
-
-      <!-- 正在开会：突出旅行状态 -->
-      <div
-        v-if="isMeetingInProgress"
-        class="inline-flex w-fit rotate-[-1deg] rounded-full bg-gradient-to-r from-emerald-400 via-sky-400 to-fuchsia-400 px-3 py-1 text-sm font-black uppercase text-white shadow-sm"
-      >
-        Traveling!
-      </div>
-
-      <!-- Travel 状态：距离开会倒计时 -->
-      <div v-else-if="isTravel" class="text-xs">
-        <span class="text-gray-400">距离开会 </span>
-        <span class="font-medium text-travel">{{ travelDaysText }}</span>
-      </div>
-
-      <!-- DDL 信息 -->
-      <div v-else-if="displayDDL" class="text-xs">
-        <span class="text-gray-400">{{ displayDDL.note+':' || '正文截止' }} </span>
-        <span
-          class="font-medium"
-          :class="{
-            'text-expired': displayDDLUrgency === 'expired',
-            'text-danger': displayDDLUrgency === 'urgent',
-            'text-warning': displayDDLUrgency === 'near',
-            'text-success': displayDDLUrgency === 'ample',
-          }"
-        >
-          {{displayDDL.date }}
-        </span>
-        <span class="ml-1 text-gray-400">({{ relativeDaysText }})</span>
-      </div>
-
-      <!-- 进度条 / 已结束 -->
-      <ProgressBar
-        v-if="progressEntry"
-        :entry="progressEntry"
-      />
-      <div
-        v-else-if="isHistoricalDisplay && entry"
-        class="rounded bg-gray-100 px-2 py-0.5 text-xs text-gray-500 dark:bg-gray-800"
-      >
-        已结束
-      </div>
+      </h3>
+      <BadgeTag :label="conference.category" :category="conference.category" />
     </div>
-  </div>
+    <div class="card-status">
+      <span class="status-dot" aria-hidden="true" />
+      <template v-if="isHistoricalDisplay"><span class="status-value">已结束</span></template>
+      <template v-else-if="isMeetingInProgress"
+        ><span class="status-value">正在开会</span
+        ><span class="status-note">旅程进行中</span></template
+      >
+      <template v-else-if="isTravel"
+        ><span class="status-note">距离开会</span
+        ><span class="status-value">{{ travelDaysText }}</span></template
+      >
+      <template v-else-if="displayDDL"
+        ><span class="status-note">{{ deadlineLabel }}</span
+        ><span class="status-value">{{ displayDDL.date }}</span
+        ><span class="status-note">{{ relativeDaysText }}</span></template
+      >
+      <template v-else><span class="status-value">投稿日期待公布</span></template>
+    </div>
+    <p class="card-location">
+      <a
+        v-if="locationHref"
+        :href="locationHref"
+        target="_blank"
+        rel="noopener noreferrer"
+        :aria-label="`${locationText}，在新标签页查看城市`"
+        >{{ locationText }}</a
+      ><span v-else>{{ locationText }}</span>
+    </p>
+    <p class="card-meta">会期 {{ meetingTimeText }}</p>
+    <ProgressBar v-if="progressEntry" :entry="progressEntry" />
+    <div class="card-bottom">
+      <router-link :to="`/conference/${conference.id}`" class="text-link">历届详情</router-link>
+      <a
+        v-if="officialHref"
+        :href="officialHref"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-link"
+        :aria-label="`${conference.name} ${year} 官网，在新标签页打开`"
+        >官网
+        <svg
+          class="ml-1"
+          width="12"
+          height="12"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.6"
+          aria-hidden="true"
+        >
+          <path d="M14 4h6v6m0-6L10 14M10 4H4v16h16v-6" /></svg
+      ></a>
+    </div>
+  </article>
 </template>

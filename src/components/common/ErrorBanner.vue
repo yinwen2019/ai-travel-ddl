@@ -10,6 +10,7 @@ defineEmits<{
 
 <template>
   <div
+    role="alert"
     class="rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-800 dark:bg-red-900/20"
   >
     <div class="flex items-start gap-3">
@@ -31,9 +32,7 @@ defineEmits<{
       </div>
 
       <div class="flex-1">
-        <p class="text-sm font-medium text-red-800 dark:text-red-300">
-          出错了
-        </p>
+        <p class="text-sm font-medium text-red-800 dark:text-red-300">出错了</p>
         <p class="mt-1 text-sm text-red-600 dark:text-red-400">
           {{ message }}
         </p>
@@ -41,7 +40,7 @@ defineEmits<{
 
       <!-- 重试按钮 -->
       <button
-        class="shrink-0 rounded-lg bg-red-100 px-3 py-1 text-xs font-medium text-red-700 transition-colors hover:bg-red-200 dark:bg-red-800/40 dark:text-red-400 dark:hover:bg-red-800/60"
+        class="min-h-11 shrink-0 rounded-lg bg-red-100 px-3 py-1 text-sm font-medium text-red-700 transition-colors hover:bg-red-200 dark:bg-red-800/40 dark:text-red-400 dark:hover:bg-red-800/60"
         @click="$emit('retry')"
       >
         重试

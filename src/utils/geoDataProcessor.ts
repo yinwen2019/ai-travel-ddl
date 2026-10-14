@@ -52,15 +52,15 @@ function getUpcomingCategory(refs: ConferenceRef[]): Category | null {
  * 生成城市聚合键 "City, Country"
  */
 export function makeCityKey(city: string, country: string): CityKey {
-  return `${city}, ${country}`
+  // 同一城市的重音写法归为同一坐标键，原始名称仍用于年表展示。
+  const normalizedCity = city.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+  return `${normalizedCity}, ${country}`
 }
 
 /**
  * 从 cityCoords 查询坐标，查不到返回 null
  */
-export function getCityCoords(
-  cityKey: CityKey,
-): { lat: number; lng: number } | null {
+export function getCityCoords(cityKey: CityKey): { lat: number; lng: number } | null {
   return cityCoords.get(cityKey) ?? null
 }
 

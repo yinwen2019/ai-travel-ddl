@@ -1,23 +1,26 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useSearch } from '@/composables/useSearch'
-import { useBreakpoint } from '@/composables/useBreakpoint'
+import { useConferences } from '@/composables/useConferences'
+import SearchInput from '@/components/common/SearchInput.vue'
+import YearSelector from '@/components/navigation/YearSelector.vue'
 import { useYearSelect } from '@/composables/useYearSelect'
 import { useDDLStatus } from '@/composables/useDDLStatus'
 import type { Conference, YearEntry } from '@/types/conference'
 import ConferenceCard from '@/components/conference/ConferenceCard.vue'
 import EmptyState from '@/components/common/EmptyState.vue'
 
-const { filteredConferences, isFiltering, clear: clearSearch } = useSearch()
-const { isMobile, isTablet, isDesktop } = useBreakpoint()
-const { currentYear } = useYearSelect()
+const { query, filteredConferences, isFiltering, clear: clearSearch } = useSearch()
+const { conferences } = useConferences()
+const { currentYear, setYear } = useYearSelect()
+const years = computed(() =>
+  [...new Set(conferences.value.flatMap((c) => c.years.map((y) => y.year)))].sort((a, b) => b - a),
+)
 const { getEarliestUpcomingDDL, getRelativeDays, isDateFuture } = useDDLStatus()
 
 // 当前年份有数据的会议
 const conferencesThisYear = computed(() =>
-  filteredConferences.value.filter((c) =>
-    c.years.some((y) => y.year === currentYear.value),
-  ),
+  filteredConferences.value.filter((c) => c.years.some((y) => y.year === currentYear.value)),
 )
 
 function getCurrentYearEntry(conference: Conference): YearEntry | undefined {
@@ -56,17 +59,18 @@ const sortedConferences = computed(() => {
     return a.name.localeCompare(b.name)
   })
 })
-
-const gridCols = computed(() => {
-  if (isMobile.value) return 'grid-cols-1'
-  if (isTablet.value) return 'grid-cols-2'
-  if (isDesktop.value) return 'grid-cols-3'
-  return 'grid-cols-4'
-})
 </script>
 
 <template>
-  <div class="container-page py-6">
+  <div class="container-page year-page page-content">
+    <div class="page-heading">
+      <div>
+        <h1 class="page-title">年份视图</h1>
+        <p class="page-description">一年的研究计划，一眼看清。</p>
+      </div>
+      <div class="view-toolbar"><SearchInput v-model="query" /></div>
+    </div>
+    <YearSelector :years="years" :current="currentYear" @select="setYear" />
     <!-- 空状态 -->
     <EmptyState
       v-if="filteredConferences.length === 0"
@@ -76,7 +80,7 @@ const gridCols = computed(() => {
     />
 
     <!-- 卡片网格 -->
-    <div v-else class="mt-6">
+    <div v-else>
       <!-- 无此年份数据 -->
       <EmptyState
         v-if="sortedConferences.length === 0"
@@ -84,7 +88,7 @@ const gridCols = computed(() => {
         variant="empty"
       />
 
-      <div v-else class="grid gap-4" :class="gridCols">
+      <div v-else class="year-grid">
         <ConferenceCard
           v-for="c in sortedConferences"
           :key="`${c.id}-${currentYear}`"

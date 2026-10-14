@@ -1,16 +1,29 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useConferences } from '@/composables/useConferences'
+const { lastUpdated } = useConferences()
+const updatedText = computed(() => {
+  if (!lastUpdated.value) return '待公布'
+  const date = new Date(lastUpdated.value)
+  if (Number.isNaN(date.getTime())) return '待公布'
+  return new Intl.DateTimeFormat('zh-CN', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    timeZone: 'UTC',
+  }).format(date)
+})
 </script>
-
 <template>
-  <footer
-    class="border-t border-gray-200 py-6 dark:border-gray-800"
-  >
-    <div class="container-page text-center text-xs text-gray-400 dark:text-gray-500">
+  <footer class="site-footer">
+    <div class="container-page footer-inner">
+      <div>
+        <p class="footer-brand">AI Travel DDL</p>
+        <p>会议信息来自各会议官方网站，日期与时区请以官方公告为准。</p>
+      </div>
       <p>
-        AI Top Conf — 数据来源于各会议官方网站，仅供参考。
-      </p>
-      <p class="mt-1">
-        部分时区与日期可能变动，请以官网公告为准。
+        会议数据更新于 <time :datetime="lastUpdated ?? undefined">{{ updatedText }}</time
+        >（UTC）
       </p>
     </div>
   </footer>

@@ -2,7 +2,7 @@
 
 ## Project: AI Travel DDL
 
-AI 顶会信息聚合展示平台 — 展示 15+ AI 顶会的历年举办地、投稿 DDL、开会时间。
+AI 顶会信息聚合展示平台 — 当前数据包含 13 个 AI 会议，展示其历年举办地、投稿 DDL、开会时间。
 纯静态站点，Vue 3 + Vite + Tailwind CSS，部署至 GitHub Pages。
 
 ---
@@ -28,11 +28,12 @@ AI 顶会信息聚合展示平台 — 展示 15+ AI 顶会的历年举办地、�
 | Framework | Vue 3.4+ (Composition API, `<script setup>`) + TypeScript 5.x strict |
 | Build | Vite 5.x, HMR on :5173 |
 | CSS | Tailwind CSS 3.4, `darkMode: 'class'` |
+| Globe | Three.js + Globe.GL, lazy-loaded, local GeoJSON and procedural landmarks |
 | Router | Vue Router (Hash mode) — required for GitHub Pages |
 | Data | Static JSON at `data/conferences.json` + `data/locations.json`, build-time import |
 | Validation | Ajv, `npm run validate` before every build |
 | AI Script | Python 3.11+, `scripts/update_conferences.py` |
-| Deploy | GitHub Pages via `peaceiris/actions-gh-pages` |
+| Deploy | GitHub Pages via `actions/upload-pages-artifact` + `actions/deploy-pages` |
 
 ---
 
@@ -115,6 +116,7 @@ python scripts/update_conferences.py  # AI data update (requires .env)
 | Status | Condition | Color | Tailwind |
 |---|---|---|---|
 | Expired | DDL < today | `#9CA3AF` | `text-expired` |
+| Travel | 投稿 DDL 已截止、待开会或正在开会 | `#6366F1` | `text-travel` |
 | Urgent | ≤ 7 days | `#EF4444` | `text-danger` |
 | Near | ≤ 30 days | `#F59E0B` | `text-warning` |
 | Ample | > 30 days | `#10B981` | `text-success` |
@@ -127,6 +129,7 @@ python scripts/update_conferences.py  # AI data update (requires .env)
 |---|---|---|
 | `#/` | CountdownPage | 会议维度视图（多列布局） |
 | `#/year` | YearPage | 年份视图（卡片网格 + 进度条） |
+| `#/world` | WorldViewPage | 世界地图 + 年份会议二维表 |
 | `#/conference/:id` | ConferencePage | 单个会议详情 + 时间轴 |
 | `#/location/:id` | LocationPage | 城市旅游百科 |
 
@@ -140,3 +143,7 @@ python scripts/update_conferences.py  # AI data update (requires .env)
 - [ ] No `any` type anywhere
 - [ ] No hardcoded conference data in components
 - [ ] Commit follows `type(scope): description` format
+
+## UI 实现基线
+
+UI 重构前参阅 `.docs/10-ui-audit.md`；需求与实际实现的偏差单独记录，不修改需求来迁就既有缺陷。当前筛选位于各视图顶部工具栏，AppHeader 仅保留品牌、导航和主题；当前样式基线见 `.docs/05-ui-design-spec.md`，交付记录见 `.docs/11-ui-refactor-result.md`。

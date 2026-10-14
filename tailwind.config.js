@@ -5,11 +5,18 @@ export default {
   theme: {
     extend: {
       colors: {
-        expired: '#9CA3AF',
-        travel: '#6366F1',
-        danger: '#EF4444',
-        warning: '#F59E0B',
-        success: '#10B981',
+        brand: 'var(--color-brand)',
+        canvas: 'var(--color-canvas)',
+        surface: 'var(--color-surface)',
+        subtle: 'var(--color-surface-secondary)',
+        primary: 'var(--color-text-primary)',
+        secondary: 'var(--color-text-secondary)',
+        line: 'var(--color-border)',
+        expired: 'var(--color-expired-text)',
+        travel: 'var(--color-travel-text)',
+        danger: 'var(--color-urgent-text)',
+        warning: 'var(--color-near-text)',
+        success: 'var(--color-ample-text)',
       },
     },
   },

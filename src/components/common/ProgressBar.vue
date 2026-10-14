@@ -12,7 +12,7 @@ const props = defineProps<{
   }
 }>()
 
-const { getUrgency, getRelativeDays } = useDDLStatus()
+const { getUrgency, getRelativeDays, selectStageDeadline } = useDDLStatus()
 
 interface ProgressNode {
   label: string
@@ -28,11 +28,11 @@ interface RawNode {
 }
 
 const urgencyColors: Record<DDLUrgency, string> = {
-  expired: 'var(--color-expired)',
-  travel: 'var(--color-travel)',
-  urgent: 'var(--color-urgent)',
-  near: 'var(--color-near)',
-  ample: 'var(--color-ample)',
+  expired: 'var(--color-expired-text)',
+  travel: 'var(--color-travel-text)',
+  urgent: 'var(--color-urgent-text)',
+  near: 'var(--color-near-text)',
+  ample: 'var(--color-ample-text)',
 }
 
 const nodes = computed<ProgressNode[]>(() => {
@@ -43,18 +43,20 @@ const nodes = computed<ProgressNode[]>(() => {
   const rawNodes: RawNode[] = []
 
   if (props.entry.abstract_ddl && props.entry.abstract_ddl.length > 0) {
-    const date = props.entry.abstract_ddl[0].date
-    rawNodes.push({ label: '摘要截止', date, urgency: getUrgency(date) })
+    const date = selectStageDeadline(props.entry.abstract_ddl)?.date
+    if (date) rawNodes.push({ label: '摘要截止', date, urgency: getUrgency(date) })
   }
   if (props.entry.paper_ddl && props.entry.paper_ddl.length > 0) {
-    const date = props.entry.paper_ddl[0].date
-    rawNodes.push({ label: '正文截止', date, urgency: getUrgency(date) })
+    const date = selectStageDeadline(props.entry.paper_ddl)?.date
+    if (date) rawNodes.push({ label: '正文截止', date, urgency: getUrgency(date) })
   }
   if (props.entry.start_date) {
     rawNodes.push({ label: '开会', date: props.entry.start_date, urgency: 'travel' })
   }
 
   if (rawNodes.length === 0) return []
+
+  rawNodes.sort((a, b) => a.date.localeCompare(b.date))
 
   // 找到当前阶段
   let currentFound = false
@@ -79,69 +81,25 @@ const nodes = computed<ProgressNode[]>(() => {
 </script>
 
 <template>
-  <div v-if="nodes.length > 0">
-    <!-- 进度条 -->
-    <div class="mt-1 flex items-center gap-0">
-      <template v-for="(node, i) in nodes" :key="node.label">
-        <!-- 节点圆点 -->
-        <div class="flex flex-col items-center">
-          <div
-            class="h-3 w-3 rounded-full border-2"
-            :style="
-              node.state === 'current' && node.color
-                ? { borderColor: node.color, backgroundColor: node.color }
-                : undefined
-            "
-            :class="{
-              'border-gray-400 bg-gray-400 dark:border-gray-500 dark:bg-gray-500':
-                node.state === 'done',
-              'border-gray-300 bg-transparent dark:border-gray-600':
-                node.state === 'future',
-            }"
-          />
-          <span
-            class="mt-1 text-xs whitespace-nowrap"
-            :style="
-              node.state === 'current' && node.color ? { color: node.color } : undefined
-            "
-            :class="{
-              'text-gray-400': node.state === 'done',
-              'font-medium': node.state === 'current',
-              'text-gray-400 dark:text-gray-600': node.state === 'future',
-            }"
-          >
-            {{ node.label }}
-          </span>
-          <span
-            v-if="node.days != null"
-            class="text-xs"
-            :style="
-              node.state === 'current' && node.color ? { color: node.color } : undefined
-            "
-            :class="{ 'text-gray-400': node.state !== 'current' }"
-          >
-            {{
-              node.days >= 0
-                ? `剩 ${node.days} 天`
-                : `已截止`
-            }}
-          </span>
-        </div>
-
-        <!-- 连接线 -->
-        <div
-          v-if="i < nodes.length - 1"
-          class="mb-5 mx-1 h-0.5 w-5 rounded"
-          :class="{
-            'bg-gray-400 dark:bg-gray-500': node.state === 'done',
-            'bg-gray-200 dark:bg-gray-600':
-              node.state === 'current' || node.state === 'future',
-          }"
-        />
-      </template>
+  <div
+    v-if="nodes.length"
+    class="progress-nodes"
+    :style="{ '--node-count': nodes.length }"
+    aria-label="会议时间节点"
+  >
+    <div
+      v-for="node in nodes"
+      :key="node.label"
+      class="progress-node"
+      :class="{ 'is-done': node.state === 'done', 'is-current': node.state === 'current' }"
+      :style="{ '--stage-color': node.color ?? undefined }"
+    >
+      <span class="progress-dot" aria-hidden="true" />
+      <span>{{ node.label }}</span>
+      <span v-if="node.days != null" class="progress-days">{{
+        node.days >= 0 ? `剩 ${node.days} 天` : '已截止'
+      }}</span>
     </div>
   </div>
-
-  <!-- 无节点数据 -->
-  <div v-else class="text-xs text-gray-400">日期待公布</div>
+  <p v-else class="card-meta">日期待公布</p>
 </template>

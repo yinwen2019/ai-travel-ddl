@@ -7,11 +7,12 @@
 | 构建工具 | Vite | ≥5.0 | HMR + 生产构建 |
 | CSS | Tailwind CSS | 3.4.x | `darkMode: 'class'`, 原子化样式 |
 | 路由 | Vue Router (Hash mode) | ≥4.0 | `createWebHashHistory`，兼容 GitHub Pages |
+| 三维地图 | Three.js + Globe.GL | 0.186.x / 2.46.x | 世界路由异步加载，本地地理与模型资源 |
 | 数据格式 | JSON | — | 构建时 import，不 fetch |
 | 数据校验 | Ajv | ≥8.0 | JSON Schema 校验 |
 | 代码检查 | ESLint + Prettier | — | 格式化 + 规范检查 |
 | AI 脚本 | Python + OpenAI SDK | ≥3.11 | 兼容 Perplexity / OpenAI API |
-| 部署 | GitHub Pages + Actions | — | `peaceiris/actions-gh-pages` |
+| 部署 | GitHub Pages + Actions | — | `actions/upload-pages-artifact` + `actions/deploy-pages` |
 
 ### 关键决策
 

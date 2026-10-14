@@ -51,23 +51,36 @@ export function useDDLStatus() {
   ): DDLEntry | null {
     const todayTime = getTodayUtc().getTime()
 
-    return getAllDeadlines(entry)
-      .filter((ddl) => {
-        const dateTime = getDateTime(ddl.date)
-        return dateTime != null && dateTime >= todayTime
-      })
-      .sort((a, b) => {
-        const aTime = getDateTime(a.date) ?? Number.POSITIVE_INFINITY
-        const bTime = getDateTime(b.date) ?? Number.POSITIVE_INFINITY
-        return aTime - bTime
-      })[0] ?? null
+    return (
+      getAllDeadlines(entry)
+        .filter((ddl) => {
+          const dateTime = getDateTime(ddl.date)
+          return dateTime != null && dateTime >= todayTime
+        })
+        .sort((a, b) => {
+          const aTime = getDateTime(a.date) ?? Number.POSITIVE_INFINITY
+          const bTime = getDateTime(b.date) ?? Number.POSITIVE_INFINITY
+          return aTime - bTime
+        })[0] ?? null
+    )
   }
 
   function hasDeadline(entry: Pick<YearEntry, 'abstract_ddl' | 'paper_ddl'>): boolean {
     return getAllDeadlines(entry).some((ddl) => getDateTime(ddl.date) != null)
   }
 
+  // 每个节点取最近未截止日期；全部已截止时保留最近的历史日期。
+  function selectStageDeadline<T extends { date: string }>(
+    entries?: readonly T[] | null,
+  ): T | null {
+    const sorted = [...(entries ?? [])]
+      .filter((ddl) => getDateTime(ddl.date) != null)
+      .sort((a, b) => (getDateTime(a.date) ?? 0) - (getDateTime(b.date) ?? 0))
+    return sorted.find((ddl) => isDateFuture(ddl.date)) ?? sorted[sorted.length - 1] ?? null
+  }
+
   return {
+    selectStageDeadline,
     getUrgency,
     getRelativeDays,
     isDateFuture,

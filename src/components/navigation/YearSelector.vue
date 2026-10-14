@@ -17,7 +17,11 @@ function scrollToCurrent() {
   if (!scrollContainer.value) return
   const activeBtn = scrollContainer.value.querySelector('[data-active]') as HTMLElement
   if (activeBtn) {
-    activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' })
+    activeBtn.scrollIntoView({
+      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+      block: 'nearest',
+      inline: 'center',
+    })
   }
 }
 
@@ -25,36 +29,24 @@ onMounted(() => {
   nextTick(scrollToCurrent)
 })
 
-watch(() => props.current, () => {
-  nextTick(scrollToCurrent)
-})
+watch(
+  () => props.current,
+  () => {
+    nextTick(scrollToCurrent)
+  },
+)
 </script>
 
 <template>
-  <div
-    ref="scrollContainer"
-    class="flex gap-1 overflow-x-auto py-2 scrollbar-hide"
-    style="scrollbar-width: none"
-  >
+  <div ref="scrollContainer" class="year-selector" aria-label="选择年份">
     <button
       v-for="y in years"
       :key="y"
       :data-active="y === current ? '' : undefined"
-      class="shrink-0 rounded-lg px-3 py-1.5 text-sm font-medium whitespace-nowrap transition-all"
-      :class="
-        y === current
-          ? 'bg-success text-white shadow-sm'
-          : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700'
-      "
+      :aria-pressed="y === current"
       @click="emit('select', y)"
     >
       {{ y }}
     </button>
   </div>
 </template>
-
-<style scoped>
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
-</style>

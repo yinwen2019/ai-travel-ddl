@@ -1,44 +1,28 @@
 <script setup lang="ts">
 import { useTheme } from '@/composables/useTheme'
-
 const { theme, toggle } = useTheme()
 </script>
-
 <template>
   <button
-    class="rounded-lg p-1.5 text-gray-500 transition-colors hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
+    class="icon-button"
+    :aria-label="theme === 'dark' ? '切换到浅色模式' : '切换到深色模式'"
     :title="theme === 'dark' ? '切换到浅色模式' : '切换到深色模式'"
     @click="toggle"
   >
-    <!-- 太阳图标（浅色模式） -->
     <svg
-      v-if="theme === 'dark'"
-      class="h-4 w-4"
+      width="19"
+      height="19"
+      viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      viewBox="0 0 24 24"
+      stroke-width="1.6"
+      aria-hidden="true"
     >
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        stroke-width="2"
-        d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-      />
-    </svg>
-    <!-- 月亮图标（深色模式） -->
-    <svg
-      v-else
-      class="h-4 w-4"
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-    >
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        stroke-width="2"
-        d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-      />
+      <template v-if="theme === 'dark'">
+        <circle cx="12" cy="12" r="4" />
+        <path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5" />
+      </template>
+      <path v-else d="M20 15.5A8.5 8.5 0 0 1 8.5 4 8.5 8.5 0 1 0 20 15.5Z" />
     </svg>
   </button>
 </template>

@@ -31,49 +31,41 @@ function goToConference(id: string) {
 </script>
 
 <template>
-  <div v-if="location" class="container-page py-6">
+  <div v-if="location" class="container-page detail-page py-6">
     <!-- 城市标题 -->
     <div class="mb-6">
-      <h1 class="mb-1 text-2xl font-bold text-gray-900 dark:text-white">
+      <h1 class="mb-1 text-2xl font-bold text-primary">
         {{ location.city }}
       </h1>
-      <p class="text-gray-500 dark:text-gray-400">
-        {{ location.country }} · {{ location.continent }}
-      </p>
-      <p class="mt-2 text-sm leading-relaxed text-gray-600 dark:text-gray-400">
+      <p class="text-secondary">{{ location.country }} · {{ location.continent }}</p>
+      <p class="mt-2 text-sm leading-relaxed text-secondary">
         {{ location.description }}
       </p>
     </div>
 
     <!-- 信息卡片行 -->
     <div class="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
-      <div class="rounded-lg border border-gray-200 p-3 text-center dark:border-gray-700">
-        <p class="text-xs text-gray-400">最佳季节</p>
-        <p class="mt-1 text-sm font-medium text-gray-900 dark:text-white">
+      <div class="rounded-lg border border-line p-3 text-center">
+        <p class="text-xs text-secondary">最佳季节</p>
+        <p class="mt-1 text-sm font-medium text-primary">
           {{ location.best_season }}
         </p>
       </div>
-      <div
-        v-if="location.language"
-        class="rounded-lg border border-gray-200 p-3 text-center dark:border-gray-700"
-      >
-        <p class="text-xs text-gray-400">语言</p>
-        <p class="mt-1 text-sm font-medium text-gray-900 dark:text-white">
+      <div v-if="location.language" class="rounded-lg border border-line p-3 text-center">
+        <p class="text-xs text-secondary">语言</p>
+        <p class="mt-1 text-sm font-medium text-primary">
           {{ location.language }}
         </p>
       </div>
-      <div
-        v-if="location.currency"
-        class="rounded-lg border border-gray-200 p-3 text-center dark:border-gray-700"
-      >
-        <p class="text-xs text-gray-400">货币</p>
-        <p class="mt-1 text-sm font-medium text-gray-900 dark:text-white">
+      <div v-if="location.currency" class="rounded-lg border border-line p-3 text-center">
+        <p class="text-xs text-secondary">货币</p>
+        <p class="mt-1 text-sm font-medium text-primary">
           {{ location.currency }}
         </p>
       </div>
-      <div class="rounded-lg border border-gray-200 p-3 text-center dark:border-gray-700">
-        <p class="text-xs text-gray-400">所属洲</p>
-        <p class="mt-1 text-sm font-medium text-gray-900 dark:text-white">
+      <div class="rounded-lg border border-line p-3 text-center">
+        <p class="text-xs text-secondary">所属洲</p>
+        <p class="mt-1 text-sm font-medium text-primary">
           {{ location.continent }}
         </p>
       </div>
@@ -93,9 +85,7 @@ function goToConference(id: string) {
       v-if="location.travel_tips"
       class="mb-6 rounded-lg bg-amber-50 p-4 dark:bg-amber-900/10"
     >
-      <h2 class="mb-1 text-sm font-semibold text-amber-800 dark:text-amber-400">
-        旅行贴士
-      </h2>
+      <h2 class="mb-1 text-sm font-semibold text-amber-800 dark:text-amber-400">旅行贴士</h2>
       <p class="text-sm text-amber-700 dark:text-amber-300">
         {{ location.travel_tips }}
       </p>
@@ -103,9 +93,7 @@ function goToConference(id: string) {
 
     <!-- 关联会议 -->
     <section v-if="relatedConferences.length > 0" class="mb-6">
-      <h2 class="mb-3 text-lg font-semibold text-gray-900 dark:text-white">
-        曾在此举办的会议
-      </h2>
+      <h2 class="mb-3 text-lg font-semibold text-primary">曾在此举办的会议</h2>
       <div class="flex flex-wrap gap-2">
         <button
           v-for="c in relatedConferences"
@@ -122,16 +110,24 @@ function goToConference(id: string) {
   <!-- 地点不存在 -->
   <div v-else class="container-page py-20">
     <div class="flex flex-col items-center gap-4">
-      <div class="rounded-full bg-gray-100 p-4 dark:bg-gray-800">
-        <svg class="h-8 w-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+      <div class="rounded-full bg-subtle p-4">
+        <svg class="h-8 w-8 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="1.5"
+            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+          />
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="1.5"
+            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+          />
         </svg>
       </div>
-      <p class="text-gray-400">地点不存在</p>
-      <button class="nav-chip" @click="router.push('/')">
-        返回首页
-      </button>
+      <p class="text-secondary">地点不存在</p>
+      <button class="nav-chip" @click="router.push('/')">返回首页</button>
     </div>
   </div>
 </template>

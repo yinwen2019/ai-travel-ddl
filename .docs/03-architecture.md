@@ -21,7 +21,7 @@ ai-travel-ddl/
 │   │   ├── world/              # WorldMap, WorldLegend, WorldTable, WorldCategoryBar
 │   │   ├── common/             # SearchInput, BadgeTag, ProgressBar, EmptyState, SkeletonCard, ErrorBanner, ThemeToggle, ScrollToTop
 │   │   └── views/              # CountdownPage, YearPage, ConferencePage, WorldViewPage
-│   ├── styles/                 # main.css, worldView.css
+│   ├── styles/                 # main.css, worldView.css, globe.css
 │   └── assets/                 # maps/world-land.geojson（本地世界底图）
 ├── public/favicon.svg
 ├── index.html / vite.config.ts / tailwind.config.js / package.json
@@ -32,13 +32,13 @@ ai-travel-ddl/
 
 ```
 App.vue
-├── AppHeader (SearchInput, ThemeToggle, ViewSwitch)
+├── AppHeader (BrandMark, ThemeToggle, 三视图导航)
 ├── <router-view>
 │   ├── CountdownPage (#/)
-│   │   ├── MultiSelectNav > CategoryGroup (×5)
+│   │   ├── SearchInput + ConferenceFilters
 │   │   └── ConferenceColumn (×N) > ConferenceCard (×M)
 │   ├── YearPage (#/year)
-│   │   ├── YearSelector
+│   │   ├── SearchInput + YearSelector
 │   │   └── ConferenceCard (×N) > ProgressBar + BadgeTag
 │   ├── ConferencePage (#/conference/:id)
 │   │   └── ConferenceDetail > ConferenceTimelineItem (×N)
@@ -46,8 +46,9 @@ App.vue
 │   │   ├── ClimateCard / FoodList / AttractionList
 │   │   └── 反向关联会议列表
 │   └── WorldViewPage (#/world)
-│       ├── WorldMap > WorldLegend
-│       │   └── Leaflet local GeoJSON base map + CircleMarkers + Tooltips
+│       ├── WorldCategoryBar
+│       ├── WorldMap > WorldLegend + WorldCityPanel
+│       │   └── Globe.GL / Three.js > 本地大陆点阵 + 三维光点 + 原创地标
 │       └── WorldTable (年份-会议二维表)
 ├── ScrollToTop
 └── AppFooter
@@ -62,9 +63,9 @@ conferences.json ──→ useConferences ──→ useWorldView ──→ geoDa
 locations.json  ──→ useLocations  ──→ LocationPage / 城市链接
 useTheme         ──→ document.documentElement (dark mode class)
 useDDLStatus     ──→ ProgressBar + BadgeTag (传入日期，返回颜色/状态)
-useMultiSelect   ──→ MultiSelectNav ↔ CountdownPage (选取状态共享)
+useMultiSelect   ──→ ConferenceFilters ↔ CountdownPage (选取状态共享；MultiSelectNav/CategoryGroup 未接入当前页面)
 cityCoords.ts    ──→ geoDataProcessor (经纬度查询，纯数据层)
-world-land.geojson ──→ WorldMap (本地静态世界国家边界底图，无外部地图 API；可替换为同格式 GeoJSON)
+world-land.geojson ──→ createConferenceGlobe → globeLandscape (本地大陆点阵与国界，无外部地图 API)
 ```
 
 ## 三层解耦（铁则）

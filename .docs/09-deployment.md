@@ -25,7 +25,7 @@ pip install -r scripts/requirements.txt
 | `npm run validate` | JSON Schema 校验 |
 | `npm run lint` | ESLint + fix |
 | `npm run format` | Prettier 格式化 |
-| `npm run type-check` | vue-tsc --noEmit |
+| `npm run type-check` | vue-tsc --noEmit -p tsconfig.app.json |
 
 ## GitHub Pages 部署
 
@@ -57,7 +57,7 @@ push to main → checkout → npm ci → npm run validate → npm run build
 - [ ] `package-lock.json` 已提交
 - [ ] `npm run build` + `npm run validate` 本地通过
 - [ ] Vue Router 使用 `createWebHashHistory`
-- [ ] 世界视图底图资源已随构建产物发布，不依赖外部地图 API
+- [ ] 世界视图 GeoJSON 与 3D 引擎分块随构建产物发布，不依赖外部地图 API；GitHub Pages 子路径下可正常异步加载
 - [ ] `.env` 在 `.gitignore` 中
 
 ## Workflow 文件
