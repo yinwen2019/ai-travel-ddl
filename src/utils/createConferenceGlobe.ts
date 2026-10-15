@@ -250,7 +250,7 @@ export async function createConferenceGlobe(
     new THREE.Points(
       starGeometry,
       new THREE.PointsMaterial({
-        color: '#aebdaf',
+        color: '#a9bdc7',
         size: 1.2,
         sizeAttenuation: false,
         transparent: true,

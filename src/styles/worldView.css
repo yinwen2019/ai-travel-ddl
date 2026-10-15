@@ -7,9 +7,9 @@
   --world-map-border: #c8cec8;
   --world-upcoming-row-bg: #f8efe1;
   --world-upcoming-row-border: #eedec5;
-  --world-table-header-bg: #eeebe4;
+  --world-table-header-bg: var(--color-surface-secondary);
   --world-table-border: var(--color-border);
-  --world-legend-bg: #fffefb;
+  --world-legend-bg: var(--color-surface);
   --world-legend-text: var(--color-text-primary);
   --world-legend-border: var(--color-border);
 }
@@ -22,8 +22,6 @@
   --world-map-border: #626c64;
   --world-upcoming-row-bg: #3d352b;
   --world-upcoming-row-border: #51432f;
-  --world-table-header-bg: #35322e;
-  --world-legend-bg: #2e2c29;
 }
 .world-legend {
   position: absolute;

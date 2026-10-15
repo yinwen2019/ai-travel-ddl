@@ -1,11 +1,4 @@
 .globe-shell {
-  --color-text-primary: var(--globe-ink);
-  --color-text-secondary: var(--globe-muted);
-  --color-text-tertiary: var(--globe-muted);
-  --color-border: var(--globe-line);
-  --color-border-light: var(--globe-line);
-  --color-brand: var(--globe-accent);
-  --color-surface-hover: var(--globe-hover);
   --world-dot-history: var(--globe-history);
   position: relative;
   height: clamp(530px, 74svh, 820px);
