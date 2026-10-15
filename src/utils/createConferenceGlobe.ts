@@ -205,6 +205,7 @@ export async function createConferenceGlobe(
   controls.enableDamping = true
   controls.dampingFactor = 0.075
   controls.enablePan = false
+  // 触控板捏合与鼠标滚轮统一交由 OrbitControls 缩放，避免拦截 Mac 双指手势。
   controls.enableZoom = true
   controls.minDistance = radius * (1 + MIN_GLOBE_ALTITUDE)
   controls.maxDistance = radius * 4.2
@@ -213,9 +214,6 @@ export async function createConferenceGlobe(
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, compact ? 1.5 : 2))
   const canvas = renderer.domElement
   canvas.setAttribute('aria-hidden', 'true')
-  // 双指缩放由 OrbitControls 处理；滚轮留给页面，避免滚动浏览时误放大地球。
-  const pageScroll = (event: WheelEvent) => event.stopImmediatePropagation()
-  canvas.addEventListener('wheel', pageScroll, true)
   function interact() {
     interactionUntil = performance.now() + 7000
   }
@@ -414,7 +412,6 @@ export async function createConferenceGlobe(
       controls.removeEventListener('start', interact)
       controls.removeEventListener('end', interact)
       canvas.removeEventListener('webglcontextlost', onLoss)
-      canvas.removeEventListener('wheel', pageScroll, true)
       globe.pauseAnimation()
       disposeObject(globe.scene())
       globe._destructor()

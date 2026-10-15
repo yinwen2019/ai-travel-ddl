@@ -466,7 +466,7 @@ defineExpose({ flyToBounds })
         <WorldLegend />
         <p>大小表示累计场次；放大查看地标。</p>
       </div>
-      <p class="globe-hint">拖动探索<span> · 放大遇见城市地标</span></p>
+      <p class="globe-hint">拖动旋转<span> · 双指或滚轮缩放</span></p>
     </template>
   </section>
 </template>
