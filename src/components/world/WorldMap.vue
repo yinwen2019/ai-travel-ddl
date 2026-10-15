@@ -51,6 +51,15 @@ const previewCity = computed(() => (!selectedCity.value ? hoverCity.value : null
 const selectedLandmark = computed(() =>
   GLOBE_LANDMARKS.find((item) => item.cityKey === props.pinnedCity),
 )
+const miniaturePreviews = computed(() =>
+  GLOBE_LANDMARKS.filter((item) => item.previewLabel && props.cityIndex.has(item.cityKey)),
+)
+function previewMiniature(key: CityKey) {
+  landmarks.value = true
+  const city = props.cityIndex.get(key)
+  if (key === props.pinnedCity && city) globe?.flyToCity(city)
+  else selectCity(key)
+}
 function syncMotion() {
   globe?.setMotion(playing.value && !reducedMotion.value)
 }
@@ -296,6 +305,21 @@ defineExpose({ flyToBounds })
         <h2>研究的足迹</h2>
         <p>{{ cityIndex.size }} 座城市，连接每一次相遇。</p>
       </div>
+      <div class="globe-miniature-previews" aria-label="探索城市微缩景观">
+        <span>城市微缩景观</span>
+        <div>
+          <button
+            v-for="item in miniaturePreviews"
+            :key="item.cityKey"
+            :aria-label="`探索${item.previewLabel}微缩景观`"
+            :aria-pressed="pinnedCity === item.cityKey"
+            :disabled="loading"
+            @click="previewMiniature(item.cityKey)"
+          >
+            {{ item.previewLabel }}
+          </button>
+        </div>
+      </div>
       <div class="globe-topbar">
         <label class="globe-city-picker"
           ><svg
@@ -351,7 +375,9 @@ defineExpose({ flyToBounds })
       <div v-if="selectedCity" class="globe-city-detail">
         <WorldCityPanel ref="cityPanel" :city="selectedCity" @close="closePanel" />
         <p v-if="selectedLandmark && landmarks" class="globe-landmark-note">
-          {{ selectedLandmark.name }} · 城市地标示意，非会议场馆
+          <strong>{{ selectedLandmark.name }}</strong>
+          <span v-if="selectedLandmark.features">{{ selectedLandmark.features }}</span>
+          <span>城市意象组合，非真实布局或会议场馆。</span>
         </p>
       </div>
       <div class="globe-tools" aria-label="地球显示控制">

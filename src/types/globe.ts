@@ -35,10 +35,12 @@ export interface ConferenceGlobe {
   destroy: () => void
 }
 
-export type LandmarkKind = 'eiffel' | 'opera' | 'needle' | 'marina'
+export type LandmarkKind = 'eiffel' | 'opera' | 'needle' | 'marina' | 'hongkong' | 'vancouver'
 
 export interface GlobeLandmark {
   cityKey: CityKey
   name: string
   kind: LandmarkKind
+  previewLabel?: string
+  features?: string
 }

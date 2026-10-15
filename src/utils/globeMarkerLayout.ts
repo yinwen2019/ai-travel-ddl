@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import { MINIATURE_TILT } from './cityMiniatures'
 
 const point = new THREE.Vector3()
 const right = new THREE.Vector3()
@@ -15,18 +16,25 @@ export function placeLandmark(
   pixelRadius: number,
   unitsPerPixel: number,
   modelScale: number,
+  displaySize = 0,
 ): void {
   root.updateWorldMatrix(true, false)
   right.setFromMatrixColumn(camera.matrixWorld, 0)
   up.setFromMatrixColumn(camera.matrixWorld, 1)
   forward.setFromMatrixColumn(camera.matrixWorld, 2)
   root.getWorldPosition(point)
-  point.addScaledVector(right, -(pixelRadius * 1.22 + 26) * unitsPerPixel)
-  point.addScaledVector(up, -12 * unitsPerPixel)
+  point.addScaledVector(
+    right,
+    -(pixelRadius * 1.22 + (displaySize ? 12 + displaySize / 2 : 26)) * unitsPerPixel,
+  )
+  point.addScaledVector(up, (displaySize ? 0 : -12) * unitsPerPixel)
   // 预留模型厚度，避免立体屋顶被球面遮去一半。
-  point.addScaledVector(forward, 24 * unitsPerPixel)
+  point.addScaledVector(forward, (displaySize ? displaySize * 0.8 : 24) * unitsPerPixel)
   landmark.position.copy(root.worldToLocal(point))
   root.getWorldQuaternion(inverse).invert()
-  landmark.quaternion.copy(inverse).multiply(camera.quaternion).multiply(tilt)
+  landmark.quaternion
+    .copy(inverse)
+    .multiply(camera.quaternion)
+    .multiply(displaySize ? MINIATURE_TILT : tilt)
   landmark.scale.setScalar((unitsPerPixel * modelScale) / root.scale.x)
 }

@@ -15,6 +15,7 @@ import {
 } from './globeProjection'
 import { placeLandmark } from './globeMarkerLayout'
 import { createLandmark } from './globeLandmarks'
+import { createCityMiniature, type CityMiniature } from './cityMiniatures'
 import { GLOBE_THEMES } from './globeTheme'
 import { waitForGlobeFrame } from './waitForGlobeFrame'
 
@@ -64,6 +65,8 @@ export async function createConferenceGlobe(
       pin: THREE.Group
       landmark: THREE.Group | null
       landmarkScale: number
+      miniature: CityMiniature | null
+      landmarkPixels: number
       baseSize: number
       pixelRadius: number
     }
@@ -136,15 +139,18 @@ export async function createConferenceGlobe(
       pin.visible = false
       root.add(pin)
       const spec = GLOBE_LANDMARKS.find((item) => item.cityKey === city.cityKey)
-      const model = spec ? createLandmark(spec.kind) : null
+      const miniature = spec ? createCityMiniature(spec.kind) : null
+      const model = miniature?.root ?? (spec ? createLandmark(spec.kind) : null)
       const landmark = model ? new THREE.Group() : null
       let landmarkScale = 1
       if (landmark && model) {
-        const box = new THREE.Box3().setFromObject(model)
-        const dimensions = box.getSize(new THREE.Vector3())
-        const center = box.getCenter(new THREE.Vector3())
-        model.position.set(-center.x, -box.min.y, -center.z)
-        landmarkScale = Math.min(30 / dimensions.y, 32 / Math.max(dimensions.x, dimensions.z))
+        if (!miniature) {
+          const box = new THREE.Box3().setFromObject(model)
+          const dimensions = box.getSize(new THREE.Vector3())
+          const center = box.getCenter(new THREE.Vector3())
+          model.position.set(-center.x, -box.min.y, -center.z)
+          landmarkScale = Math.min(30 / dimensions.y, 32 / Math.max(dimensions.x, dimensions.z))
+        }
         landmark.add(model)
         landmark.visible = false
         root.add(landmark)
@@ -166,6 +172,8 @@ export async function createConferenceGlobe(
         pin,
         landmark,
         landmarkScale,
+        miniature,
+        landmarkPixels: 0,
         baseSize: size,
         pixelRadius: markerPixelRadius(city.sizeTier),
       })
@@ -230,7 +238,8 @@ export async function createConferenceGlobe(
     ),
   )
   globe.scene().add(sky)
-  globe.lights([new THREE.AmbientLight('#c2e2ef', 2.1), new THREE.DirectionalLight('#f9e0b4', 2.3)])
+  const keyLight = new THREE.DirectionalLight('#fff1d9', 2.7)
+  globe.lights([new THREE.AmbientLight('#e9efed', 1.9), keyLight])
   const controls = globe.controls()
   controls.enableDamping = true
   controls.dampingFactor = 0.075
@@ -280,14 +289,16 @@ export async function createConferenceGlobe(
         city.cityKey === pinned || city.cityKey === highlighted || city.cityKey === hovered
       const pixelRadius = markerPixelRadius(city.sizeTier) * (active ? 1.35 : 1)
       const offset = Math.max(14, pixelRadius * 1.22 + 8)
-      const hasLandmark = !!nodes.get(city.cityKey)?.landmark?.visible
+      const node = nodes.get(city.cityKey)
+      const hasLandmark = !!node?.landmark?.visible
+      const sceneSize = node?.landmarkPixels ?? 0
       const leftSide = !hasLandmark && point.x + width + offset > globe.width() - 12
       const left = leftSide ? point.x - width - offset : point.x + offset
       const rect = {
-        left: hasLandmark ? point.x - pixelRadius * 1.22 - 46 : left,
-        top: point.y - (hasLandmark ? 24 : 10),
+        left: hasLandmark ? point.x - pixelRadius * 1.22 - (sceneSize ? sceneSize + 12 : 46) : left,
+        top: point.y - (sceneSize ? sceneSize / 2 + 6 : hasLandmark ? 24 : 10),
         right: left + width,
-        bottom: point.y + (hasLandmark ? 16 : 10),
+        bottom: point.y + (sceneSize ? sceneSize / 2 + 6 : hasLandmark ? 16 : 10),
       }
       if (
         rect.left < 8 ||
@@ -331,6 +342,8 @@ export async function createConferenceGlobe(
     const altitude = globe.pointOfView().altitude
     const camera = globe.camera()
     camera.updateMatrixWorld()
+    // 光源跟随镜头，地球旋转后每座城市仍保留一致的暖色黏土质感。
+    keyLight.position.set(-0.4, 0.8, 1).applyQuaternion(camera.quaternion).multiplyScalar(300)
     controls.autoRotate = motion && !paused && !pinned && !hovered && now > interactionUntil
     nodes.forEach((node, key) => {
       const active = key === highlighted || key === pinned || key === hovered
@@ -347,7 +360,17 @@ export async function createConferenceGlobe(
       node.halo.scale.setScalar(1 + pulse * 0.38)
       node.halo.material.opacity = active ? 0.62 : 0.4 - pulse * 0.2
       if (node.landmark) {
-        node.landmark.visible = landmarksVisible && (altitude < 1.7 || key === pinned)
+        node.root.getWorldPosition(cameraPoint)
+        const front = cameraPoint.dot(camera.position) > radius * radius * 1.002
+        node.landmark.visible = landmarksVisible && front && (altitude < 1.7 || key === pinned)
+        const detail =
+          node.miniature && (!pinned || key === pinned)
+            ? 1 - THREE.MathUtils.smoothstep(altitude, 0.18, 0.58)
+            : 0
+        node.miniature?.setDetail(detail)
+        node.landmarkPixels = node.miniature
+          ? THREE.MathUtils.lerp(44, compact ? (globe.height() < 650 ? 88 : 116) : 168, detail)
+          : 0
         if (node.landmark.visible)
           placeLandmark(
             node.root,
@@ -355,7 +378,8 @@ export async function createConferenceGlobe(
             camera,
             node.pixelRadius * (active ? 1.35 : 1),
             units,
-            node.landmarkScale,
+            node.miniature ? node.landmarkPixels : node.landmarkScale,
+            node.landmarkPixels,
           )
       }
     })
@@ -427,7 +451,24 @@ export async function createConferenceGlobe(
         signal,
       )
       updateAppearance(performance.now())
+      // 首次打开城市前预编译近景材质，避免第一次展开时停顿。
+      const compileStates = [...nodes.values()]
+        .filter((node) => node.miniature && node.landmark)
+        .map((node) => ({
+          node,
+          visible: node.landmark!.visible,
+          detail: node.miniature!.detail.visible,
+        }))
+      compileStates.forEach(({ node }) => {
+        node.landmark!.visible = true
+        node.miniature!.detail.visible = true
+      })
       await renderer.compileAsync(globe.scene(), globe.camera())
+      compileStates.forEach(({ node, visible, detail }) => {
+        node.landmark!.visible = visible
+        node.miniature!.detail.visible = detail
+      })
+      updateAppearance(performance.now())
       signal.throwIfAborted()
       const frame = renderer.info.render.frame
       await waitForGlobeFrame(() => renderer.info.render.frame > frame, signal)
@@ -436,7 +477,10 @@ export async function createConferenceGlobe(
     resize(width, height) {
       compact = width < 768
       globe.width(width).height(height)
-      globe.globeOffset([!compact && pinned ? -85 : 0, compact && pinned ? -85 : 0])
+      globe.globeOffset([
+        !compact && pinned ? -85 : 0,
+        compact && pinned ? (height < 650 ? -110 : -85) : 0,
+      ])
       updateAppearance(performance.now())
       refreshLabels()
     },
@@ -451,7 +495,10 @@ export async function createConferenceGlobe(
     setActive(nextHighlight, nextPinned) {
       highlighted = nextHighlight
       pinned = nextPinned
-      globe.globeOffset([!compact && pinned ? -85 : 0, compact && pinned ? -85 : 0])
+      globe.globeOffset([
+        !compact && pinned ? -85 : 0,
+        compact && pinned ? (globe.height() < 650 ? -110 : -85) : 0,
+      ])
       updateAppearance(performance.now())
       refreshLabels()
     },
