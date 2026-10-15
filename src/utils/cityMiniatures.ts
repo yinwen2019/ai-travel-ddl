@@ -367,7 +367,7 @@ export interface CityMiniature {
   root: THREE.Group
   simple: THREE.Group
   detail: THREE.Group
-  setDetail: (amount: number) => void
+  setDetail: (amount: number, visibility?: number) => void
 }
 
 /** Original city compositions; positions illustrate an identity, not street geography. */
@@ -390,9 +390,12 @@ export function createCityMiniature(kind: LandmarkKind): CityMiniature | null {
   const root = new THREE.Group()
   root.add(simple, detail)
   let previous = -1
-  const setDetail = (amount: number) => {
-    if (Math.abs(previous - amount) < 0.001) return
+  let previousVisibility = -1
+  const setDetail = (amount: number, visibility = 1) => {
+    if (Math.abs(previous - amount) < 0.001 && Math.abs(previousVisibility - visibility) < 0.001)
+      return
     previous = amount
+    previousVisibility = visibility
     simple.visible = amount < 0.999
     detail.visible = amount > 0.001
     for (const [group, opacity] of [
@@ -401,8 +404,8 @@ export function createCityMiniature(kind: LandmarkKind): CityMiniature | null {
     ] as const)
       group.traverse((object) => {
         if (object instanceof THREE.Mesh) {
-          object.material.opacity = opacity
-          object.material.depthWrite = opacity > 0.99
+          object.material.opacity = opacity * visibility
+          object.material.depthWrite = opacity * visibility > 0.99
         }
       })
   }

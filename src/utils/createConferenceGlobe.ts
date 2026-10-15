@@ -18,6 +18,7 @@ import { createLandmark } from './globeLandmarks'
 import { createCityMiniature, type CityMiniature } from './cityMiniatures'
 import { GLOBE_THEMES } from './globeTheme'
 import { waitForGlobeFrame } from './waitForGlobeFrame'
+import { globeDetailLevel } from './globeDetailLevel'
 
 /** Mounts the globe independently of Vue and the conference data pipeline. */
 export async function createConferenceGlobe(
@@ -65,6 +66,7 @@ export async function createConferenceGlobe(
       pin: THREE.Group
       landmark: THREE.Group | null
       landmarkScale: number
+      landmarkMaterials: THREE.Material[]
       miniature: CityMiniature | null
       landmarkPixels: number
       baseSize: number
@@ -143,8 +145,17 @@ export async function createConferenceGlobe(
       const model = miniature?.root ?? (spec ? createLandmark(spec.kind) : null)
       const landmark = model ? new THREE.Group() : null
       let landmarkScale = 1
+      const landmarkMaterials = new Set<THREE.Material>()
       if (landmark && model) {
         if (!miniature) {
+          model.traverse((object) => {
+            if (!(object instanceof THREE.Mesh)) return
+            const materials = Array.isArray(object.material) ? object.material : [object.material]
+            materials.forEach((material: THREE.Material) => {
+              material.transparent = true
+              landmarkMaterials.add(material)
+            })
+          })
           const box = new THREE.Box3().setFromObject(model)
           const dimensions = box.getSize(new THREE.Vector3())
           const center = box.getCenter(new THREE.Vector3())
@@ -172,6 +183,7 @@ export async function createConferenceGlobe(
         pin,
         landmark,
         landmarkScale,
+        landmarkMaterials: [...landmarkMaterials],
         miniature,
         landmarkPixels: 0,
         baseSize: size,
@@ -291,7 +303,7 @@ export async function createConferenceGlobe(
       const offset = Math.max(14, pixelRadius * 1.22 + 8)
       const node = nodes.get(city.cityKey)
       const hasLandmark = !!node?.landmark?.visible
-      const sceneSize = node?.landmarkPixels ?? 0
+      const sceneSize = hasLandmark ? (node?.landmarkPixels ?? 0) : 0
       const leftSide = !hasLandmark && point.x + width + offset > globe.width() - 12
       const left = leftSide ? point.x - width - offset : point.x + offset
       const rect = {
@@ -340,6 +352,7 @@ export async function createConferenceGlobe(
   function updateAppearance(now: number) {
     if (destroyed) return
     const altitude = globe.pointOfView().altitude
+    const detailLevel = globeDetailLevel(altitude)
     const camera = globe.camera()
     camera.updateMatrixWorld()
     // 光源跟随镜头，地球旋转后每座城市仍保留一致的暖色黏土质感。
@@ -362,12 +375,14 @@ export async function createConferenceGlobe(
       if (node.landmark) {
         node.root.getWorldPosition(cameraPoint)
         const front = cameraPoint.dot(camera.position) > radius * radius * 1.002
-        node.landmark.visible = landmarksVisible && front && (altitude < 1.7 || key === pinned)
-        const detail =
-          node.miniature && (!pinned || key === pinned)
-            ? 1 - THREE.MathUtils.smoothstep(altitude, 0.18, 0.58)
-            : 0
-        node.miniature?.setDetail(detail)
+        // 全球先读会议光点；选中只负责定位，不绕过缩放层级强行显示模型。
+        node.landmark.visible = landmarksVisible && front && detailLevel.landmark > 0.001
+        const detail = node.miniature ? detailLevel.city : 0
+        node.miniature?.setDetail(detail, detailLevel.landmark)
+        node.landmarkMaterials.forEach((material) => {
+          material.opacity = detailLevel.landmark
+          material.depthWrite = detailLevel.landmark > 0.99
+        })
         node.landmarkPixels = node.miniature
           ? THREE.MathUtils.lerp(44, compact ? (globe.height() < 650 ? 88 : 116) : 168, detail)
           : 0
@@ -378,7 +393,8 @@ export async function createConferenceGlobe(
             camera,
             node.pixelRadius * (active ? 1.35 : 1),
             units,
-            node.miniature ? node.landmarkPixels : node.landmarkScale,
+            (node.miniature ? node.landmarkPixels : node.landmarkScale) *
+              THREE.MathUtils.lerp(0.8, 1, detailLevel.landmark),
             node.landmarkPixels,
           )
       }
