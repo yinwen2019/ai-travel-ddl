@@ -13,7 +13,7 @@ import {
   nextZoomAltitude,
   worldUnitsPerPixel,
 } from './globeProjection'
-import { placeLandmark } from './globeMarkerLayout'
+import { placeLandmark, landmarkScreenBounds, boundsOverlap } from './globeMarkerLayout'
 import { createLandmark } from './globeLandmarks'
 import { createCityMiniature, type CityMiniature } from './cityMiniatures'
 import { GLOBE_THEMES } from './globeTheme'
@@ -51,6 +51,8 @@ export async function createConferenceGlobe(
   let hovered: CityKey | null = null
   let interactionUntil = performance.now() + 3000
   let animationFrame = 0
+  let focusAnimating = false
+  let appearanceTime = performance.now()
   let labelLevel = -1
   let labelSignature = ''
   const labelElements = new Map<CityKey, HTMLSpanElement>()
@@ -66,6 +68,8 @@ export async function createConferenceGlobe(
       pin: THREE.Group
       landmark: THREE.Group | null
       landmarkScale: number
+      landmarkBounds: THREE.Box3 | null
+      focus: number
       landmarkMaterials: THREE.Material[]
       miniature: CityMiniature | null
       landmarkPixels: number
@@ -145,6 +149,7 @@ export async function createConferenceGlobe(
       const model = miniature?.root ?? (spec ? createLandmark(spec.kind) : null)
       const landmark = model ? new THREE.Group() : null
       let landmarkScale = 1
+      let landmarkBounds: THREE.Box3 | null = null
       const landmarkMaterials = new Set<THREE.Material>()
       if (landmark && model) {
         if (!miniature) {
@@ -163,6 +168,7 @@ export async function createConferenceGlobe(
           landmarkScale = Math.min(30 / dimensions.y, 32 / Math.max(dimensions.x, dimensions.z))
         }
         landmark.add(model)
+        landmarkBounds = new THREE.Box3().setFromObject(landmark)
         landmark.visible = false
         root.add(landmark)
       }
@@ -183,6 +189,8 @@ export async function createConferenceGlobe(
         pin,
         landmark,
         landmarkScale,
+        landmarkBounds,
+        focus: 1,
         landmarkMaterials: [...landmarkMaterials],
         miniature,
         landmarkPixels: 0,
@@ -352,9 +360,30 @@ export async function createConferenceGlobe(
   function updateAppearance(now: number) {
     if (destroyed) return
     const altitude = globe.pointOfView().altitude
-    const detailLevel = globeDetailLevel(altitude)
+    const elapsed = Math.min(48, Math.max(0, now - appearanceTime))
+    appearanceTime = now
+    focusAnimating = false
     const camera = globe.camera()
     camera.updateMatrixWorld()
+    const focusedCity = pinned ? cities.find((city) => city.cityKey === pinned) : null
+    const focusedPoint = focusedCity
+      ? globe.getScreenCoords(focusedCity.lat, focusedCity.lng, 0.0015)
+      : null
+    const focusedRadius = focusedCity ? markerPixelRadius(focusedCity.sizeTier) * 1.35 : 0
+    const focusPadding = focusedRadius * 2.15 + 6
+    const protectedBounds =
+      focusedPoint && focusedCity
+        ? {
+            left: focusedPoint.x - focusPadding,
+            top: focusedPoint.y - Math.max(16, focusPadding),
+            right:
+              focusedPoint.x +
+              Math.max(14, focusedRadius * 1.22 + 8) +
+              Math.min(150, Math.max(40, focusedCity.city.length * 7.2 + 10)) +
+              6,
+            bottom: focusedPoint.y + Math.max(16, focusPadding),
+          }
+        : null
     // 光源跟随镜头，地球旋转后每座城市仍保留一致的暖色黏土质感。
     keyLight.position.set(-0.4, 0.8, 1).applyQuaternion(camera.quaternion).multiplyScalar(300)
     controls.autoRotate = motion && !paused && !pinned && !hovered && now > interactionUntil
@@ -373,6 +402,15 @@ export async function createConferenceGlobe(
       node.halo.scale.setScalar(1 + pulse * 0.38)
       node.halo.material.opacity = active ? 0.62 : 0.4 - pulse * 0.2
       if (node.landmark) {
+        // 所选城市没有模型时也要收起邻城景观，避免香港模型遮挡澳门等统计点。
+        const targetFocus = !pinned || key === pinned ? 1 : 0
+        node.focus =
+          !sceneReady || reducedMotion
+            ? targetFocus
+            : node.focus + (targetFocus - node.focus) * (1 - Math.exp(-elapsed / 55))
+        if (Math.abs(node.focus - targetFocus) < 0.002) node.focus = targetFocus
+        else focusAnimating = true
+        const detailLevel = globeDetailLevel(altitude, node.focus)
         node.root.getWorldPosition(cameraPoint)
         const front = cameraPoint.dot(camera.position) > radius * radius * 1.002
         // 全球先读会议光点；选中只负责定位，不绕过缩放层级强行显示模型。
@@ -384,19 +422,31 @@ export async function createConferenceGlobe(
           material.depthWrite = detailLevel.landmark > 0.99
         })
         node.landmarkPixels = node.miniature
-          ? THREE.MathUtils.lerp(44, compact ? (globe.height() < 650 ? 88 : 116) : 168, detail)
+          ? THREE.MathUtils.lerp(44, compact ? (globe.height() < 650 ? 88 : 116) : 168, detail) *
+            detailLevel.sizeScale
           : 0
-        if (node.landmark.visible)
+        if (node.landmark.visible) {
           placeLandmark(
             node.root,
             node.landmark,
             camera,
             node.pixelRadius * (active ? 1.35 : 1),
             units,
-            (node.miniature ? node.landmarkPixels : node.landmarkScale) *
+            (node.miniature ? node.landmarkPixels : node.landmarkScale * detailLevel.sizeScale) *
               THREE.MathUtils.lerp(0.8, 1, detailLevel.landmark),
             node.landmarkPixels,
           )
+          if (pinned && key !== pinned && protectedBounds && node.landmarkBounds) {
+            const bounds = landmarkScreenBounds(
+              node.landmark,
+              node.landmarkBounds,
+              camera,
+              globe.width(),
+              globe.height(),
+            )
+            if (boundsOverlap(bounds, protectedBounds)) node.landmark.visible = false
+          }
+        }
       }
     })
     const level = altitude < 1.4 ? 1 : 0
@@ -406,13 +456,17 @@ export async function createConferenceGlobe(
     }
   }
   function tick(now: number) {
+    const wasFocusing = focusAnimating
     updateAppearance(now)
-    if (!destroyed && visible && motion) animationFrame = requestAnimationFrame(tick)
+    if (wasFocusing || focusAnimating) refreshLabels()
+    if (!destroyed && visible && (motion || focusAnimating))
+      animationFrame = requestAnimationFrame(tick)
   }
   function restart() {
     cancelAnimationFrame(animationFrame)
     updateAppearance(performance.now())
-    if (visible && motion && !destroyed) animationFrame = requestAnimationFrame(tick)
+    if (visible && (motion || focusAnimating) && !destroyed)
+      animationFrame = requestAnimationFrame(tick)
   }
   globe.onZoom(() => {
     updateAppearance(performance.now())
@@ -515,7 +569,7 @@ export async function createConferenceGlobe(
         !compact && pinned ? -85 : 0,
         compact && pinned ? (globe.height() < 650 ? -110 : -85) : 0,
       ])
-      updateAppearance(performance.now())
+      restart()
       refreshLabels()
     },
     setMotion(enabled) {
