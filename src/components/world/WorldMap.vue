@@ -51,15 +51,11 @@ const previewCity = computed(() => (!selectedCity.value ? hoverCity.value : null
 const selectedLandmark = computed(() =>
   GLOBE_LANDMARKS.find((item) => item.cityKey === props.pinnedCity),
 )
-const miniaturePreviews = computed(() =>
-  GLOBE_LANDMARKS.filter((item) => item.previewLabel && props.cityIndex.has(item.cityKey)),
+const selectedLandmarkNames = computed(
+  () =>
+    selectedLandmark.value?.features ??
+    (selectedLandmark.value ? [selectedLandmark.value.name] : []),
 )
-function previewMiniature(key: CityKey) {
-  landmarks.value = true
-  const city = props.cityIndex.get(key)
-  if (key === props.pinnedCity && city) globe?.flyToCity(city)
-  else selectCity(key)
-}
 function syncMotion() {
   globe?.setMotion(playing.value && !reducedMotion.value)
 }
@@ -80,6 +76,7 @@ function closePanel() {
 function onPicker(event: Event) {
   const key = (event.target as HTMLSelectElement).value
   if (key) selectCity(key)
+  else closePanel()
 }
 function setFullscreen(value: boolean) {
   if (fullscreen.value === value) return
@@ -259,7 +256,11 @@ defineExpose({ flyToBounds })
     class="globe-shell"
     :data-theme="theme"
     :style="GLOBE_THEMES[theme].css"
-    :class="{ 'is-fullscreen': fullscreen, 'is-loading': loading }"
+    :class="{
+      'is-fullscreen': fullscreen,
+      'is-loading': loading,
+      'has-landmarks': selectedCity && selectedLandmark && landmarks && !loading,
+    }"
     aria-label="三维世界会议地图"
     :role="fullscreen ? 'dialog' : 'region'"
     :aria-modal="fullscreen || undefined"
@@ -305,21 +306,16 @@ defineExpose({ flyToBounds })
         <h2>研究的足迹</h2>
         <p>{{ cityIndex.size }} 座城市，连接每一次相遇。</p>
       </div>
-      <div class="globe-miniature-previews" aria-label="探索城市微缩景观">
-        <span>城市微缩景观</span>
-        <div>
-          <button
-            v-for="item in miniaturePreviews"
-            :key="item.cityKey"
-            :aria-label="`探索${item.previewLabel}微缩景观`"
-            :aria-pressed="pinnedCity === item.cityKey"
-            :disabled="loading"
-            @click="previewMiniature(item.cityKey)"
-          >
-            {{ item.previewLabel }}
-          </button>
-        </div>
-      </div>
+      <aside
+        v-if="selectedCity && selectedLandmark && landmarks && !loading"
+        class="globe-landmarks"
+        :aria-label="`${selectedCity.city}的标志性景观`"
+      >
+        <h3>标志性景观</h3>
+        <ul>
+          <li v-for="name in selectedLandmarkNames" :key="name">{{ name }}</li>
+        </ul>
+      </aside>
       <div class="globe-topbar">
         <label class="globe-city-picker"
           ><svg
@@ -340,7 +336,7 @@ defineExpose({ flyToBounds })
             :disabled="loading"
             @change="onPicker"
           >
-            <option value="">定位城市</option>
+            <option value="">{{ selectedCity ? '清除城市选择' : '定位城市' }}</option>
             <option v-for="city in cities" :key="city.cityKey" :value="city.cityKey">
               {{ city.city }} · {{ city.totalCount }} 场
             </option>
@@ -375,9 +371,7 @@ defineExpose({ flyToBounds })
       <div v-if="selectedCity" class="globe-city-detail">
         <WorldCityPanel ref="cityPanel" :city="selectedCity" @close="closePanel" />
         <p v-if="selectedLandmark && landmarks" class="globe-landmark-note">
-          <strong>{{ selectedLandmark.name }}</strong>
-          <span v-if="selectedLandmark.features">{{ selectedLandmark.features }}</span>
-          <span>城市意象组合，非真实布局或会议场馆。</span>
+          地标为城市意象组合，非真实布局或会议场馆。
         </p>
       </div>
       <div class="globe-tools" aria-label="地球显示控制">

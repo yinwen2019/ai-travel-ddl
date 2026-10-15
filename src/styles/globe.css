@@ -90,41 +90,31 @@
   align-items: center;
   gap: 10px;
 }
-.globe-miniature-previews {
+.globe-landmarks {
   position: absolute;
   top: 116px;
   left: 18px;
-  padding: 8px;
+  width: 210px;
+  max-height: calc(100% - 400px);
+  overflow: auto;
+  padding: 12px;
   background: var(--globe-panel);
   border: 1px solid var(--globe-line);
   border-radius: 10px;
 }
-.globe-miniature-previews > span {
-  display: block;
-  padding: 2px 6px 6px;
-  font-size: 11px;
+.globe-landmarks h3 {
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 500;
   color: var(--globe-muted);
 }
-.globe-miniature-previews > div {
-  display: flex;
-  gap: 2px;
+.globe-landmarks ul {
+  margin-top: 6px;
 }
-.globe-miniature-previews button {
-  min-width: 44px;
-  min-height: 44px;
-  padding: 6px 10px;
-  border-radius: 6px;
+.globe-landmarks li {
   font-size: 12px;
-}
-.globe-miniature-previews button:hover {
-  background: var(--globe-hover);
-}
-.globe-miniature-previews button[aria-pressed='true'] {
-  color: var(--globe-accent);
-  background: var(--globe-hover);
-}
-.globe-miniature-previews button:disabled {
-  opacity: 0.45;
+  line-height: 18px;
+  overflow-wrap: anywhere;
 }
 .globe-city-picker {
   display: flex;
@@ -247,7 +237,7 @@
 .globe-hover-card {
   position: absolute;
   left: 30px;
-  top: 220px;
+  top: 110px;
   bottom: auto;
   display: flex;
   flex-direction: column;
@@ -318,14 +308,6 @@
   line-height: 1.6;
   color: var(--globe-muted);
 }
-.globe-landmark-note strong,
-.globe-landmark-note span {
-  display: block;
-}
-.globe-landmark-note strong {
-  color: var(--globe-ink);
-  font-weight: 500;
-}
 .globe-loading,
 .globe-failure {
   position: absolute;
@@ -379,6 +361,13 @@
   color: var(--globe-ink);
 }
 @media (max-width: 1100px) {
+  .globe-shell.has-landmarks .globe-intro {
+    display: none;
+  }
+  .globe-landmarks {
+    top: 16px;
+    max-height: 160px;
+  }
   .globe-hint span {
     display: none;
   }
@@ -403,17 +392,13 @@
     top: 20px;
     right: 16px;
   }
-  .globe-miniature-previews {
+  .globe-landmarks {
     left: 12px;
-    top: 82px;
-    padding: 0;
+    top: 12px;
+    width: min(210px, calc(100% - clamp(76px, calc(100vw - 272px), 140px) - 78px));
+    max-height: 116px;
+    padding: 8px;
     border-radius: 8px;
-  }
-  .globe-miniature-previews > span {
-    display: none;
-  }
-  .globe-miniature-previews button {
-    padding-inline: 6px;
   }
   .globe-city-picker {
     position: absolute;

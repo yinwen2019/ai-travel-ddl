@@ -41,6 +41,5 @@ export interface GlobeLandmark {
   cityKey: CityKey
   name: string
   kind: LandmarkKind
-  previewLabel?: string
-  features?: string
+  features?: readonly string[]
 }
