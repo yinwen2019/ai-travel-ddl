@@ -19,6 +19,7 @@ import { createCityMiniature, type CityMiniature } from './cityMiniatures'
 import { GLOBE_THEMES } from './globeTheme'
 import { waitForGlobeFrame } from './waitForGlobeFrame'
 import { globeDetailLevel } from './globeDetailLevel'
+import { cityLabelBudget, rankCityLabels } from './globeLabelLayout'
 
 /** Mounts the globe independently of Vue and the conference data pipeline. */
 export async function createConferenceGlobe(
@@ -53,7 +54,7 @@ export async function createConferenceGlobe(
   let animationFrame = 0
   let focusAnimating = false
   let appearanceTime = performance.now()
-  let labelLevel = -1
+  let labelBudget = -1
   let labelSignature = ''
   const labelElements = new Map<CityKey, HTMLSpanElement>()
   const cameraPoint = new THREE.Vector3()
@@ -288,19 +289,28 @@ export async function createConferenceGlobe(
   }
   canvas.addEventListener('webglcontextlost', onLoss)
   function refreshLabels() {
-    const important = [...cities].sort(
-      (a, b) =>
-        Number(b.cityKey === pinned) - Number(a.cityKey === pinned) ||
-        b.upcomingCount - a.upcomingCount ||
-        b.totalCount - a.totalCount,
-    )
+    const important = rankCityLabels(cities, pinned, hovered, highlighted)
+    const budget = cityLabelBudget(globe.pointOfView().altitude, compact)
     const chosen: CityData[] = []
     const rectangles: { left: number; top: number; right: number; bottom: number }[] = []
     const placements = new Map<CityKey, { leftSide: boolean; offset: number }>()
+    const hostBounds = host.getBoundingClientRect()
+    const obstacles = [
+      ...(host.parentElement?.querySelectorAll<HTMLElement>(
+        '.globe-intro, .globe-landmarks, .globe-city-picker, [data-fullscreen], .globe-city-detail, .globe-legend-panel, .globe-tools, .globe-hint',
+      ) ?? []),
+    ]
+      .map((element) => element.getBoundingClientRect())
+      .filter((rect) => rect.width > 0 && rect.height > 0)
+      .map((rect) => ({
+        left: rect.left - hostBounds.left - 6,
+        top: rect.top - hostBounds.top - 6,
+        right: rect.right - hostBounds.left + 6,
+        bottom: rect.bottom - hostBounds.top + 6,
+      }))
     const camera = globe.camera()
     camera.updateMatrixWorld()
     for (const city of important) {
-      if (labelLevel !== 1 && city.cityKey !== pinned) continue
       const position = globeVector(city.lat, city.lng, radius * 1.0015)
       if (position.dot(camera.position) < radius * radius * 1.002) continue
       const point = globe.getScreenCoords(city.lat, city.lng, 0.0015)
@@ -312,8 +322,19 @@ export async function createConferenceGlobe(
       const node = nodes.get(city.cityKey)
       const hasLandmark = !!node?.landmark?.visible
       const sceneSize = hasLandmark ? (node?.landmarkPixels ?? 0) : 0
-      const leftSide = !hasLandmark && point.x + width + offset > globe.width() - 12
+      const rightLabel = {
+        left: point.x + offset,
+        top: point.y - 10,
+        right: point.x + offset + width,
+        bottom: point.y + 10,
+      }
+      const leftSide =
+        !hasLandmark &&
+        (rightLabel.right > globe.width() - 12 ||
+          obstacles.some((obstacle) => boundsOverlap(rightLabel, obstacle)))
       const left = leftSide ? point.x - width - offset : point.x + offset
+      const labelRect = { left, top: point.y - 10, right: left + width, bottom: point.y + 10 }
+      if (obstacles.some((obstacle) => boundsOverlap(labelRect, obstacle))) continue
       const rect = {
         left: hasLandmark ? point.x - pixelRadius * 1.22 - (sceneSize ? sceneSize + 12 : 46) : left,
         top: point.y - (sceneSize ? sceneSize / 2 + 6 : hasLandmark ? 24 : 10),
@@ -340,7 +361,8 @@ export async function createConferenceGlobe(
       rectangles.push(rect)
       chosen.push(city)
       placements.set(city.cityKey, { leftSide, offset })
-      if (chosen.length >= (compact ? 8 : 14)) break
+      // 先判断当前可见区域及避让，再使用名额，避免热门城市在背面时正面没有名称。
+      if (chosen.length >= budget) break
     }
     const signature = chosen.map((city) => city.cityKey).join('|')
     if (signature !== labelSignature) {
@@ -449,9 +471,9 @@ export async function createConferenceGlobe(
         }
       }
     })
-    const level = altitude < 1.4 ? 1 : 0
-    if (level !== labelLevel) {
-      labelLevel = level
+    const budget = cityLabelBudget(altitude, compact)
+    if (budget !== labelBudget) {
+      labelBudget = budget
       refreshLabels()
     }
   }
