@@ -82,7 +82,7 @@ export async function createConferenceGlobe(
       core.scale.z = 0.4
       core.position.z = 0.22
       root.add(core)
-      // 深色细边让历史光点在浅色地形上也能辨认。
+      // 深色细边保持光点轮廓清晰。
       const rim = new THREE.Mesh(
         new THREE.RingGeometry(size * 0.95, size * 1.22, 24),
         new THREE.MeshBasicMaterial({ color: '#102331', side: THREE.DoubleSide }),
@@ -170,7 +170,7 @@ export async function createConferenceGlobe(
       anchor.appendChild(text)
       return anchor
     })
-  const basemap = createBasemap(globe, geometry, compact, signal)
+  createBasemap(globe, geometry)
   const sky = new THREE.Group()
   const starPositions: number[] = []
   const starCount = compact ? 180 : 450
@@ -389,7 +389,6 @@ export async function createConferenceGlobe(
       landmarksVisible = value
       updateAppearance(performance.now())
     },
-    setBasemap: basemap.setStyle,
     flyToCity(city) {
       goTo(city.lat, city.lng, 0.08)
     },
@@ -410,7 +409,6 @@ export async function createConferenceGlobe(
     },
     destroy() {
       destroyed = true
-      basemap.destroy()
       labelElements.clear()
       cancelAnimationFrame(animationFrame)
       controls.removeEventListener('start', interact)

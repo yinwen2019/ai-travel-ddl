@@ -12,10 +12,9 @@ export function globeVector(lat: number, lng: number, radius = 100): THREE.Vecto
   )
 }
 
-/** Builds local country boundaries and graticules above either basemap. */
+/** Builds local country boundaries and graticules above the vector basemap. */
 export function createLandscape(data: GlobeGeometryData): {
   group: THREE.Group
-  setTerrain: (enabled: boolean) => void
 } {
   const group = new THREE.Group()
   const borderGeometry = new THREE.BufferGeometry()
@@ -59,12 +58,6 @@ export function createLandscape(data: GlobeGeometryData): {
   group.add(gridLines)
   return {
     group,
-    setTerrain(enabled) {
-      borderMaterial.color.set(enabled ? '#405c58' : '#a4c6ca')
-      borderMaterial.opacity = enabled ? 0.3 : 0.32
-      gridMaterial.color.set(enabled ? '#426d79' : '#789eaf')
-      gridMaterial.opacity = enabled ? 0.07 : 0.1
-    },
   }
 }
 

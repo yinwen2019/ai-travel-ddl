@@ -57,7 +57,7 @@ push to main → checkout → npm ci → npm run validate → npm run build
 - [ ] `package-lock.json` 已提交
 - [ ] `npm run build` + `npm run validate` 本地通过
 - [ ] Vue Router 使用 `createWebHashHistory`
-- [ ] 世界视图预制网格 `world-mesh.bin.gz`、地形 WebP 与 3D 引擎分块随构建产物发布，不依赖外部地图 API；GitHub Pages 子路径下可正常异步加载。GeoJSON 为制作源文件，修改后运行 `npm run map:prepare` 再构建
+- [ ] 世界视图预制网格 `world-mesh.bin.gz`与 3D 引擎分块随构建产物发布，不依赖外部地图 API；GitHub Pages 子路径下可正常异步加载。GeoJSON 为制作源文件，修改后运行 `npm run map:prepare` 再构建
 - [ ] `.env` 在 `.gitignore` 中
 
 ## Workflow 文件

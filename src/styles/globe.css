@@ -93,60 +93,6 @@
   align-items: center;
   gap: 10px;
 }
-.globe-basemap-control {
-  position: absolute;
-  top: 106px;
-  left: 30px;
-}
-.globe-basemap-switch {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  min-height: 44px;
-  padding: 8px 10px;
-  border: 1px solid var(--globe-line);
-  border-radius: 8px;
-  background: var(--globe-panel);
-  color: var(--globe-ink);
-  font-size: 12px;
-}
-.globe-basemap-switch:hover {
-  background: #1d3b4e;
-}
-.globe-basemap-switch:disabled {
-  opacity: 0.6;
-  cursor: wait;
-}
-.globe-switch-track {
-  display: block;
-  width: 28px;
-  height: 16px;
-  border-radius: 8px;
-  background: #526b7a;
-}
-.globe-switch-track > span {
-  display: block;
-  width: 12px;
-  height: 12px;
-  margin: 2px;
-  border-radius: 50%;
-  background: #edf5f4;
-}
-.globe-basemap-switch[aria-checked='true'] .globe-switch-track {
-  background: #387e78;
-}
-.globe-basemap-switch[aria-checked='true'] .globe-switch-track > span {
-  transform: translateX(12px);
-}
-.globe-basemap-error {
-  max-width: 180px;
-  margin-top: 8px;
-  padding: 6px 8px;
-  background: var(--globe-panel);
-  color: #efc3a3;
-  font-size: 12px;
-}
 .globe-city-picker {
   display: flex;
   gap: 8px;
@@ -432,10 +378,6 @@
     position: absolute;
     right: 0;
     top: 62px;
-  }
-  .globe-basemap-control {
-    top: 82px;
-    left: 16px;
   }
   .globe-city-picker select {
     width: 140px;
