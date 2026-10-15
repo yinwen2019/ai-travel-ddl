@@ -13,6 +13,7 @@ import {
   worldUnitsPerPixel,
 } from './globeProjection'
 import { createLandmark } from './globeLandmarks'
+import { GLOBE_THEMES } from './globeTheme'
 import { waitForGlobeFrame } from './waitForGlobeFrame'
 
 /** Mounts the globe independently of Vue and the conference data pipeline. */
@@ -29,6 +30,7 @@ export async function createConferenceGlobe(
     waitForGlobeReady: false,
     rendererConfig: { antialias: !compact, alpha: true, powerPreference: 'low-power' },
   })
+  let palette = GLOBE_THEMES[options.theme]
   const radius = globe.getGlobeRadius()
   let destroyed = false
   let visible = true
@@ -49,6 +51,7 @@ export async function createConferenceGlobe(
     CityKey,
     {
       root: THREE.Group
+      applyTheme: () => void
       halo: THREE.Mesh<THREE.RingGeometry, THREE.MeshBasicMaterial>
       selection: THREE.Mesh
       pin: THREE.Group
@@ -60,11 +63,11 @@ export async function createConferenceGlobe(
   globe
     .width(host.clientWidth)
     .height(host.clientHeight)
-    .backgroundColor('#050e19')
+    .backgroundColor(palette.background)
     .showAtmosphere(true)
     .globeCurvatureResolution(1.5)
-    .atmosphereColor('#58bdca')
-    .atmosphereAltitude(0.12)
+    .atmosphereColor(palette.atmosphere)
+    .atmosphereAltitude(palette.atmosphereAltitude)
     .objectLabel(() => '')
     .labelLabel(() => '')
     .objectAltitude(0.0015)
@@ -73,7 +76,7 @@ export async function createConferenceGlobe(
     .objectThreeObject((entry) => {
       const city = entry as CityData
       const root = new THREE.Group()
-      const color = city.dotColor === 'history' ? '#9aaeb8' : CATEGORY_COLORS[city.dotColor]
+      const color = city.dotColor === 'history' ? palette.history : CATEGORY_COLORS[city.dotColor]
       const size = 0.65 + city.sizeTier * 0.36
       const core = new THREE.Mesh(
         new THREE.SphereGeometry(size, 12, 8),
@@ -82,10 +85,10 @@ export async function createConferenceGlobe(
       core.scale.z = 0.4
       core.position.z = 0.22
       root.add(core)
-      // 深色细边保持光点轮廓清晰。
+      // 按主题设置衬边，保证光点在海陆两种底色上都清晰。
       const rim = new THREE.Mesh(
         new THREE.RingGeometry(size * 0.95, size * 1.22, 24),
-        new THREE.MeshBasicMaterial({ color: '#102331', side: THREE.DoubleSide }),
+        new THREE.MeshBasicMaterial({ color: palette.rim, side: THREE.DoubleSide }),
       )
       rim.position.z = 0.23
       root.add(rim)
@@ -103,7 +106,7 @@ export async function createConferenceGlobe(
       root.add(halo)
       const selection = new THREE.Mesh(
         new THREE.RingGeometry(size * 2, size * 2.15, 32),
-        new THREE.MeshBasicMaterial({ color: '#f2eed8', side: THREE.DoubleSide }),
+        new THREE.MeshBasicMaterial({ color: palette.selection, side: THREE.DoubleSide }),
       )
       selection.position.z = 0.2
       selection.visible = false
@@ -111,14 +114,14 @@ export async function createConferenceGlobe(
       const pin = new THREE.Group()
       const stem = new THREE.Mesh(
         new THREE.ConeGeometry(0.7, 2.6, 12),
-        new THREE.MeshStandardMaterial({ color: '#e7bb84', roughness: 0.6 }),
+        new THREE.MeshStandardMaterial({ color: palette.pinStem, roughness: 0.6 }),
       )
       stem.rotation.x = -Math.PI / 2
       stem.position.z = 2.5
       pin.add(stem)
       const cap = new THREE.Mesh(
         new THREE.SphereGeometry(1.25, 16, 12),
-        new THREE.MeshStandardMaterial({ color: '#f1c894', roughness: 0.65 }),
+        new THREE.MeshStandardMaterial({ color: palette.pinCap, roughness: 0.65 }),
       )
       cap.position.z = 4
       pin.add(cap)
@@ -135,6 +138,16 @@ export async function createConferenceGlobe(
       }
       nodes.set(city.cityKey, {
         root,
+        applyTheme() {
+          const color =
+            city.dotColor === 'history' ? palette.history : CATEGORY_COLORS[city.dotColor]
+          core.material.color.set(color)
+          halo.material.color.set(color)
+          rim.material.color.set(palette.rim)
+          selection.material.color.set(palette.selection)
+          stem.material.color.set(palette.pinStem)
+          cap.material.color.set(palette.pinCap)
+        },
         halo,
         selection,
         pin,
@@ -170,8 +183,10 @@ export async function createConferenceGlobe(
       anchor.appendChild(text)
       return anchor
     })
-  createBasemap(globe, geometry)
+  const basemap = createBasemap(globe, geometry)
+  basemap.setTheme(palette)
   const sky = new THREE.Group()
+  sky.visible = palette.stars
   const starPositions: number[] = []
   const starCount = compact ? 180 : 450
   // 确定性星空只作为背景，城市点始终位于球面。
@@ -191,11 +206,11 @@ export async function createConferenceGlobe(
     new THREE.Points(
       starGeometry,
       new THREE.PointsMaterial({
-        color: '#a6c1d5',
+        color: '#aebdaf',
         size: 1.2,
         sizeAttenuation: false,
         transparent: true,
-        opacity: 0.6,
+        opacity: 0.24,
       }),
     ),
   )
@@ -335,6 +350,15 @@ export async function createConferenceGlobe(
   }
   goTo(25, 105, compact ? 2.4 : 1.8)
   return {
+    setTheme(theme) {
+      if (destroyed) return
+      palette = GLOBE_THEMES[theme]
+      globe.backgroundColor(palette.background)
+      globe.atmosphereColor(palette.atmosphere).atmosphereAltitude(palette.atmosphereAltitude)
+      basemap.setTheme(palette)
+      sky.visible = palette.stars
+      nodes.forEach((node) => node.applyTheme())
+    },
     async ready() {
       await waitForGlobeFrame(
         () =>

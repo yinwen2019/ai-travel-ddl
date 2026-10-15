@@ -5,6 +5,8 @@ import type { ConferenceGlobe } from '@/types/globe'
 import WorldLegend from './WorldLegend.vue'
 import WorldCityPanel from './WorldCityPanel.vue'
 import { GLOBE_LANDMARKS } from '@/data/globeLandmarks'
+import { useTheme } from '@/composables/useTheme'
+import { GLOBE_THEMES } from '@/utils/globeTheme'
 import { loadGlobeGeometry } from '@/utils/loadGlobeGeometry'
 import '@/styles/globe.css'
 
@@ -18,6 +20,7 @@ const emit = defineEmits<{
   'map-error': []
   hover: [cityKey: CityKey | null]
 }>()
+const { theme } = useTheme()
 const shell = ref<HTMLElement | null>(null)
 const host = ref<HTMLElement | null>(null)
 const loading = ref(true)
@@ -123,6 +126,7 @@ async function init() {
     const instance = await createConferenceGlobe(
       host.value,
       {
+        theme: theme.value,
         cities: cities.value,
         onHover(city) {
           hoverCity.value = city
@@ -145,6 +149,7 @@ async function init() {
       return
     }
     globe = instance
+    globe.setTheme(theme.value)
     globe.setActive(props.highlightedCity, props.pinnedCity)
     globe.setLandmarks(landmarks.value)
     if (selectedCity.value) globe.flyToCity(selectedCity.value)
@@ -200,6 +205,7 @@ watch(
   },
 )
 watch(cities, () => globe?.setCities(cities.value))
+watch(theme, (value) => globe?.setTheme(value))
 watch(playing, syncMotion)
 watch(landmarks, (value) => globe?.setLandmarks(value))
 onMounted(() => {
@@ -241,6 +247,8 @@ defineExpose({ flyToBounds })
   <section
     ref="shell"
     class="globe-shell"
+    :data-theme="theme"
+    :style="GLOBE_THEMES[theme].css"
     :class="{ 'is-fullscreen': fullscreen, 'is-loading': loading }"
     aria-label="三维世界会议地图"
     :role="fullscreen ? 'dialog' : 'region'"

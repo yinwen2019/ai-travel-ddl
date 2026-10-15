@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import type Globe from 'globe.gl'
 import type { GlobeGeometryData } from '@/types/globe'
+import type { GlobePalette } from './globeTheme'
 import { createLandscape } from './globeLandscape'
 
 /** Adds the prepared vector land mesh and local map lines. */
@@ -18,4 +19,11 @@ export function createBasemap(globe: InstanceType<typeof Globe>, geometry: Globe
   landMesh.raycast = () => {}
   globe.globeMaterial(surface)
   globe.scene().add(landMesh, landscape.group)
+  return {
+    setTheme(palette: GlobePalette) {
+      surface.color.set(palette.ocean)
+      continents.color.set(palette.land)
+      landscape.setTheme(palette)
+    },
+  }
 }

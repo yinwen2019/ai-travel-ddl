@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import type { GlobePalette } from './globeTheme'
 import type { GlobeGeometryData } from '@/types/globe'
 
 /** Coordinates follow the same orientation as ThreeGlobe. */
@@ -15,6 +16,7 @@ export function globeVector(lat: number, lng: number, radius = 100): THREE.Vecto
 /** Builds local country boundaries and graticules above the vector basemap. */
 export function createLandscape(data: GlobeGeometryData): {
   group: THREE.Group
+  setTheme: (palette: GlobePalette) => void
 } {
   const group = new THREE.Group()
   const borderGeometry = new THREE.BufferGeometry()
@@ -58,6 +60,12 @@ export function createLandscape(data: GlobeGeometryData): {
   group.add(gridLines)
   return {
     group,
+    setTheme(palette) {
+      borderMaterial.color.set(palette.border)
+      borderMaterial.opacity = palette.borderOpacity
+      gridMaterial.color.set(palette.grid)
+      gridMaterial.opacity = palette.gridOpacity
+    },
   }
 }
 

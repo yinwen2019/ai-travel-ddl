@@ -1,23 +1,20 @@
 .globe-shell {
-  --globe-ink: #e7f1f3;
-  --globe-muted: #a3bdca;
-  --globe-line: #2c4658;
-  --globe-panel: #0c2031;
   --color-text-primary: var(--globe-ink);
   --color-text-secondary: var(--globe-muted);
+  --color-text-tertiary: var(--globe-muted);
   --color-border: var(--globe-line);
-  --color-border-light: #233c4d;
-  --color-brand: #83d4d2;
-  --color-surface-hover: #1c3547;
-  --world-dot-history: #9aaeb8;
+  --color-border-light: var(--globe-line);
+  --color-brand: var(--globe-accent);
+  --color-surface-hover: var(--globe-hover);
+  --world-dot-history: var(--globe-history);
   position: relative;
   height: clamp(530px, 74svh, 820px);
   isolation: isolate;
   overflow: hidden;
   border-radius: 16px;
-  background: #050e19;
+  background: var(--globe-background);
   color: var(--globe-ink);
-  color-scheme: dark;
+  color-scheme: var(--globe-scheme);
 }
 .globe-shell.is-fullscreen {
   position: fixed;
@@ -52,8 +49,8 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: #e7f1f3;
-  background: #081724df;
+  color: var(--globe-ink);
+  background: var(--globe-panel);
   border-radius: 3px;
   font-size: 12px;
   line-height: 16px;
@@ -70,7 +67,7 @@
   left: 18px;
   padding: 12px;
   border-radius: 8px;
-  background: #0c2031ed;
+  background: var(--globe-panel);
   pointer-events: none;
 }
 .globe-intro h2 {
@@ -127,24 +124,24 @@
   justify-content: center;
   flex-shrink: 0;
   border-radius: 8px;
-  color: #d2e6ed;
+  color: var(--globe-ink);
   background: var(--globe-panel);
   border: 1px solid var(--globe-line);
 }
 .globe-icon-button:hover,
 .globe-button:hover,
 .globe-legend-toggle:hover {
-  background: #1d3b4e;
+  background: var(--globe-hover);
 }
 .globe-icon-button[aria-pressed='true'] {
-  color: #9ce5dc;
+  color: var(--globe-accent);
 }
 .globe-icon-button:disabled {
   opacity: 0.45;
   cursor: default;
 }
 .globe-shell :focus-visible {
-  outline: 2px solid #9ce5dc;
+  outline: 2px solid var(--globe-accent);
   outline-offset: 3px;
 }
 .globe-tools {
@@ -165,7 +162,7 @@
   border: 0;
 }
 .globe-tools .globe-icon-button:hover {
-  background: #1d3b4e;
+  background: var(--globe-hover);
 }
 .globe-tool-divider {
   width: 1px;
@@ -181,7 +178,7 @@
   color: var(--globe-muted);
   padding: 4px 8px;
   border-radius: 4px;
-  background: #0c2031ed;
+  background: var(--globe-panel);
   pointer-events: none;
 }
 .globe-legend-toggle {
@@ -289,7 +286,7 @@
   background: transparent;
 }
 .globe-shell .city-panel .text-link {
-  color: #99dbd5;
+  color: var(--globe-accent);
 }
 .globe-landmark-note {
   margin: 0 18px 16px;
@@ -306,7 +303,7 @@
   align-items: center;
   justify-content: center;
   gap: 18px;
-  background: #050e19;
+  background: var(--globe-background);
   color: var(--globe-muted);
   font-size: 14px;
   z-index: 4;
@@ -315,7 +312,7 @@
   width: 24px;
   height: 24px;
   border: 2px solid var(--globe-line);
-  border-top-color: #83d4d2;
+  border-top-color: var(--globe-accent);
   border-radius: 50%;
   animation: globe-loading-turn 1s linear infinite;
 }
