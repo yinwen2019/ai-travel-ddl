@@ -10,8 +10,10 @@ import {
   MIN_GLOBE_ALTITUDE,
   MAX_GLOBE_ALTITUDE,
   markerPixelRadius,
+  nextZoomAltitude,
   worldUnitsPerPixel,
 } from './globeProjection'
+import { placeLandmark } from './globeMarkerLayout'
 import { createLandmark } from './globeLandmarks'
 import { GLOBE_THEMES } from './globeTheme'
 import { waitForGlobeFrame } from './waitForGlobeFrame'
@@ -35,6 +37,11 @@ export async function createConferenceGlobe(
   let destroyed = false
   let visible = true
   let motion = false
+  let reducedMotion = options.reducedMotion
+  let sceneReady = false
+  let zoomFrame = 0
+  let zoomTarget: number | null = null
+  let zoomTime = 0
   let paused = false
   let landmarksVisible = true
   let highlighted: CityKey | null = null
@@ -56,6 +63,7 @@ export async function createConferenceGlobe(
       selection: THREE.Mesh
       pin: THREE.Group
       landmark: THREE.Group | null
+      landmarkScale: number
       baseSize: number
       pixelRadius: number
     }
@@ -128,11 +136,16 @@ export async function createConferenceGlobe(
       pin.visible = false
       root.add(pin)
       const spec = GLOBE_LANDMARKS.find((item) => item.cityKey === city.cityKey)
-      const landmark = spec ? createLandmark(spec.kind) : null
-      if (landmark) {
-        landmark.rotation.x = Math.PI / 2 - 0.55
-        landmark.position.set(5, 1, 0.2)
-        landmark.scale.setScalar(0.65)
+      const model = spec ? createLandmark(spec.kind) : null
+      const landmark = model ? new THREE.Group() : null
+      let landmarkScale = 1
+      if (landmark && model) {
+        const box = new THREE.Box3().setFromObject(model)
+        const dimensions = box.getSize(new THREE.Vector3())
+        const center = box.getCenter(new THREE.Vector3())
+        model.position.set(-center.x, -box.min.y, -center.z)
+        landmarkScale = Math.min(30 / dimensions.y, 32 / Math.max(dimensions.x, dimensions.z))
+        landmark.add(model)
         landmark.visible = false
         root.add(landmark)
       }
@@ -152,6 +165,7 @@ export async function createConferenceGlobe(
         selection,
         pin,
         landmark,
+        landmarkScale,
         baseSize: size,
         pixelRadius: markerPixelRadius(city.sizeTier),
       })
@@ -163,6 +177,7 @@ export async function createConferenceGlobe(
       hovered = city?.cityKey ?? null
       options.onHover(city)
       updateAppearance(performance.now())
+      refreshLabels()
     })
     .htmlElementsData([])
     .htmlLat('lat')
@@ -232,7 +247,11 @@ export async function createConferenceGlobe(
   function interact() {
     interactionUntil = performance.now() + 7000
   }
-  controls.addEventListener('start', interact)
+  const onControlStart = () => {
+    stopZoom()
+    interact()
+  }
+  controls.addEventListener('start', onControlStart)
   controls.addEventListener('end', interact)
   const onLoss = (event: Event) => {
     event.preventDefault()
@@ -248,7 +267,7 @@ export async function createConferenceGlobe(
     )
     const chosen: CityData[] = []
     const rectangles: { left: number; top: number; right: number; bottom: number }[] = []
-    const placements = new Map<CityKey, boolean>()
+    const placements = new Map<CityKey, { leftSide: boolean; offset: number }>()
     const camera = globe.camera()
     camera.updateMatrixWorld()
     for (const city of important) {
@@ -257,9 +276,19 @@ export async function createConferenceGlobe(
       if (position.dot(camera.position) < radius * radius * 1.002) continue
       const point = globe.getScreenCoords(city.lat, city.lng, 0.0015)
       const width = Math.min(150, Math.max(40, city.city.length * 7.2 + 10))
-      const leftSide = point.x + width + 16 > globe.width() - 12
-      const left = leftSide ? point.x - width - 14 : point.x + 14
-      const rect = { left, top: point.y - 10, right: left + width, bottom: point.y + 10 }
+      const active =
+        city.cityKey === pinned || city.cityKey === highlighted || city.cityKey === hovered
+      const pixelRadius = markerPixelRadius(city.sizeTier) * (active ? 1.35 : 1)
+      const offset = Math.max(14, pixelRadius * 1.22 + 8)
+      const hasLandmark = !!nodes.get(city.cityKey)?.landmark?.visible
+      const leftSide = !hasLandmark && point.x + width + offset > globe.width() - 12
+      const left = leftSide ? point.x - width - offset : point.x + offset
+      const rect = {
+        left: hasLandmark ? point.x - pixelRadius * 1.22 - 46 : left,
+        top: point.y - (hasLandmark ? 24 : 10),
+        right: left + width,
+        bottom: point.y + (hasLandmark ? 16 : 10),
+      }
       if (
         rect.left < 8 ||
         rect.right > globe.width() - 8 ||
@@ -279,7 +308,7 @@ export async function createConferenceGlobe(
         continue
       rectangles.push(rect)
       chosen.push(city)
-      placements.set(city.cityKey, leftSide)
+      placements.set(city.cityKey, { leftSide, offset })
       if (chosen.length >= (compact ? 8 : 14)) break
     }
     const signature = chosen.map((city) => city.cityKey).join('|')
@@ -290,9 +319,11 @@ export async function createConferenceGlobe(
     // 元素由图层异步创建；重复利用 DOM 标签，避免缩放时不断重建文字几何体。
     requestAnimationFrame(() => {
       if (destroyed) return
-      placements.forEach((leftSide, key) =>
-        labelElements.get(key)?.classList.toggle('is-left', leftSide),
-      )
+      placements.forEach(({ leftSide, offset }, key) => {
+        const label = labelElements.get(key)
+        label?.classList.toggle('is-left', leftSide)
+        label?.style.setProperty('--city-label-offset', `${offset}px`)
+      })
     })
   }
   function updateAppearance(now: number) {
@@ -315,8 +346,18 @@ export async function createConferenceGlobe(
       const pulse = motion ? (Math.sin(now / 950) + 1) / 2 : 0.35
       node.halo.scale.setScalar(1 + pulse * 0.38)
       node.halo.material.opacity = active ? 0.62 : 0.4 - pulse * 0.2
-      if (node.landmark)
+      if (node.landmark) {
         node.landmark.visible = landmarksVisible && (altitude < 1.7 || key === pinned)
+        if (node.landmark.visible)
+          placeLandmark(
+            node.root,
+            node.landmark,
+            camera,
+            node.pixelRadius * (active ? 1.35 : 1),
+            units,
+            node.landmarkScale,
+          )
+      }
     })
     const level = altitude < 1.4 ? 1 : 0
     if (level !== labelLevel) {
@@ -337,7 +378,23 @@ export async function createConferenceGlobe(
     updateAppearance(performance.now())
     refreshLabels()
   })
+  function stopZoom() {
+    cancelAnimationFrame(zoomFrame)
+    zoomFrame = 0
+    zoomTarget = null
+  }
+  function stepZoom(now: number) {
+    if (destroyed || zoomTarget === null) return
+    const view = globe.pointOfView()
+    const next = nextZoomAltitude(view.altitude, zoomTarget, now - zoomTime)
+    zoomTime = now
+    const done = Math.abs(Math.log(next / zoomTarget)) < 0.0005
+    globe.pointOfView({ ...view, altitude: done ? zoomTarget : next }, 0)
+    if (done) stopZoom()
+    else zoomFrame = requestAnimationFrame(stepZoom)
+  }
   function goTo(lat: number, lng: number, altitude: number) {
+    stopZoom()
     interact()
     globe.pointOfView(
       {
@@ -345,7 +402,7 @@ export async function createConferenceGlobe(
         lng,
         altitude: THREE.MathUtils.clamp(altitude, MIN_GLOBE_ALTITUDE, MAX_GLOBE_ALTITUDE),
       },
-      motion ? 950 : 0,
+      sceneReady && !reducedMotion ? 650 : 0,
     )
   }
   goTo(25, 105, compact ? 2.4 : 1.8)
@@ -359,6 +416,10 @@ export async function createConferenceGlobe(
       sky.visible = palette.stars
       nodes.forEach((node) => node.applyTheme())
     },
+    setReducedMotion(value) {
+      reducedMotion = value
+      if (value) stopZoom()
+    },
     async ready() {
       await waitForGlobeFrame(
         () =>
@@ -370,6 +431,7 @@ export async function createConferenceGlobe(
       signal.throwIfAborted()
       const frame = renderer.info.render.frame
       await waitForGlobeFrame(() => renderer.info.render.frame > frame, signal)
+      sceneReady = true
     },
     resize(width, height) {
       compact = width < 768
@@ -390,8 +452,8 @@ export async function createConferenceGlobe(
       highlighted = nextHighlight
       pinned = nextPinned
       globe.globeOffset([!compact && pinned ? -85 : 0, compact && pinned ? -85 : 0])
-      refreshLabels()
       updateAppearance(performance.now())
+      refreshLabels()
     },
     setMotion(enabled) {
       motion = enabled
@@ -402,6 +464,7 @@ export async function createConferenceGlobe(
       updateAppearance(performance.now())
     },
     setVisible(value) {
+      if (!value) stopZoom()
       visible = value
       if (visible) globe.resumeAnimation()
       else globe.pauseAnimation()
@@ -410,6 +473,7 @@ export async function createConferenceGlobe(
     setLandmarks(value) {
       landmarksVisible = value
       updateAppearance(performance.now())
+      refreshLabels()
     },
     flyToCity(city) {
       goTo(city.lat, city.lng, 0.08)
@@ -423,17 +487,34 @@ export async function createConferenceGlobe(
       )
     },
     zoom(factor) {
+      interact()
       const view = globe.pointOfView()
-      goTo(view.lat, view.lng, view.altitude * factor)
+      const target = THREE.MathUtils.clamp(
+        (zoomTarget ?? view.altitude) * factor,
+        MIN_GLOBE_ALTITUDE,
+        MAX_GLOBE_ALTITUDE,
+      )
+      if (zoomTarget === null) globe.pointOfView(view, 0)
+      if (reducedMotion || !sceneReady) {
+        stopZoom()
+        globe.pointOfView({ ...view, altitude: target }, 0)
+        return
+      }
+      zoomTarget = target
+      if (!zoomFrame) {
+        zoomTime = performance.now()
+        zoomFrame = requestAnimationFrame(stepZoom)
+      }
     },
     reset() {
       goTo(25, 105, compact ? 2.4 : 1.8)
     },
     destroy() {
+      stopZoom()
       destroyed = true
       labelElements.clear()
       cancelAnimationFrame(animationFrame)
-      controls.removeEventListener('start', interact)
+      controls.removeEventListener('start', onControlStart)
       controls.removeEventListener('end', interact)
       canvas.removeEventListener('webglcontextlost', onLoss)
       globe.pauseAnimation()

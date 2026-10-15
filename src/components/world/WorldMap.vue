@@ -29,7 +29,6 @@ const reducedMotion = ref(false)
 const playing = ref(true)
 const fullscreen = ref(false)
 const landmarks = ref(true)
-const legend = ref(false)
 const hoverCity = ref<CityData | null>(null)
 const cityPanel = ref<InstanceType<typeof WorldCityPanel> | null>(null)
 const cityPicker = ref<HTMLSelectElement | null>(null)
@@ -60,6 +59,7 @@ function setVisibility() {
 }
 function onMotionChange(event: MediaQueryListEvent) {
   reducedMotion.value = event.matches
+  globe?.setReducedMotion(event.matches)
   syncMotion()
 }
 function selectCity(key: CityKey) {
@@ -85,7 +85,6 @@ function handleKeys(event: KeyboardEvent) {
   if (event.key === 'Escape') {
     if (selectedCity.value) closePanel()
     else if (fullscreen.value) setFullscreen(false)
-    else legend.value = false
   }
   // 页面全屏时只在场景控件中循环焦点，避免跳到背后的年表。
   if (event.key === 'Tab' && fullscreen.value && shell.value) {
@@ -127,6 +126,7 @@ async function init() {
       host.value,
       {
         theme: theme.value,
+        reducedMotion: reducedMotion.value,
         cities: cities.value,
         onHover(city) {
           hoverCity.value = city
@@ -150,6 +150,7 @@ async function init() {
     }
     globe = instance
     globe.setTheme(theme.value)
+    globe.setReducedMotion(reducedMotion.value)
     globe.setActive(props.highlightedCity, props.pinnedCity)
     globe.setLandmarks(landmarks.value)
     if (selectedCity.value) globe.flyToCity(selectedCity.value)
@@ -380,7 +381,7 @@ defineExpose({ flyToBounds })
           class="globe-icon-button"
           aria-label="放大地球"
           :disabled="loading"
-          @click="globe?.zoom(0.72)"
+          @click="globe?.zoom(0.55)"
         >
           <svg
             width="17"
@@ -398,7 +399,7 @@ defineExpose({ flyToBounds })
           class="globe-icon-button"
           aria-label="缩小地球"
           :disabled="loading"
-          @click="globe?.zoom(1.4)"
+          @click="globe?.zoom(1 / 0.55)"
         >
           <svg
             width="17"
@@ -451,29 +452,9 @@ defineExpose({ flyToBounds })
           </svg>
         </button>
       </div>
-      <button
-        class="globe-legend-toggle"
-        :aria-expanded="legend"
-        aria-controls="globe-legend"
-        @click="legend = !legend"
-      >
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.5"
-          aria-hidden="true"
-        >
-          <circle cx="12" cy="12" r="9" />
-          <path d="M12 11v6m0-10v1" /></svg
-        >图例
-      </button>
-      <div v-if="legend" id="globe-legend" class="globe-legend-panel">
+      <aside class="globe-legend-panel" aria-label="地图图例">
         <WorldLegend />
-        <p>大小表示累计场次；放大查看地标。</p>
-      </div>
+      </aside>
       <p class="globe-hint">拖动旋转<span> · 双指或滚轮缩放</span></p>
     </template>
   </section>

@@ -12,5 +12,11 @@ export function worldUnitsPerPixel(
 
 /** Fixed screen-space size preserves conference-count encoding while zooming. */
 export function markerPixelRadius(tier: number): number {
-  return 2.8 + tier * 0.8
+  return [3.5, 5, 7, 9.5, 12.5][Math.max(0, Math.min(4, Math.round(tier) - 1))]
+}
+
+/** Exponential zoom interpolation keeps repeated button presses continuous. */
+export function nextZoomAltitude(current: number, target: number, elapsed: number): number {
+  const amount = 1 - Math.exp(-Math.min(48, Math.max(0, elapsed)) / 90)
+  return Math.exp(Math.log(current) + (Math.log(target) - Math.log(current)) * amount)
 }

@@ -43,7 +43,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  transform: translate(14px, -50%);
+  transform: translate(var(--city-label-offset, 14px), -50%);
   max-width: 150px;
   padding: 2px 5px;
   overflow: hidden;
@@ -59,7 +59,7 @@
 .globe-city-label.is-left {
   left: auto;
   right: 0;
-  transform: translate(-14px, -50%);
+  transform: translate(calc(-1 * var(--city-label-offset, 14px)), -50%);
 }
 .globe-intro {
   position: absolute;
@@ -129,8 +129,7 @@
   border: 1px solid var(--globe-line);
 }
 .globe-icon-button:hover,
-.globe-button:hover,
-.globe-legend-toggle:hover {
+.globe-button:hover {
   background: var(--globe-hover);
 }
 .globe-icon-button[aria-pressed='true'] {
@@ -181,28 +180,13 @@
   background: var(--globe-panel);
   pointer-events: none;
 }
-.globe-legend-toggle {
-  position: absolute;
-  left: 24px;
-  bottom: 29px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 44px;
-  padding: 9px 13px;
-  border: 1px solid var(--globe-line);
-  border-radius: 8px;
-  color: var(--globe-ink);
-  background: var(--globe-panel);
-  font-size: 13px;
-}
 .globe-legend-panel {
   position: absolute;
-  bottom: 86px;
+  bottom: 24px;
   left: 24px;
   max-height: calc(100% - 190px);
   overflow: auto;
-  padding: 16px;
+  padding: 12px 14px;
   background: var(--globe-panel);
   border: 1px solid var(--globe-line);
   border-radius: 12px;
@@ -216,15 +200,19 @@
   color: var(--globe-ink);
   gap: 22px;
 }
-.globe-legend-panel > p {
-  font-size: 12px;
-  color: var(--globe-muted);
-  margin-top: 14px;
+.globe-legend-panel .world-legend-row {
+  display: grid;
+  grid-template-columns: 26px auto;
+  min-height: 26px;
+}
+.globe-legend-panel .world-legend-dot {
+  justify-self: center;
 }
 .globe-hover-card {
   position: absolute;
   left: 30px;
-  bottom: 100px;
+  top: 110px;
+  bottom: auto;
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -380,7 +368,7 @@
     width: 140px;
   }
   .globe-tools {
-    bottom: 48px;
+    bottom: 138px;
     gap: 0;
     padding: 4px;
   }
@@ -388,29 +376,49 @@
     margin-inline: 0;
   }
   .globe-hint {
-    bottom: 20px;
-    right: 18px;
-    font-size: 11px;
-  }
-  .globe-legend-toggle {
-    bottom: 5px;
-    left: 12px;
-    border-color: transparent;
-    background: var(--globe-panel);
-    font-size: 12px;
+    display: none;
   }
   .globe-legend-panel {
     left: 12px;
-    bottom: 108px;
-    max-height: calc(100% - 240px);
+    right: 12px;
+    bottom: 12px;
+    padding: 10px;
+    max-height: none;
+  }
+  .globe-legend-panel .world-legend {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .globe-legend-panel .world-legend-title {
+    display: none;
+  }
+  .globe-legend-panel .world-legend-section {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 4px 8px;
+  }
+  .globe-legend-panel .world-legend-section:last-child {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+  .globe-legend-panel .world-legend-row {
+    display: flex;
+    gap: 4px;
+    min-height: 18px;
+    line-height: 18px;
+    white-space: nowrap;
+  }
+  .globe-legend-panel .world-legend-section:last-child .world-legend-row {
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 2px;
   }
   .globe-city-detail {
     top: auto;
-    bottom: 110px;
+    bottom: 200px;
     left: 12px;
     right: 12px;
     width: auto;
-    max-height: 205px;
+    max-height: 145px;
   }
   .globe-shell .city-panel {
     padding: 14px;
@@ -425,6 +433,6 @@
     display: none;
   }
   .globe-shell.is-fullscreen .globe-city-detail {
-    max-height: min(32dvh, 280px);
+    max-height: min(30dvh, 240px);
   }
 }

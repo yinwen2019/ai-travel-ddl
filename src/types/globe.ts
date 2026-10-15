@@ -10,6 +10,7 @@ export interface GlobeGeometryData {
 
 export interface ConferenceGlobeOptions {
   theme: GlobeTheme
+  reducedMotion: boolean
   cities: CityData[]
   onHover: (city: CityData | null) => void
   onSelect: (city: CityData) => void
@@ -19,6 +20,7 @@ export interface ConferenceGlobeOptions {
 export interface ConferenceGlobe {
   ready: () => Promise<void>
   setTheme: (theme: GlobeTheme) => void
+  setReducedMotion: (reduced: boolean) => void
   resize: (width: number, height: number) => void
   setCities: (cities: CityData[]) => void
   setActive: (highlighted: CityKey | null, pinned: CityKey | null) => void
