@@ -1,34 +1,17 @@
 <script setup lang="ts">
-import type { FoodItem } from '@/types/location'
-
-defineProps<{
-  food: FoodItem[]
-}>()
+import type { FoodListProps } from '@/types/location'
+withDefaults(defineProps<FoodListProps>(), { food: () => [] })
 </script>
 
 <template>
-  <section class="mb-6">
-    <h2 class="mb-3 text-lg font-semibold text-primary">美食推荐</h2>
-    <div class="grid gap-3 sm:grid-cols-2">
-      <div
-        v-for="item in food"
-        :key="item.name"
-        class="flex gap-3 rounded-lg border border-line p-3 transition-colors hover:bg-subtle"
-      >
-        <span
-          class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-amber-50 text-base dark:bg-amber-900/20"
-        >
-          🍽
-        </span>
-        <div>
-          <h3 class="text-sm font-medium text-primary">
-            {{ item.name }}
-          </h3>
-          <p class="mt-0.5 text-xs text-secondary">
-            {{ item.description }}
-          </p>
-        </div>
-      </div>
-    </div>
+  <section class="city-content-section" aria-labelledby="city-food-heading">
+    <h2 id="city-food-heading">尝尝当地的味道</h2>
+    <ul v-if="food.length" class="city-editorial-list city-food-list">
+      <li v-for="item in food" :key="item.name">
+        <h3>{{ item.name }}</h3>
+        <p>{{ item.description || '美食介绍待公布。' }}</p>
+      </li>
+    </ul>
+    <p v-else class="city-section-empty">美食资料待公布。</p>
   </section>
 </template>

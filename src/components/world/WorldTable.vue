@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import type { YearTable, CityKey, WorldColumn } from '@/types/worldView'
 import { CATEGORY_COLORS, CATEGORY_CONFIG } from '@/constants'
 import type { Category } from '@/types/conference'
+import CityLink from '@/components/location/CityLink.vue'
 
 const props = defineProps<{
   yearTable: YearTable
@@ -126,7 +127,7 @@ function locationTitle(cityName: string | null, countryName: string | null): str
   <div class="world-table-wrapper" tabindex="0" aria-label="历年会议举办城市年表，可横向滚动">
     <table class="world-table">
       <caption class="sr-only">
-        按年份与会议排列的举办城市，选择城市可在地图定位。
+        按年份与会议排列的举办城市。城市名称在新标签页打开详情，定位按钮在地图查看。
       </caption>
       <thead>
         <tr>
@@ -174,27 +175,38 @@ function locationTitle(cityName: string | null, countryName: string | null): str
             }"
             :title="locationTitle(cell.cityName, cell.countryName)"
           >
-            <button
-              v-if="
-                cell.cityName &&
-                cell.countryName &&
-                cell.cityKey &&
-                availableCities.has(cell.cityKey)
-              "
-              class="world-table-button"
-              :aria-label="`${yearTable.columns[colIndex]?.conferenceName} ${yearTable.years[rowIndex]}，${locationTitle(cell.cityName, cell.countryName)}，在地图查看`"
+            <div
+              v-if="cell.cityName && cell.countryName"
+              class="world-city-actions"
               @mouseenter="onCellEnter(cell.cityKey)"
               @mouseleave="onCellLeave"
-              @focus="onCellEnter(cell.cityKey)"
-              @blur="onCellLeave"
-              @click="emit('city-select', cell.cityKey)"
+              @focusin="onCellEnter(cell.cityKey)"
+              @focusout="onCellLeave"
             >
-              {{ cell.cityName }}
-              <span aria-hidden="true">{{ countryFlag(cell.countryName) }}</span>
-            </button>
-            <span v-else-if="cell.cityName && cell.countryName" class="inline-block px-4 py-3"
-              >{{ cell.cityName }} {{ countryFlag(cell.countryName) }}</span
-            >
+              <CityLink :city="cell.cityName" :country="cell.countryName"
+                >{{ cell.cityName }}
+                <span aria-hidden="true">{{ countryFlag(cell.countryName) }}</span></CityLink
+              >
+              <button
+                v-if="cell.cityKey && availableCities.has(cell.cityKey)"
+                class="world-city-locate"
+                :aria-label="`${yearTable.columns[colIndex]?.conferenceName} ${yearTable.years[rowIndex]}，${locationTitle(cell.cityName, cell.countryName)}，在地图定位`"
+                @click="emit('city-select', cell.cityKey)"
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  aria-hidden="true"
+                >
+                  <circle cx="12" cy="12" r="6" />
+                  <path d="M12 2v4m0 12v4M2 12h4m12 0h4" />
+                </svg>
+              </button>
+            </div>
             <span v-else aria-label="无举办城市数据">—</span>
           </td>
         </tr>

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import CityLink from '@/components/location/CityLink.vue'
 defineProps<{
   year: number
   city?: string | null
@@ -43,7 +44,7 @@ defineProps<{
 
       <!-- 举办地 -->
       <p class="text-sm text-secondary">
-        {{ city || '待公布' }}, {{ country || '待公布' }}
+        <CityLink :city="city" :country="country" include-country />
         <span v-if="venue" class="text-xs text-secondary"> · {{ venue }}</span>
       </p>
 
@@ -72,11 +73,6 @@ defineProps<{
           </span>
         </div>
       </div>
-
-      <!-- 历史条目标记为只读 -->
-      <p v-if="!isUpcoming" class="mt-1 text-xs text-secondary">
-        {{ city || '待公布' }}, {{ country || '待公布' }}
-      </p>
     </div>
   </div>
 </template>

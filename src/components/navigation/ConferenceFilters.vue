@@ -4,7 +4,7 @@ import { useMultiSelect } from '@/composables/useMultiSelect'
 import type { Category } from '@/types/conference'
 import type { ConferenceFiltersProps } from '@/types/view'
 defineProps<ConferenceFiltersProps>()
-const { groups, selectedIds, toggle, selectAll, deselectAll, clearAll } = useMultiSelect()
+const { groups, selectedIds, toggle, selectAll, deselectAll } = useMultiSelect()
 function groupIds(category: Category) {
   return groups.value.find((g) => g.category === category)?.conferences.map((c) => c.id) ?? []
 }
@@ -48,12 +48,6 @@ function toggleCategory(category: Category) {
           </label>
         </div>
       </div>
-    </div>
-    <div class="filter-footer">
-      <span>{{
-        selectedIds.size ? `已选 ${selectedIds.size} 个会议` : '未选择时展示全部会议'
-      }}</span>
-      <button v-if="selectedIds.size" class="text-link min-h-11" @click="clearAll">清空选择</button>
     </div>
   </div>
 </template>

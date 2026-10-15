@@ -83,7 +83,7 @@ function handlePin(cityKey: CityKey): void {
       <section class="mt-7" aria-labelledby="world-table-title">
         <div class="mb-4 flex flex-wrap items-baseline justify-between gap-2">
           <h2 id="world-table-title" class="text-lg font-semibold">历年举办城市</h2>
-          <p class="text-xs text-secondary">点击会议名称定位城市 · 年表可横向滚动</p>
+          <p class="text-xs text-secondary">城市名称打开详情 · 定位按钮查看地图 · 年表可横向滚动</p>
         </div>
         <WorldTable
           :year-table="filteredYearTable"

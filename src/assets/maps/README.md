@@ -34,3 +34,18 @@ https://www.naturalearthdata.com/about/terms-of-use/
 
 The optional terrain layer and its raster assets were removed on 2026-10-15
 following visual review. Only the continuous vector basemap is shipped.
+
+## Homepage globe
+
+- File: `home-globe.svg` (290,645 bytes before transport compression)
+- Derived from the same public-domain `world-land.geojson` above on 2026-10-15.
+- Static orthographic projection centered at 25° E, 17° N; 680 × 680 viewBox,
+  radius 305. Rings were simplified with a 0.08° planar tolerance before
+  projection, retaining valid rings; projected coordinates are rounded to 0.1 px.
+- The SVG contains only geographic paths, a sphere outline and graticules.
+  Colors inherit from homepage CSS for both themes. There are no scripts,
+  remote references, conference records or interactive city markers in this asset.
+- Imported as trusted local markup by `HomeGlobe.vue`. It is a decorative
+  background; the separate World view supplies interactive exploration.
+- No map library or Three.js is loaded by the homepage. D3 Geo was used only
+  during local asset authoring, not included in the homepage runtime.

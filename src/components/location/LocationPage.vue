@@ -1,133 +1,138 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { useLocations } from '@/composables/useLocations'
-import { useConferences } from '@/composables/useConferences'
+import { useRoute } from 'vue-router'
+import { useCityDirectory } from '@/composables/useCityDirectory'
+import { CONTINENT_LABELS } from '@/constants'
 import ClimateCard from './ClimateCard.vue'
 import FoodList from './FoodList.vue'
 import AttractionList from './AttractionList.vue'
 
 const route = useRoute()
-const router = useRouter()
-const { getById } = useLocations()
-const { conferences } = useConferences()
-
-const location = computed(() => {
-  const id = route.params.id as string
-  return getById(id)
+const { getById } = useCityDirectory()
+const city = computed(() => getById(String(route.params.id)))
+const guide = computed(() => city.value?.guide)
+const conferenceGroups = computed(() => {
+  const groups = new Map<string, { id: string; name: string; years: number[] }>()
+  for (const record of city.value?.conferences ?? []) {
+    const group = groups.get(record.conferenceId) ?? {
+      id: record.conferenceId,
+      name: record.conferenceName,
+      years: [],
+    }
+    group.years.push(record.entry.year)
+    groups.set(record.conferenceId, group)
+  }
+  return [...groups.values()]
 })
-
-// 曾在此举办的会议（反向关联）
-const relatedConferences = computed(() => {
-  if (!location.value) return []
-  return conferences.value.filter((c) => {
-    return c.years.some((y) => y.location_id === location.value!.id)
-  })
+// 沿用会议数据的 upcoming 标记；已结束会期不再显示为待参会。
+const upcoming = computed(() => {
+  const today = new Date().toISOString().slice(0, 10)
+  return (city.value?.conferences ?? [])
+    .filter(
+      (record) =>
+        record.entry.type === 'upcoming' &&
+        (!record.entry.end_date || record.entry.end_date >= today),
+    )
+    .sort(
+      (a, b) =>
+        a.entry.year - b.entry.year ||
+        (a.entry.start_date ?? '9999').localeCompare(b.entry.start_date ?? '9999'),
+    )
 })
-
-function goToConference(id: string) {
-  router.push(`/conference/${id}`)
-}
 </script>
 
 <template>
-  <div v-if="location" class="container-page detail-page py-6">
-    <!-- 城市标题 -->
-    <div class="mb-6">
-      <h1 class="mb-1 text-2xl font-bold text-primary">
-        {{ location.city }}
-      </h1>
-      <p class="text-secondary">{{ location.country }} · {{ location.continent }}</p>
-      <p class="mt-2 text-sm leading-relaxed text-secondary">
-        {{ location.description }}
+  <div v-if="city" class="container-page page-content city-detail">
+    <nav class="city-breadcrumb" aria-label="面包屑">
+      <router-link to="/cities" class="text-link">城市视图</router-link
+      ><span aria-hidden="true">/</span><span aria-current="page">{{ city.city }}</span>
+    </nav>
+    <header class="city-detail-header">
+      <h1 class="page-title">{{ city.city }}</h1>
+      <p class="city-detail-place">
+        {{ city.country
+        }}<template v-if="city.continent"> · {{ CONTINENT_LABELS[city.continent] }}</template>
       </p>
-    </div>
-
-    <!-- 信息卡片行 -->
-    <div class="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
-      <div class="rounded-lg border border-line p-3 text-center">
-        <p class="text-xs text-secondary">最佳季节</p>
-        <p class="mt-1 text-sm font-medium text-primary">
-          {{ location.best_season }}
-        </p>
-      </div>
-      <div v-if="location.language" class="rounded-lg border border-line p-3 text-center">
-        <p class="text-xs text-secondary">语言</p>
-        <p class="mt-1 text-sm font-medium text-primary">
-          {{ location.language }}
-        </p>
-      </div>
-      <div v-if="location.currency" class="rounded-lg border border-line p-3 text-center">
-        <p class="text-xs text-secondary">货币</p>
-        <p class="mt-1 text-sm font-medium text-primary">
-          {{ location.currency }}
-        </p>
-      </div>
-      <div class="rounded-lg border border-line p-3 text-center">
-        <p class="text-xs text-secondary">所属洲</p>
-        <p class="mt-1 text-sm font-medium text-primary">
-          {{ location.continent }}
-        </p>
-      </div>
-    </div>
-
-    <!-- 气候图 -->
-    <ClimateCard :climate="location.climate" />
-
-    <!-- 美食 -->
-    <FoodList :food="location.food" />
-
-    <!-- 景点 -->
-    <AttractionList :attractions="location.attractions" />
-
-    <!-- 旅行贴士 -->
-    <section
-      v-if="location.travel_tips"
-      class="mb-6 rounded-lg bg-amber-50 p-4 dark:bg-amber-900/10"
-    >
-      <h2 class="mb-1 text-sm font-semibold text-amber-800 dark:text-amber-400">旅行贴士</h2>
-      <p class="text-sm text-amber-700 dark:text-amber-300">
-        {{ location.travel_tips }}
+      <p class="city-detail-description">
+        {{
+          guide?.description ||
+          '这座城市的旅行介绍待公布。你可以先查看这里的会议记录，安排参会行程。'
+        }}
       </p>
-    </section>
-
-    <!-- 关联会议 -->
-    <section v-if="relatedConferences.length > 0" class="mb-6">
-      <h2 class="mb-3 text-lg font-semibold text-primary">曾在此举办的会议</h2>
-      <div class="flex flex-wrap gap-2">
-        <button
-          v-for="c in relatedConferences"
-          :key="c.id"
-          class="nav-chip"
-          @click="goToConference(c.id)"
-        >
-          {{ c.name }}
-        </button>
+    </header>
+    <dl class="city-quick-facts">
+      <div>
+        <dt>适宜旅行季节</dt>
+        <dd>{{ guide?.best_season || '待公布' }}</dd>
       </div>
-    </section>
+      <div>
+        <dt>当地语言</dt>
+        <dd>{{ guide?.language || '待公布' }}</dd>
+      </div>
+      <div>
+        <dt>当地货币</dt>
+        <dd>{{ guide?.currency || '待公布' }}</dd>
+      </div>
+    </dl>
+    <p v-if="!guide" class="city-pending-note">
+      景点、美食、气候和旅行贴士待公布；下方保留已收录的会议记录。
+    </p>
+    <div class="city-detail-layout">
+      <div class="city-detail-main">
+        <AttractionList :attractions="guide?.attractions" />
+        <FoodList :food="guide?.food" />
+        <ClimateCard :climate="guide?.climate" />
+      </div>
+      <aside class="city-detail-aside" aria-label="参会与出行信息">
+        <section class="city-info-section">
+          <h2>出行贴士</h2>
+          <p>{{ guide?.travel_tips || '交通与出行资料待公布。' }}</p>
+        </section>
+        <section v-if="upcoming.length" class="city-info-section">
+          <h2>接下来在这里相遇</h2>
+          <ul class="city-upcoming-list">
+            <li v-for="record in upcoming" :key="`${record.conferenceId}-${record.entry.year}`">
+              <router-link :to="`/conference/${record.conferenceId}`" class="text-link"
+                >{{ record.conferenceName }} {{ record.entry.year }}</router-link
+              >
+              <p>
+                会期 {{ record.entry.start_date || '待公布'
+                }}<template
+                  v-if="record.entry.end_date && record.entry.end_date !== record.entry.start_date"
+                >
+                  至 {{ record.entry.end_date }}</template
+                >
+              </p>
+              <p v-if="record.entry.venue">{{ record.entry.venue }}</p>
+            </li>
+          </ul>
+        </section>
+        <section class="city-info-section">
+          <h2>在这里举办的会议</h2>
+          <p v-if="city.conferences.length" class="city-conference-count">
+            收录 {{ city.conferences.length }} 届会议，含历史与已公布届次。
+          </p>
+          <ul v-if="conferenceGroups.length" class="city-conference-list">
+            <li v-for="conference in conferenceGroups" :key="conference.id">
+              <router-link :to="`/conference/${conference.id}`" class="text-link">{{
+                conference.name
+              }}</router-link>
+              <p>{{ conference.years.join('、') }}</p>
+            </li>
+          </ul>
+          <p v-else>关联会议待公布。</p>
+        </section>
+        <p class="city-source-note">
+          旅行资料供行程参考，开放时间、交通及入境要求请以当地官方最新信息为准。
+        </p>
+      </aside>
+    </div>
   </div>
-
-  <!-- 地点不存在 -->
-  <div v-else class="container-page py-20">
-    <div class="flex flex-col items-center gap-4">
-      <div class="rounded-full bg-subtle p-4">
-        <svg class="h-8 w-8 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="1.5"
-            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-          />
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="1.5"
-            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-          />
-        </svg>
-      </div>
-      <p class="text-secondary">地点不存在</p>
-      <button class="nav-chip" @click="router.push('/')">返回首页</button>
+  <div v-else class="container-page page-content">
+    <div class="empty-state">
+      <h1 class="page-title">未找到这座城市</h1>
+      <p>这个城市地址可能已变更，请从城市视图重新选择。</p>
+      <router-link to="/cities" class="nav-chip">浏览全部城市</router-link>
     </div>
   </div>
 </template>

@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import type { ConferenceRef } from '@/types/worldView'
 import type { WorldCityPanelProps } from '@/types/view'
 import { useDDLStatus } from '@/composables/useDDLStatus'
+import CityLink from '@/components/location/CityLink.vue'
 const props = defineProps<WorldCityPanelProps>()
 defineEmits<{ close: [] }>()
 const panel = ref<HTMLElement | null>(null)
@@ -35,7 +36,7 @@ defineExpose({ focus })
   >
     <div class="city-panel-title">
       <div>
-        <h2 id="city-panel-title">{{ city.city }}</h2>
+        <h2 id="city-panel-title"><CityLink :city="city.city" :country="city.country" /></h2>
         <p class="mt-1 text-sm text-secondary">{{ city.country }} · 共 {{ city.totalCount }} 场</p>
       </div>
       <button class="icon-button" aria-label="关闭城市信息" @click="$emit('close')">
@@ -52,6 +53,7 @@ defineExpose({ focus })
         </svg>
       </button>
     </div>
+    <p class="mb-3 text-xs text-secondary">点击城市名称，在新标签页查看旅行指南与会议记录。</p>
     <ul class="city-panel-list">
       <li v-for="conference in conferences" :key="`${conference.conferenceId}-${conference.year}`">
         <div class="flex justify-between gap-3">

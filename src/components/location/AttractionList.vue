@@ -1,58 +1,35 @@
 <script setup lang="ts">
-import type { AttractionItem } from '@/types/location'
-
-defineProps<{
-  attractions: AttractionItem[]
-}>()
-
-function typeIcon(type?: string): string {
-  const map: Record<string, string> = {
-    nature: '🌿',
-    park: '🏞',
-    beach: '🏖',
-    market: '🏪',
-    historic: '🏛',
-    architecture: '🏗',
-    museum: '🏛',
-    adventure: '🧗',
-    hike: '🥾',
-    landmark: '📍',
-    entertainment: '🎭',
-    street: '🚶',
-    food: '🍜',
-  }
-  return map[type ?? ''] ?? '📍'
+import type { AttractionListProps } from '@/types/location'
+withDefaults(defineProps<AttractionListProps>(), { attractions: () => [] })
+const typeLabels: Record<string, string> = {
+  nature: '自然风光',
+  park: '公园',
+  beach: '海滩',
+  market: '集市',
+  historic: '历史文化',
+  architecture: '建筑',
+  museum: '博物馆',
+  adventure: '户外体验',
+  hike: '徒步',
+  landmark: '城市地标',
+  entertainment: '文化娱乐',
+  street: '街区',
+  food: '美食街区',
 }
 </script>
 
 <template>
-  <section class="mb-6">
-    <h2 class="mb-3 text-lg font-semibold text-primary">景点推荐</h2>
-    <div class="grid gap-3 sm:grid-cols-2">
-      <div
-        v-for="item in attractions"
-        :key="item.name"
-        class="flex gap-3 rounded-lg border border-line p-3 transition-colors hover:bg-subtle"
-      >
-        <span
-          class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-subtle text-base"
-        >
-          {{ typeIcon(item.type) }}
-        </span>
-        <div>
-          <div class="flex items-center gap-2">
-            <h3 class="text-sm font-medium text-primary">
-              {{ item.name }}
-            </h3>
-            <span v-if="item.type" class="rounded bg-subtle px-1.5 py-0.5 text-xs text-secondary">
-              {{ item.type }}
-            </span>
-          </div>
-          <p class="mt-0.5 text-xs text-secondary">
-            {{ item.description }}
-          </p>
+  <section class="city-content-section" aria-labelledby="city-attractions-heading">
+    <h2 id="city-attractions-heading">值得一看的地方</h2>
+    <ul v-if="attractions.length" class="city-editorial-list">
+      <li v-for="item in attractions" :key="item.name">
+        <div class="city-item-title">
+          <h3>{{ item.name }}</h3>
+          <span v-if="item.type && typeLabels[item.type]">{{ typeLabels[item.type] }}</span>
         </div>
-      </div>
-    </div>
+        <p>{{ item.description || '景点介绍待公布。' }}</p>
+      </li>
+    </ul>
+    <p v-else class="city-section-empty">景点资料待公布。</p>
   </section>
 </template>

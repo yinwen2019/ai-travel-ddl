@@ -1,4 +1,4 @@
-import type { Continent } from './conference'
+import type { Category, Continent, YearEntry } from './conference'
 
 export interface ClimateMonth {
   month: number
@@ -41,4 +41,44 @@ export interface Location {
 
 export interface LocationData {
   locations: Location[]
+}
+
+/** A conference edition associated with a destination. */
+export interface CityConference {
+  conferenceId: string
+  conferenceName: string
+  category: Category
+  entry: YearEntry
+}
+
+/** A destination assembled from conference records and an optional travel guide. */
+export interface CitySummary {
+  id: string
+  city: string
+  country: string
+  continent: Continent | null
+  guide?: Location
+  conferences: CityConference[]
+}
+
+export interface CityCardProps {
+  city: CitySummary
+}
+
+export interface CityLinkProps {
+  city?: string | null
+  country?: string | null
+  includeCountry?: boolean
+}
+
+export interface AttractionListProps {
+  attractions?: AttractionItem[]
+}
+
+export interface FoodListProps {
+  food?: FoodItem[]
+}
+
+export interface ClimateCardProps {
+  climate?: ClimateData
 }

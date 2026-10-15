@@ -5,9 +5,11 @@ import BrandMark from '@/components/common/BrandMark.vue'
 
 const route = useRoute()
 const navItems = [
-  { path: '/', label: '会议视图' },
-  { path: '/year', label: '年份视图' },
-  { path: '/world', label: '世界视图' },
+  { path: '/', label: 'Home' },
+  { path: '/world', label: 'World' },
+  { path: '/conference', label: 'Conference' },
+  { path: '/year', label: 'Year' },
+  { path: '/cities', label: 'City' },
 ]
 </script>
 
@@ -23,7 +25,13 @@ const navItems = [
           v-for="item in navItems"
           :key="item.path"
           :to="item.path"
-          :aria-current="route.path === item.path ? 'page' : undefined"
+          :aria-current="
+            route.path === item.path ||
+            (item.path === '/cities' && route.name === 'city') ||
+            (item.path === '/conference' && route.name === 'conference')
+              ? 'page'
+              : undefined
+          "
           >{{ item.label }}</router-link
         >
       </nav>

@@ -55,15 +55,17 @@ ai-travel-ddl/
 ├── src/
 │   ├── main.ts / App.vue / router.ts
 │   ├── types/                      # conference.ts, location.ts, view.ts
-│   ├── composables/                # useConferences, useLocations, useTheme, useDDLStatus, useMultiSelect
+│   ├── composables/                # useConferences, useLocations, useCityDirectory, useHomeOverview, useTheme, useDDLStatus, useMultiSelect
+│   ├── utils/                      # cityDirectory.ts、homeRanking.ts（只读聚合）等
 │   ├── components/
 │   │   ├── layout/                 # AppHeader, AppFooter
-│   │   ├── conference/             # ConferenceCard, ConferenceColumn, ConferenceTimelineItem, ConferenceDetail
+│   │   ├── home/                   # HomeGlobe（静态 SVG）, HomeCityRanking
+│   │   ├── conference/             # ConferenceCard, ConferenceRow, ConferenceTimelineItem, ConferenceDetail
 │   │   ├── navigation/             # MultiSelectNav, CategoryGroup, YearSelector
-│   │   ├── location/               # LocationPage, ClimateCard, FoodList, AttractionList
+│   │   ├── location/               # LocationPage, CityCard, CityLink, ClimateCard, FoodList, AttractionList
 │   │   ├── common/                 # SearchInput, BadgeTag, ProgressBar, EmptyState, SkeletonCard, ErrorBanner, ThemeToggle, ScrollToTop
-│   │   └── views/                  # CountdownPage, YearPage, ConferencePage
-│   └── styles/main.css
+│   │   └── views/                  # HomePage, CountdownPage, YearPage, ConferencePage, WorldViewPage, CityViewPage
+│   └── styles/                     # main.css, cities.css, home.css 等
 ├── public/favicon.svg
 ├── index.html / vite.config.ts / tailwind.config.js / package.json
 └── .env.example
@@ -127,11 +129,14 @@ python scripts/update_conferences.py  # AI data update (requires .env)
 
 | Path | View | Description |
 |---|---|---|
-| `#/` | CountdownPage | 会议维度视图（多列布局） |
+| `#/` | HomePage | 介绍型首页，静态地球、历史城市榜与四个功能入口 |
+| `#/conference` | CountdownPage | 会议维度视图（每会议一行，历年卡片轮播） |
 | `#/year` | YearPage | 年份视图（卡片网格 + 进度条） |
 | `#/world` | WorldViewPage | 世界地图 + 年份会议二维表 |
+| `#/cities` | CityViewPage | 城市目录，搜索、大洲和旅行指南筛选 |
+| `#/cities/:id` | LocationPage | 城市旅行详情 + 全部关联会议 |
 | `#/conference/:id` | ConferencePage | 单个会议详情 + 时间轴 |
-| `#/location/:id` | LocationPage | 城市旅游百科 |
+| `#/location/:id` | redirect | 兼容重定向至 `#/cities/:id` |
 
 ---
 

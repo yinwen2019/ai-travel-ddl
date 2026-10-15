@@ -5,6 +5,9 @@ dist/
 .DS_Store
 .claude/
 
+# Local UI review captures
+.impeccable/review/
+
 # Python（AI 数据更新脚本）
 scripts/update_logs/
 scripts/.pytest_cache/

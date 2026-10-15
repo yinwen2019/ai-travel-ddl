@@ -1,5 +1,10 @@
 <script setup lang="ts">
 import { ref, watch, onBeforeUnmount } from 'vue'
+import type { SearchInputProps } from '@/types/view'
+withDefaults(defineProps<SearchInputProps>(), {
+  label: '搜索会议名称、全称或分类',
+  placeholder: '搜索会议…',
+})
 const model = defineModel<string>({ default: '' })
 const emit = defineEmits<{ search: [query: string] }>()
 const localQuery = ref(model.value)
@@ -45,8 +50,8 @@ onBeforeUnmount(() => clearTimeout(timer))
     <input
       :value="localQuery"
       type="search"
-      aria-label="搜索会议名称、全称或分类"
-      placeholder="搜索会议…"
+      :aria-label="label"
+      :placeholder="placeholder"
       @input="onInput"
     />
     <button v-if="localQuery" class="search-clear" aria-label="清除搜索" @click="clear">

@@ -14,6 +14,12 @@ export interface ConferenceFiltersProps {
   open: boolean
 }
 
+/** Labels for the shared search control. */
+export interface SearchInputProps {
+  label?: string
+  placeholder?: string
+}
+
 /** Props for the selected city panel. */
 export interface WorldCityPanelProps {
   city: CityData

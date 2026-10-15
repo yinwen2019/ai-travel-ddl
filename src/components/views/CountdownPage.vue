@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue'
 import { useSearch } from '@/composables/useSearch'
 import { useMultiSelect } from '@/composables/useMultiSelect'
-import ConferenceColumn from '@/components/conference/ConferenceColumn.vue'
+import ConferenceRow from '@/components/conference/ConferenceRow.vue'
 import ConferenceFilters from '@/components/navigation/ConferenceFilters.vue'
 import SearchInput from '@/components/common/SearchInput.vue'
 import EmptyState from '@/components/common/EmptyState.vue'
@@ -29,34 +29,35 @@ const conferencesSource = computed(() =>
           aria-controls="conference-filters"
           @click="filtersOpen = !filtersOpen"
         >
-          筛选会议<span v-if="selectedIds.size">{{ selectedIds.size }}</span>
+          筛选会议
         </button>
       </div>
     </div>
     <ConferenceFilters :open="filtersOpen" />
-    <p class="mb-4 text-xs text-secondary" role="status">
-      {{ conferencesSource.length }} 个会议<span v-if="conferencesSource.length > 1">
-        · 横向浏览更多会议</span
+    <div class="conference-filter-toolbar">
+      <p role="status" aria-atomic="true">
+        显示 <span class="filter-result-count">{{ conferencesSource.length }}</span> 个会议
+      </p>
+      <button
+        type="button"
+        class="text-link filter-reset"
+        :disabled="!selectedIds.size"
+        @click="clearAll"
       >
-    </p>
+        清空选择
+      </button>
+    </div>
     <EmptyState
       v-if="!conferencesSource.length"
       :message="isFiltering || selectedIds.size ? '没有符合当前搜索与选择的会议' : '暂无会议数据'"
       variant="empty"
     >
       <div class="empty-actions">
-        <button v-if="isFiltering" class="control-button" @click="clearSearch">清除搜索</button
-        ><button v-if="selectedIds.size" class="control-button" @click="clearAll">清空选择</button>
+        <button v-if="isFiltering" class="control-button" @click="clearSearch">清除搜索</button>
       </div>
     </EmptyState>
-    <div
-      v-else
-      class="conference-columns"
-      :style="{ '--visible-columns': Math.min(conferencesSource.length, 4) }"
-      tabindex="0"
-      aria-label="会议列，可横向滚动"
-    >
-      <ConferenceColumn v-for="c in conferencesSource" :key="c.id" :conference="c" />
+    <div v-else class="conference-rows">
+      <ConferenceRow v-for="c in conferencesSource" :key="c.id" :conference="c" />
     </div>
   </div>
 </template>

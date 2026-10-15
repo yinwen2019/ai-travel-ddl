@@ -1,18 +1,17 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useRouter } from 'vue-router'
 import type { Conference } from '@/types/conference'
 import type { DDLUrgency } from '@/types/view'
 import { useDDLStatus } from '@/composables/useDDLStatus'
 import BadgeTag from '@/components/common/BadgeTag.vue'
 import ProgressBar from '@/components/common/ProgressBar.vue'
+import CityLink from '@/components/location/CityLink.vue'
 
 const props = defineProps<{
   conference: Conference
   year: number
 }>()
 
-const router = useRouter()
 const { getUrgency, getRelativeDays, isDateFuture, getEarliestUpcomingDDL, hasDeadline } =
   useDDLStatus()
 
@@ -98,22 +97,8 @@ const progressEntry = computed(() => {
   return entry.value
 })
 
-const locationHref = computed(() => {
-  if (!entry.value?.location_id) return ''
-  return router.resolve({
-    name: 'location',
-    params: { id: entry.value.location_id },
-  }).href
-})
-
 const officialHref = computed(() => {
   return entry.value?.url ?? props.conference.website ?? ''
-})
-
-const locationText = computed(() => {
-  const city = entry.value?.city || '待公布'
-  const country = entry.value?.country || '待公布'
-  return `${city}, ${country}`
 })
 
 const isPending = computed(
@@ -168,14 +153,7 @@ const statusStyle = computed(() => {
       <template v-else><span class="status-value">投稿日期待公布</span></template>
     </div>
     <p class="card-location">
-      <a
-        v-if="locationHref"
-        :href="locationHref"
-        target="_blank"
-        rel="noopener noreferrer"
-        :aria-label="`${locationText}，在新标签页查看城市`"
-        >{{ locationText }}</a
-      ><span v-else>{{ locationText }}</span>
+      <CityLink :city="entry?.city" :country="entry?.country" include-country />
     </p>
     <p class="card-meta">会期 {{ meetingTimeText }}</p>
     <ProgressBar v-if="progressEntry" :entry="progressEntry" />

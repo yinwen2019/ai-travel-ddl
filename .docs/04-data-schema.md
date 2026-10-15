@@ -104,9 +104,11 @@
 
 ## conference ↔ location 关联
 
-- `location_id` 可选外键 → 匹配到 locations.json 记录时，`city, country` 文本渲染为渐变地点链接，新标签页打开地点百科页
+- `location_id` 仍是指向 locations.json 的可选外键；城市目录通过规范化后的 `city + country` 只读关联会议举办地与可选指南，不依赖外键或地图坐标。
+- `useCityDirectory` / `buildCityDirectory` 先收录已有指南，再聚合所有会议年份；匹配忽略大小写、首尾空格与重音差异，例如 Montréal/Montreal，不修改 JSON 原始名称。城市、国家缺失及 Virtual/Online 会议不生成目的地。
+- 有指南时沿用 `locations.json` 的 `id`；无指南时由城市与国家生成地址 ID。所有收录城市都可通过 `#/cities/:id` 查看详情，旧 `#/location/:id` 重定向到同 ID 新地址。
+- 城市文字入口使用统一城市链接，新标签页打开详情；没有指南仍展示关联会议，旅行资料显示「待公布」。无法识别为实体目的地的地点保留文本。
 - `url` 可选外链 → 存在时会议卡片渲染 `官网 ↗`，新标签页打开该年份第三方会议页面
-- 未匹配 → 纯文本展示
-- 地点百科页底部反向匹配展示曾在此举办的所有会议
+- 城市详情的反向关联来自全部会议年份，包含历史与 upcoming；待参会区仅显示未结束的 upcoming。此关联是展示层派生结构，不新增源数据字段或修改 JSON Schema。
 
 > 版本：v0.3.0 | 2026-05-19
