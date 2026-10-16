@@ -1,16 +1,16 @@
 {
   "meta": {
     "version": "0.2.0",
-    "last_updated": "2026-09-14T08:54:45Z",
+    "last_updated": "2026-10-16T05:46:52Z",
     "description": "AI top conference data — venues, deadlines, and dates",
     "data_source": "manually curated",
-    "last_ai_run": "2026-09-14T08:54:45Z",
+    "last_ai_run": "2026-10-16T05:46:52Z",
     "ai_run_summary": {
-      "archived": 2,
-      "created": 2,
+      "archived": 0,
+      "created": 0,
       "queried": 10,
-      "skipped": 3,
-      "updated": 0
+      "skipped": 8,
+      "updated": 5
     }
   },
   "conferences": [
@@ -404,9 +404,21 @@
           "continent": "North America",
           "venue": "Seattle Convention Center, Seattle, USA",
           "url": "https://cvpr.thecvf.com/",
-          "abstract_ddl": [],
-          "paper_ddl": [],
-          "notification_date": null,
+          "abstract_ddl": [
+            {
+              "date": "2026-11-10",
+              "timezone": "Etc/GMT+12",
+              "note": "Paper Registration Deadline"
+            }
+          ],
+          "paper_ddl": [
+            {
+              "date": "2026-11-16",
+              "timezone": "Etc/GMT+12",
+              "note": "Submission Deadline"
+            }
+          ],
+          "notification_date": "2027-02-25",
           "camera_ready": null,
           "start_date": "2027-06-19",
           "end_date": "2027-06-26"
@@ -584,13 +596,19 @@
         {
           "year": 2027,
           "type": "upcoming",
-          "city": null,
+          "city": "Kyoto",
           "country": "Japan",
           "continent": "Asia",
           "venue": null,
           "url": "https://2027.aclweb.org",
           "abstract_ddl": [],
-          "paper_ddl": [],
+          "paper_ddl": [
+            {
+              "date": "2027-01-04",
+              "timezone": "Etc/GMT+12",
+              "note": "ARR submission deadline; all deadlines are 11:59 pm UTC-12h (anywhere on earth)"
+            }
+          ],
           "notification_date": null,
           "camera_ready": null,
           "start_date": "2027-08-17",
@@ -1094,8 +1112,14 @@
           "venue": null,
           "url": null,
           "abstract_ddl": [],
-          "paper_ddl": [],
-          "notification_date": null,
+          "paper_ddl": [
+            {
+              "date": "2026-10-12",
+              "timezone": "Etc/GMT+12",
+              "note": "ARR submission deadline for long and short papers"
+            }
+          ],
+          "notification_date": "2027-02-10",
           "camera_ready": null,
           "start_date": "2027-06-01",
           "end_date": "2027-06-05"
@@ -1690,10 +1714,22 @@
           "continent": "North America",
           "venue": "Palais des congrès de Montréal",
           "url": "https://aaai.org/conference/aaai/aaai-27/",
-          "abstract_ddl": [],
-          "paper_ddl": [],
-          "notification_date": null,
-          "camera_ready": null,
+          "abstract_ddl": [
+            {
+              "date": "2026-07-21",
+              "timezone": "Etc/GMT+12",
+              "note": "Abstracts due at 11:59 PM UTC-12 (Anywhere on Earth), Main Technical Track"
+            }
+          ],
+          "paper_ddl": [
+            {
+              "date": "2026-07-28",
+              "timezone": "Etc/GMT+12",
+              "note": "Full papers due at 11:59 PM UTC-12 (Anywhere on Earth), Main Technical Track"
+            }
+          ],
+          "notification_date": "2026-11-30",
+          "camera_ready": "2026-12-14",
           "start_date": "2027-02-16",
           "end_date": "2027-02-23"
         }
@@ -2066,17 +2102,29 @@
         {
           "year": 2027,
           "type": "upcoming",
-          "city": null,
-          "country": null,
-          "continent": null,
+          "city": "Kyoto",
+          "country": "Japan",
+          "continent": "Asia",
           "venue": null,
-          "url": null,
-          "abstract_ddl": [],
-          "paper_ddl": [],
-          "notification_date": null,
+          "url": "https://2027.ijcai.org",
+          "abstract_ddl": [
+            {
+              "date": "2027-01-04",
+              "timezone": "Etc/GMT+12",
+              "note": "23:59 AoE (Anywhere on Earth)"
+            }
+          ],
+          "paper_ddl": [
+            {
+              "date": "2027-01-11",
+              "timezone": "Etc/GMT+12",
+              "note": "23:59 AoE (Anywhere on Earth)"
+            }
+          ],
+          "notification_date": "2027-04-21",
           "camera_ready": null,
-          "start_date": null,
-          "end_date": null
+          "start_date": "2027-08-07",
+          "end_date": "2027-08-13"
         }
       ]
     },
