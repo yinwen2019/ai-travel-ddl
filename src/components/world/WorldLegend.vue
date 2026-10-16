@@ -3,13 +3,11 @@ import { markerPixelRadius } from '@/utils/globeProjection'
 import type { LegendColorItem, LegendSizeItem } from '@/types/worldView'
 import { CATEGORY_COLORS, CATEGORY_CONFIG, CATEGORY_LIST } from '@/constants'
 
-const colorItems: LegendColorItem[] = [
-  { label: '历史举办', color: 'history' },
-  ...CATEGORY_LIST.map((category) => ({
-    label: CATEGORY_CONFIG[category].short,
-    color: category,
-  })),
-]
+const historyItem: LegendColorItem = { label: '历史举办', color: 'history' }
+const colorItems: LegendColorItem[] = CATEGORY_LIST.map((category) => ({
+  label: CATEGORY_CONFIG[category].short,
+  color: category,
+}))
 
 const sizeItems: LegendSizeItem[] = [
   { label: '1 场', radius: markerPixelRadius(1) * 2, tier: 1 },
@@ -40,10 +38,14 @@ function getLegendDotStyle(item: LegendColorItem): Record<string, string> {
   <div class="world-legend">
     <!-- 颜色说明 -->
     <div class="world-legend-section" aria-label="会议类型">
-      <div class="world-legend-title">颜色</div>
+      <div class="world-legend-row world-legend-history">
+        <span class="world-legend-dot" :style="getLegendDotStyle(historyItem)"></span>
+        <span>{{ historyItem.label }}</span>
+      </div>
+      <div class="world-legend-title world-legend-upcoming-title">即将举办</div>
       <div v-for="item in colorItems" :key="item.color" class="world-legend-row">
         <span class="world-legend-dot" :style="getLegendDotStyle(item)"></span>
-        <span>{{ item.color === 'history' ? item.label : `${item.label} 即将` }}</span>
+        <span>{{ item.label }}</span>
       </div>
     </div>
 

@@ -402,7 +402,7 @@
     width: clamp(76px, calc(100vw - 272px), 140px);
   }
   .globe-tools {
-    bottom: 138px;
+    bottom: 164px;
     gap: 0;
     padding: 4px;
   }
@@ -428,8 +428,16 @@
   }
   .globe-legend-panel .world-legend-section {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 4px 8px;
+  }
+  .globe-legend-panel .world-legend-history,
+  .globe-legend-panel .world-legend-upcoming-title {
+    grid-column: 1 / -1;
+  }
+  .globe-legend-panel .world-legend-upcoming-title {
+    display: block;
+    margin-bottom: 0;
   }
   .globe-legend-panel .world-legend-section:last-child {
     grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -448,7 +456,7 @@
   }
   .globe-city-detail {
     top: auto;
-    bottom: 200px;
+    bottom: 226px;
     left: 12px;
     right: 12px;
     width: auto;
