@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import copy
 import json
+import re
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -34,6 +35,7 @@ from lib.logger import write_run_log, write_summary_md
 from lib.merger import merge_upcoming
 from lib.parser import parse_ai_response
 from lib.prompt_builder import build_prompt
+from lib.review_report import build_pr_title, collect_changes, generate_ai_overview
 from lib.schedule import last_known_year, next_edition_year
 from lib.source_policy import build_search_query, is_trusted_url, trusted_domains
 from lib.validator import run_validate
@@ -79,6 +81,7 @@ class RunResult:
     validate_ok: bool = True
     rolled_back: bool = False
     error: str | None = None
+    changes: list[dict] = field(default_factory=list)
 
 
 def _read_json(path: Path) -> dict:
@@ -171,6 +174,7 @@ def _query_and_merge(
     client: AIClient,
     search_client: SearchClient,
     today: str,
+    sources: dict[str, list[str]] | None = None,
 ) -> tuple[int, int]:
     """步骤 E+F+G：查询并合并不完整的 active upcoming。返回 (queried, updated)。
 
@@ -215,6 +219,11 @@ def _query_and_merge(
             if ai_fields:
                 if merge_upcoming(entry, ai_fields):
                     updated += 1
+                    if sources is not None:
+                        urls = re.findall(r"^URL: (https?://\S+)$", context, re.MULTILINE)
+                        sources[f"{conf['id']}:{year}"] = list(dict.fromkeys(
+                            url for url in urls if is_trusted_url(url, domains)
+                        ))
     return queried, updated
 
 
@@ -272,7 +281,8 @@ def run(
     # 步骤 C+D：创建下一届
     result.summary["created"] = _create_next_upcoming(data["conferences"], today)
     # 步骤 E+F+G：查询并合并
-    queried, updated = _query_and_merge(data["conferences"], client, search_client, today)
+    sources: dict[str, list[str]] = {}
+    queried, updated = _query_and_merge(data["conferences"], client, search_client, today, sources)
     result.summary["queried"] = queried
     result.summary["updated"] = updated
     # 步骤 E 统计：跳过的完整 upcoming
@@ -301,6 +311,11 @@ def run(
         _write_json(data_path, original)
         result.rolled_back = True
         result.error = "validate 失败，已回滚。\n" + output
+    else:
+        # 只报告成功保留的差异，回滚的尝试不能写成已更新。
+        result.changes = collect_changes(original, data)
+        for change in result.changes:
+            change["sources"] = sources.get(change["id"], [])
     return result
 
 
@@ -315,15 +330,22 @@ def main() -> int:
     search_client = build_search_client_from_env()
     result = run(DATA_PATH, REPO_ROOT, client, search_client)
 
+    # 校验通过且有真实差异时，只额外调用一次同一模型撰写评审文案。
+    ai_overview = generate_ai_overview(result.changes, client) if result.changes else None
+
     run_id = utc_now_iso().replace(":", "").replace("-", "")
-    write_run_log(LOG_DIR, run_id, {"result": _result_to_log(result)})
+    write_run_log(LOG_DIR, run_id, {"result": _result_to_log(result), "ai_overview": ai_overview})
     write_summary_md(
         LOG_DIR / "latest_run.md",
         result.summary,
         result.changed,
         result.validate_ok,
         result.error,
+        changes=result.changes,
+        ai_overview=ai_overview,
+        today=today_iso(),
     )
+    (LOG_DIR / "latest_pr_title.txt").write_text(build_pr_title(result.changes) + "\n", encoding="utf-8")
 
     if result.error:
         print(result.error, file=sys.stderr)
@@ -346,6 +368,7 @@ def _result_to_log(result: RunResult) -> dict:
         "validate_ok": result.validate_ok,
         "rolled_back": result.rolled_back,
         "error": result.error,
+        "changes": result.changes,
     }
 
 

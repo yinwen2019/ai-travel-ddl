@@ -77,6 +77,22 @@ url 或 conference.website 至少一个存在，至少一个非空 abstract_ddl/
 时区回归与更新脚本测试：`python -m pytest scripts/tests -q`（需安装 pytest 与 Node 依赖）。
 测试包含真实 Node/Ajv 校验，验证合法偏移时区可写入、非法时区不覆盖原有 DDL。
 
+## PR 评审报告（REQ-E02）
+
+- 校验成功后，按 `conference.id + year` 比较运行前后的真实 JSON，忽略 `meta` 和会议 / 年份列表排序。
+  每届会议列出每个变化字段的旧值、新值；DDL 保留日期、时区与原始批次说明。
+- 标题由实际受影响的会议及年份生成；已有值被替换、补入已过去的 DDL 时生成核对提示。
+  检索结果的可信页面 URL 作为参考保存，不冒充逐字段证据。缺少检索记录时只标明官网核查入口。
+- 额外调用 **一次** 当前 `AI_MODEL`（当前配置为 `deepseek-flash`），复用已有接口与 Key，
+  仅向模型发送真实差异，请其生成中文总体概述和逐会议说明，不额外调用搜索 API。
+  概述标记为 AI 辅助文案，精确值以程序生成的表格为准。
+- API 失败、无 Key、JSON 格式不符或变更 ID 不匹配时，降级为完整的字段报告；
+  无会议字段差异或数据已回滚时不请求摘要，不会把回滚的尝试描述成已更新。
+- 报告写入 `scripts/update_logs/latest_run.md`，标题写入 `latest_pr_title.txt`；
+  workflow 用 `body-path` 直接读取正文，并发布到运行摘要及日志 artifact。
+  统计数字折叠显示；结构化差异与 AI 概述同时保存在 JSONL 日志中。
+- CI 在真实 API 调用前先运行 `scripts/tests`，覆盖差异计算、模型降级、回滚与完整报告流程。
+
 ## 脚本结构
 
 ```

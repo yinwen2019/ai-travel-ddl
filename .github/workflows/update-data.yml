@@ -35,7 +35,10 @@ jobs:
         run: npm ci
 
       - name: Install Python dependencies
-        run: pip install -r scripts/requirements.txt
+        run: pip install -r scripts/requirements.txt pytest
+
+      - name: Test update pipeline
+        run: python -m pytest scripts/tests -q
 
       - name: Run AI update script
         # 脚本内部会：归档 -> 创建 -> 查询 -> 合并 -> 写回 -> npm run validate -> 失败回滚
@@ -67,17 +70,14 @@ jobs:
           if-no-files-found: ignore
           retention-days: 30
 
-      - name: Read run summary
+      - name: Read PR title
         id: summary
         run: |
-          if [ -f scripts/update_logs/latest_run.md ]; then
-            {
-              echo "body<<EOF"
-              cat scripts/update_logs/latest_run.md
-              echo "EOF"
-            } >> "$GITHUB_OUTPUT"
+          if [ -f scripts/update_logs/latest_pr_title.txt ]; then
+            title=$(head -n 1 scripts/update_logs/latest_pr_title.txt)
+            echo "title=$title" >> "$GITHUB_OUTPUT"
           else
-            echo "body=（无运行摘要）" >> "$GITHUB_OUTPUT"
+            echo "title=data(conferences): update upcoming conference data" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Create Pull Request
@@ -90,5 +90,5 @@ jobs:
             自动归档/创建/补全 upcoming 会议数据（REQ-E02）。
           branch: bot/update-upcoming-conferences
           delete-branch: true
-          title: "data(conferences): update upcoming conference data"
-          body: "${{ steps.summary.outputs.body }}"
+          title: "${{ steps.summary.outputs.title }}"
+          body-path: scripts/update_logs/latest_run.md

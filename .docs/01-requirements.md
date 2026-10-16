@@ -275,6 +275,13 @@ GitHub Actions 定时运行 AI 数据更新脚本（`scripts/update_conferences.
 
 脚本在 `meta` 中记录本次运行的 `archived / created / queried / skipped / updated` 计数。
 
+PR 标题应标明涉及的会议及年份；正文以实际 JSON 差异为依据，逐届列出变化字段的旧值、
+新值与 DDL 时区 / 批次说明，并保留检索参考页面。已有值被替换、补入已过期 DDL 时，
+应提示人工核对。运行统计置于可折叠区。
+
+可使用配置的 AI 模型生成中文概述，但不能代替真实差异明细或声称已完成官方核实；
+摘要失败时保留确定性报告，不影响已校验的数据更新。无变更或已回滚时不调用摘要 API。
+
 ### REQ-E03 — 构建失败通知 [P2]
 
 CI 失败通过 GitHub 原生通知。
