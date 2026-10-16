@@ -11,6 +11,8 @@ import json
 from pathlib import Path
 from typing import Mapping
 
+from .review_report import render_review_report
+
 
 def _ensure_dir(path: Path) -> None:
     path.mkdir(parents=True, exist_ok=True)
@@ -30,11 +32,17 @@ def write_summary_md(
     changed: bool,
     validate_ok: bool,
     error: str | None = None,
+    *,
+    changes: list[dict] | None = None,
+    ai_overview: dict | None = None,
+    today: str = "",
 ) -> None:
     """写入 Markdown 摘要，供 PR body 使用。"""
     _ensure_dir(path.parent)
     lines = [
-        "# AI 数据更新运行摘要",
+        render_review_report(changes or [], today, ai_overview),
+        "<details>",
+        "<summary>运行统计与校验结果</summary>",
         "",
         f"- 归档 upcoming（ended -> history）: {summary.get('archived', 0)}",
         f"- 创建 upcoming（占位）: {summary.get('created', 0)}",
@@ -46,6 +54,8 @@ def write_summary_md(
         f"- `npm run validate`: {'通过' if validate_ok else '失败（已回滚）'}",
         "",
         "> 由 `scripts/update_conferences.py` 自动生成。无数据变更时不会创建 PR。",
+        "",
+        "</details>",
     ]
     if error:
         lines.extend(["", "## 错误详情", "", "````text", error, "````"])
