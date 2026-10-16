@@ -68,6 +68,14 @@ url 或 conference.website 至少一个存在，至少一个非空 abstract_ddl/
 - 非重试型 HTTP 错误 / 响应解析失败：等价于无新数据，该 upcoming 保持原状。
 - `npm run validate` 失败：回滚到运行前的原始数据，脚本退出非零（workflow 不创建 PR）。
 - 无 API Key：使用 NullClient（跳过查询），仍执行归档与创建。
+- 时区路径格式与 `data/schema.json` 共用，支持 `Etc/GMT+12` 与多级 IANA 名称；
+  Python 使用 `zoneinfo` 检查名称存在，非法 DDL 在合并前丢弃并输出具体时区值，
+  保留已有 DDL。Node/Ajv 的 `iana-timezone` 检查器使用 `Intl` 检查名称存在。
+- 无论成功失败，workflow 都发布已有运行摘要，并将 `scripts/update_logs/`
+  保存为 artifact（保留 30 天）；校验失败的摘要包含错误详情。
+
+时区回归与更新脚本测试：`python -m pytest scripts/tests -q`（需安装 pytest 与 Node 依赖）。
+测试包含真实 Node/Ajv 校验，验证合法偏移时区可写入、非法时区不覆盖原有 DDL。
 
 ## 脚本结构
 

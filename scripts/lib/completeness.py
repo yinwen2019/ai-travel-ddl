@@ -7,10 +7,10 @@
 """
 from __future__ import annotations
 
-import re
 from typing import Mapping
 
 from .dates import is_valid_date
+from .timezones import is_valid_timezone
 
 VALID_CONTINENTS = {
     "Asia",
@@ -20,9 +20,6 @@ VALID_CONTINENTS = {
     "Africa",
     "Oceania",
 }
-
-# IANA 时区，形如 America/Los_Angeles
-TZ_RE = re.compile(r"^[A-Za-z][A-Za-z0-9_+-]+/[A-Za-z][A-Za-z0-9_+-]+$")
 
 
 def is_ended(entry: Mapping[str, object], today: str) -> bool:
@@ -53,7 +50,7 @@ def _ddl_entries_complete(ddl: object) -> bool:
         if not is_valid_date(item.get("date")):
             return False
         tz = item.get("timezone")
-        if not isinstance(tz, str) or not TZ_RE.match(tz):
+        if not is_valid_timezone(tz):
             return False
     return True
 

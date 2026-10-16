@@ -70,6 +70,12 @@
 | timezone | string | 是 | IANA 格式 `"America/Los_Angeles"` |
 | note | string | 否 | 补充说明 |
 
+时区同时由 Schema 的路径格式与 `iana-timezone` 格式检查器校验，支持
+`Etc/GMT+12`（AoE）及 `America/Argentina/Buenos_Aires` 等合法 IANA 名称。
+Node 校验使用 `Intl.DateTimeFormat` 验证名称存在；Python 清洗与完整性检查
+读取同一 Schema 格式规则并使用 `zoneinfo.ZoneInfo` 验证名称存在。
+缩写（如 PST、AoE）和不存在的时区不接受；不得把 AoE 擅自替换为举办地时区。
+
 ---
 
 ## locations.json
