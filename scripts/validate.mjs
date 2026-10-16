@@ -3,6 +3,7 @@ import addFormats from 'ajv-formats'
 import { readFileSync } from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { isKnownTimezone } from './lib/timezones.mjs'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT = resolve(__dirname, '..')
@@ -29,6 +30,7 @@ const locations = loadJSON(resolve(DATA_DIR, 'locations.json'))
 
 const ajv = new Ajv({ allErrors: true, strict: false })
 addFormats(ajv)
+ajv.addFormat('iana-timezone', { type: 'string', validate: isKnownTimezone })
 const validate = ajv.compile(schema)
 const valid = validate(data)
 
@@ -37,7 +39,9 @@ if (!valid) {
   console.log(`${RED}✗ JSON Schema 校验失败:${RESET}`)
   validate.errors.forEach((e) => {
     const path = e.instancePath || '(root)'
-    console.log(`  ${RED}${path}: ${e.message}${RESET}`)
+    const value = e.instancePath.split('/').slice(1).reduce((obj, key) => obj?.[key], data)
+    const detail = e.instancePath.endsWith('/timezone') ? ` (value=${JSON.stringify(value)})` : ''
+    console.log(`  ${RED}${path}: ${e.message}${detail}${RESET}`)
   })
 } else {
   console.log(`${GREEN}✓ JSON Schema 校验通过${RESET}`)

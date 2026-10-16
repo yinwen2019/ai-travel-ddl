@@ -424,6 +424,8 @@ svg {
     display: none;
   }
   .conference-slide {
+    container-type: inline-size;
+    container-name: edition;
     display: flex;
     flex: 0 0 var(--slide-width);
     min-width: 0;
@@ -515,6 +517,140 @@ svg {
     flex-direction: column;
     gap: 14px;
     align-self: stretch;
+  }
+  .card-header {
+    display: contents;
+  }
+  .conference-card.is-compact {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-content: start;
+    gap: 4px 12px;
+  }
+  .conference-card.is-compact .card-header {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px 12px;
+    margin-bottom: 2px;
+  }
+  .conference-card.is-compact .card-top {
+    min-height: 0;
+    flex-shrink: 0;
+  }
+  .conference-card.is-compact .card-status {
+    flex-shrink: 0;
+    max-width: 100%;
+    margin-left: auto;
+    justify-content: flex-end;
+    gap: 4px 6px;
+    font-size: 13px;
+  }
+  .conference-card.is-compact .card-location {
+    grid-column: 1;
+    grid-row: 2;
+    align-self: center;
+  }
+  .conference-card.is-compact .card-meta {
+    grid-column: 1;
+    grid-row: 3;
+    align-self: center;
+  }
+  .conference-card.is-compact .card-bottom {
+    grid-column: 2;
+    grid-row: 2 / 4;
+    align-self: center;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  .conference-card.is-compact .card-bottom a {
+    min-height: 44px;
+  }
+  .conference-card.is-compact .progress-nodes {
+    grid-column: 1 / -1;
+    grid-row: 4;
+    gap: 0;
+    margin-top: 0;
+    padding-top: 8px;
+  }
+  .progress-nodes.is-compact .progress-node {
+    display: grid;
+    grid-template-rows: 18px 18px;
+    justify-items: center;
+    align-items: center;
+    gap: 2px 0;
+    color: var(--color-text-secondary);
+    font-size: 12px;
+    line-height: 18px;
+  }
+  .progress-nodes.is-compact .progress-node:not(:last-child)::after {
+    top: 8px;
+    left: 50%;
+    right: auto;
+    width: 100%;
+    height: 2px;
+    background: var(--color-border);
+  }
+  .progress-nodes.is-compact .progress-node.is-done::after {
+    background: var(--color-text-tertiary);
+  }
+  .milestone-label {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding-inline: 5px;
+    background: var(--color-surface);
+    white-space: nowrap;
+  }
+  .progress-nodes.is-compact .progress-dot {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+    margin: 0;
+    border-color: var(--color-text-tertiary);
+    flex-shrink: 0;
+  }
+  .progress-nodes.is-compact .progress-dot svg {
+    width: 12px;
+    height: 12px;
+  }
+  .progress-nodes.is-compact .is-done .progress-dot {
+    background: var(--color-text-secondary);
+    border-color: var(--color-text-secondary);
+    color: var(--color-text-inverse);
+  }
+  .progress-nodes.is-compact .progress-node.is-current {
+    color: var(--stage-color);
+  }
+  .progress-nodes.is-compact .is-current .progress-dot {
+    border: 2px solid var(--stage-color);
+    background: var(--color-surface);
+  }
+  .progress-nodes.is-compact .is-current .progress-dot::after {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--stage-color);
+  }
+  .progress-nodes.is-compact .milestone-date {
+    grid-row: 2;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .progress-nodes.is-compact.has-single-node .progress-node {
+    justify-items: start;
+  }
+  .progress-nodes.is-compact.has-single-node .milestone-label {
+    padding-inline: 0;
   }
   .card.is-ended {
     background: var(--color-surface-secondary);
@@ -808,7 +944,26 @@ svg {
     margin-block: 8px 0;
   }
   .conference-row-heading > a {
-    margin-top: 4px;
+    grid-column: 2;
+    grid-row: 1;
+    margin: 0;
+    justify-self: end;
+  }
+  .conference-row-heading {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 12px;
+    align-items: center;
+  }
+  .conference-row-heading p {
+    grid-column: 1 / -1;
+    margin-top: 2px;
+  }
+  .carousel-arrow-previous {
+    left: 0;
+  }
+  .carousel-arrow-next {
+    right: 0;
   }
   .conference-carousel-stage {
     --slide-width: calc(100cqw - 64px);
@@ -816,6 +971,23 @@ svg {
   .footer-inner {
     flex-direction: column;
     gap: 10px;
+  }
+}
+@container edition (min-width: 420px) {
+  .conference-card.is-compact {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    column-gap: 16px;
+  }
+  .conference-card.is-compact .card-meta {
+    grid-column: 2;
+    grid-row: 2;
+  }
+  .conference-card.is-compact .card-bottom {
+    grid-column: 3;
+    grid-row: 2;
+  }
+  .conference-card.is-compact .progress-nodes {
+    grid-row: 3;
   }
 }
 @keyframes breathe {

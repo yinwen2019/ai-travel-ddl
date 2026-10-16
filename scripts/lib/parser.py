@@ -9,11 +9,13 @@
 from __future__ import annotations
 
 import json
+import logging
 import re
 from typing import Mapping
 
-from .completeness import TZ_RE, VALID_CONTINENTS
+from .completeness import VALID_CONTINENTS
 from .dates import is_valid_date
+from .timezones import is_valid_timezone
 
 ALLOWED_FIELDS = {
     "city",
@@ -78,7 +80,8 @@ def _clean_ddl(ddl: object) -> list[dict[str, str]] | None:
         tz = item.get("timezone")
         if not is_valid_date(date):
             continue
-        if not isinstance(tz, str) or not TZ_RE.match(tz):
+        if not is_valid_timezone(tz):
+            logging.getLogger(__name__).warning("忽略非法 DDL 时区: %r", tz)
             continue
         assert isinstance(date, str)
         entry: dict[str, str] = {"date": date, "timezone": tz}

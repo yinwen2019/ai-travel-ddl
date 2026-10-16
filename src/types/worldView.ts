@@ -63,6 +63,13 @@ export interface YearTable {
   cells: WorldCell[][]
 }
 
+/** Props for the scrollable conference-city table. */
+export interface WorldTableProps {
+  yearTable: YearTable
+  highlightedCity: CityKey | null
+  availableCities: ReadonlySet<CityKey>
+}
+
 /** Bounding box for fly-to operations (framework-agnostic) */
 export interface LatLngBounds {
   minLat: number

@@ -449,27 +449,40 @@
   }
 }
 .world-city-actions {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding-inline: 8px;
+  gap: 2px;
+  padding-inline: 6px;
 }
 .world-city-actions > a {
   display: inline-flex;
   align-items: center;
-  min-height: 44px;
+  min-height: 36px;
 }
 .world-city-locate {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 44px;
-  min-height: 44px;
-  border-radius: 8px;
+  flex: 0 0 28px;
+  min-width: 28px;
+  min-height: 32px;
+  border-radius: 6px;
   color: var(--color-text-secondary);
 }
 .world-city-locate:hover {
   background: var(--color-surface-hover);
   color: var(--color-brand);
+}
+@media (pointer: coarse) {
+  .world-city-actions > a,
+  .world-city-locate {
+    min-height: 44px;
+  }
+  .world-city-locate {
+    flex-basis: 44px;
+    min-width: 44px;
+    justify-content: flex-start;
+    padding-left: 6px;
+  }
 }

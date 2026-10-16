@@ -29,6 +29,7 @@ def write_summary_md(
     summary: Mapping[str, int],
     changed: bool,
     validate_ok: bool,
+    error: str | None = None,
 ) -> None:
     """写入 Markdown 摘要，供 PR body 使用。"""
     _ensure_dir(path.parent)
@@ -46,4 +47,6 @@ def write_summary_md(
         "",
         "> 由 `scripts/update_conferences.py` 自动生成。无数据变更时不会创建 PR。",
     ]
+    if error:
+        lines.extend(["", "## 错误详情", "", "````text", error, "````"])
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")

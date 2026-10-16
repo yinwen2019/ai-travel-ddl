@@ -143,7 +143,7 @@ onBeforeUnmount(() => {
             aria-roledescription="卡片"
             :aria-label="`${conference.name} ${entry.year}`"
           >
-            <ConferenceCard :conference="conference" :year="entry.year" />
+            <ConferenceCard :conference="conference" :year="entry.year" compact />
           </div>
         </div>
         <button

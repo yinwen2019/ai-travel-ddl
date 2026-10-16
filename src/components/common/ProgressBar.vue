@@ -1,21 +1,15 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useDDLStatus } from '@/composables/useDDLStatus'
-import type { DDLUrgency, ProgressNodeState } from '@/types/view'
+import type { DDLUrgency, ProgressBarProps, ProgressNodeState } from '@/types/view'
 
-const props = defineProps<{
-  entry: {
-    abstract_ddl?: { date: string }[] | null
-    paper_ddl?: { date: string }[] | null
-    notification_date?: string | null
-    start_date?: string | null
-  }
-}>()
+const props = withDefaults(defineProps<ProgressBarProps>(), { compact: false })
 
 const { getUrgency, getRelativeDays, selectStageDeadline } = useDDLStatus()
 
 interface ProgressNode {
   label: string
+  date: string
   state: ProgressNodeState
   days: number | null
   color: string | null
@@ -67,24 +61,38 @@ const nodes = computed<ProgressNode[]>(() => {
     const color = urgencyColors[n.urgency]
 
     if (currentFound) {
-      return { label: n.label, state: 'future' as ProgressNodeState, days, color: null }
+      return {
+        label: n.label,
+        date: n.date,
+        state: 'future' as ProgressNodeState,
+        days,
+        color: null,
+      }
     }
 
     if (d < now) {
-      return { label: n.label, state: 'done' as ProgressNodeState, days, color: null }
+      return { label: n.label, date: n.date, state: 'done' as ProgressNodeState, days, color: null }
     }
 
     currentFound = true
-    return { label: n.label, state: 'current' as ProgressNodeState, days, color }
+    return { label: n.label, date: n.date, state: 'current' as ProgressNodeState, days, color }
   })
 })
+
+function stageDescription(node: ProgressNode): string {
+  const status =
+    node.state === 'done' ? '日期已过' : node.state === 'current' ? '下一节点' : '尚未到达'
+  return `${node.label}，${node.date}，${status}`
+}
 </script>
 
 <template>
   <div
     v-if="nodes.length"
     class="progress-nodes"
+    :class="{ 'is-compact': compact, 'has-single-node': nodes.length === 1 }"
     :style="{ '--node-count': nodes.length }"
+    :role="compact ? 'list' : undefined"
     aria-label="会议时间节点"
   >
     <div
@@ -93,13 +101,37 @@ const nodes = computed<ProgressNode[]>(() => {
       class="progress-node"
       :class="{ 'is-done': node.state === 'done', 'is-current': node.state === 'current' }"
       :style="{ '--stage-color': node.color ?? undefined }"
+      :role="compact ? 'listitem' : undefined"
+      :aria-label="compact ? stageDescription(node) : undefined"
+      :aria-current="compact && node.state === 'current' ? 'step' : undefined"
     >
-      <span class="progress-dot" aria-hidden="true" />
-      <span>{{ node.label }}</span>
-      <span v-if="node.days != null" class="progress-days">{{
-        node.days >= 0 ? `剩 ${node.days} 天` : '已截止'
-      }}</span>
+      <template v-if="compact">
+        <span class="milestone-label" :title="stageDescription(node)" aria-hidden="true">
+          <span class="progress-dot">
+            <svg v-if="node.state === 'done'" viewBox="0 0 12 12" fill="none">
+              <path
+                d="m3 6 2 2 4-4"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </span>
+          <span>{{ node.label.replace('截止', '') }}</span>
+        </span>
+        <time class="milestone-date" :datetime="node.date" aria-hidden="true">
+          {{ node.date.replace(/-/g, '.') }}
+        </time>
+      </template>
+      <template v-else>
+        <span class="progress-dot" aria-hidden="true" />
+        <span :title="node.label">{{ node.label }}</span>
+        <span v-if="node.days != null" class="progress-days">{{
+          node.days >= 0 ? `剩 ${node.days} 天` : '已截止'
+        }}</span>
+      </template>
     </div>
   </div>
-  <p v-else class="card-meta">日期待公布</p>
+  <p v-else-if="!compact" class="card-meta">日期待公布</p>
 </template>

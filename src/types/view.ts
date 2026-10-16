@@ -1,4 +1,18 @@
 import type { CityData } from './worldView'
+import type { Conference, YearEntry } from './conference'
+
+/** Shared edition card; compact layout is used in conference carousels. */
+export interface ConferenceCardProps {
+  conference: Conference
+  year: number
+  compact?: boolean
+}
+
+/** Deadline stages with an optional condensed presentation. */
+export interface ProgressBarProps {
+  entry: Pick<YearEntry, 'abstract_ddl' | 'paper_ddl' | 'notification_date' | 'start_date'>
+  compact?: boolean
+}
 
 /** Active view mode */
 export type ViewMode = 'conference' | 'year'

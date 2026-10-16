@@ -58,12 +58,6 @@ function handlePin(cityKey: CityKey): void {
         <p class="page-description">沿着研究的足迹，看看世界。</p>
       </div>
     </div>
-    <div class="mb-5">
-      <WorldCategoryBar />
-      <p class="page-description mt-3 text-xs">
-        分类筛选仅影响下方年表，地图始终展示全部举办城市。
-      </p>
-    </div>
     <EmptyState
       v-if="filteredYearTable.years.length === 0"
       message="暂无会议数据"
@@ -83,7 +77,11 @@ function handlePin(cityKey: CityKey): void {
       <section class="mt-7" aria-labelledby="world-table-title">
         <div class="mb-4 flex flex-wrap items-baseline justify-between gap-2">
           <h2 id="world-table-title" class="text-lg font-semibold">历年举办城市</h2>
-          <p class="text-xs text-secondary">城市名称打开详情 · 定位按钮查看地图 · 年表可横向滚动</p>
+          <p class="text-xs text-secondary">城市名称打开详情 · 定位按钮查看地图 · 底部按钮滑动或复制年表</p>
+        </div>
+        <div class="world-table-filters">
+          <WorldCategoryBar />
+          <p class="text-xs text-secondary">仅筛选下方年表，地图始终展示全部举办城市。</p>
         </div>
         <WorldTable
           :year-table="filteredYearTable"

@@ -1,16 +1,12 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { Conference } from '@/types/conference'
-import type { DDLUrgency } from '@/types/view'
+import type { ConferenceCardProps, DDLUrgency } from '@/types/view'
 import { useDDLStatus } from '@/composables/useDDLStatus'
 import BadgeTag from '@/components/common/BadgeTag.vue'
 import ProgressBar from '@/components/common/ProgressBar.vue'
 import CityLink from '@/components/location/CityLink.vue'
 
-const props = defineProps<{
-  conference: Conference
-  year: number
-}>()
+const props = withDefaults(defineProps<ConferenceCardProps>(), { compact: false })
 
 const { getUrgency, getRelativeDays, isDateFuture, getEarliestUpcomingDDL, hasDeadline } =
   useDDLStatus()
@@ -92,6 +88,19 @@ const meetingTimeText = computed(() => {
   return formatMeetingTime(entry.value.start_date, entry.value.end_date)
 })
 
+const compactMeetingTime = computed(() => {
+  const start = entry.value?.start_date
+  const end = entry.value?.end_date
+  // 年份已在卡片标题展示；跨年会期仍保留完整年份，避免误读。
+  if (start && end && start.slice(0, 4) !== end.slice(0, 4)) return meetingTimeText.value
+  const shortDate = (date: string) =>
+    (date.startsWith(`${props.year}-`) ? date.slice(5) : date).replace(/-/g, '.')
+  if (start && end)
+    return start === end ? shortDate(start) : `${shortDate(start)}–${shortDate(end)}`
+  const knownDate = start ?? end
+  return knownDate ? shortDate(knownDate) : '待公布'
+})
+
 const progressEntry = computed(() => {
   if (isHistoricalDisplay.value || isMeetingInProgress.value || !entry.value) return null
   return entry.value
@@ -125,40 +134,52 @@ const statusStyle = computed(() => {
 </script>
 
 <template>
-  <article class="card conference-card" :class="{ 'is-ended': isEnded }" :style="statusStyle">
-    <div class="card-top">
-      <h3 class="card-title">
-        <router-link :to="`/conference/${conference.id}`"
-          >{{ conference.name }} {{ year }}</router-link
+  <article
+    class="card conference-card"
+    :class="{ 'is-ended': isEnded, 'is-compact': compact }"
+    :style="statusStyle"
+  >
+    <div class="card-header">
+      <div class="card-top">
+        <h3 class="card-title">
+          <router-link
+            :to="`/conference/${conference.id}`"
+            :aria-label="`${conference.name} ${year} 历届详情`"
+            >{{ conference.name }} {{ year }}</router-link
+          >
+        </h3>
+        <BadgeTag v-if="!compact" :label="conference.category" :category="conference.category" />
+      </div>
+      <div class="card-status">
+        <span class="status-dot" aria-hidden="true" />
+        <template v-if="isHistoricalDisplay"><span class="status-value">已结束</span></template>
+        <template v-else-if="isMeetingInProgress"
+          ><span class="status-value">正在开会</span
+          ><span class="status-note">旅程进行中</span></template
         >
-      </h3>
-      <BadgeTag :label="conference.category" :category="conference.category" />
-    </div>
-    <div class="card-status">
-      <span class="status-dot" aria-hidden="true" />
-      <template v-if="isHistoricalDisplay"><span class="status-value">已结束</span></template>
-      <template v-else-if="isMeetingInProgress"
-        ><span class="status-value">正在开会</span
-        ><span class="status-note">旅程进行中</span></template
-      >
-      <template v-else-if="isTravel"
-        ><span class="status-note">距离开会</span
-        ><span class="status-value">{{ travelDaysText }}</span></template
-      >
-      <template v-else-if="displayDDL"
-        ><span class="status-note">{{ deadlineLabel }}</span
-        ><span class="status-value">{{ displayDDL.date }}</span
-        ><span class="status-note">{{ relativeDaysText }}</span></template
-      >
-      <template v-else><span class="status-value">投稿日期待公布</span></template>
+        <template v-else-if="isTravel"
+          ><span class="status-note">距离开会</span
+          ><span class="status-value">{{ travelDaysText }}</span></template
+        >
+        <template v-else-if="displayDDL"
+          ><span class="status-note">{{ deadlineLabel }}</span
+          ><span class="status-value">{{ displayDDL.date }}</span
+          ><span class="status-note">{{ relativeDaysText }}</span></template
+        >
+        <template v-else><span class="status-value">投稿日期待公布</span></template>
+      </div>
     </div>
     <p class="card-location">
       <CityLink :city="entry?.city" :country="entry?.country" include-country />
     </p>
-    <p class="card-meta">会期 {{ meetingTimeText }}</p>
-    <ProgressBar v-if="progressEntry" :entry="progressEntry" />
+    <p class="card-meta" :title="meetingTimeText" :aria-label="`会期 ${meetingTimeText}`">
+      会期 {{ compact ? compactMeetingTime : meetingTimeText }}
+    </p>
+    <ProgressBar v-if="progressEntry" :entry="progressEntry" :compact="compact" />
     <div class="card-bottom">
-      <router-link :to="`/conference/${conference.id}`" class="text-link">历届详情</router-link>
+      <router-link v-if="!compact" :to="`/conference/${conference.id}`" class="text-link"
+        >历届详情</router-link
+      >
       <a
         v-if="officialHref"
         :href="officialHref"

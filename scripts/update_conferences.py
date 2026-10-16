@@ -322,6 +322,7 @@ def main() -> int:
         result.summary,
         result.changed,
         result.validate_ok,
+        result.error,
     )
 
     if result.error:
