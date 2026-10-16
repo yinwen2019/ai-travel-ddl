@@ -51,6 +51,22 @@ jobs:
       - name: Validate JSON
         run: npm run validate
 
+      - name: Publish run summary
+        if: always()
+        run: |
+          if [ -f scripts/update_logs/latest_run.md ]; then
+            cat scripts/update_logs/latest_run.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Preserve update logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: update-data-logs-${{ github.run_id }}-${{ github.run_attempt }}
+          path: scripts/update_logs/
+          if-no-files-found: ignore
+          retention-days: 30
+
       - name: Read run summary
         id: summary
         run: |

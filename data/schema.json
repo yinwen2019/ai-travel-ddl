@@ -160,7 +160,8 @@
         },
         "timezone": {
           "type": "string",
-          "pattern": "^[A-Z][a-zA-Z_]+/[A-Z][a-zA-Z_]+$"
+          "pattern": "^[A-Z][A-Za-z0-9_+-]+(?:/[A-Z][A-Za-z0-9_+-]+)+$",
+          "format": "iana-timezone"
         },
         "note": { "type": "string" }
       }
