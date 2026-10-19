@@ -13,3 +13,7 @@ scripts/update_logs/
 scripts/.pytest_cache/
 __pycache__/
 *.pyc
+
+# Local Cloudflare database and credentials
+.wrangler/
+.dev.vars*

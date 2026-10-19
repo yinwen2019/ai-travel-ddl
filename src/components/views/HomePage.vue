@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { useHomeOverview } from '@/composables/useHomeOverview'
 import HomeGlobe from '@/components/home/HomeGlobe.vue'
-import HomeCityRanking from '@/components/home/HomeCityRanking.vue'
+import HomeRankings from '@/components/home/HomeRankings.vue'
+import HomeCommunity from '@/components/home/HomeCommunity.vue'
 
-const { conferenceCount, cityCount, ranking } = useHomeOverview()
+const { conferenceCount, cityCount } = useHomeOverview()
 const views = [
   { path: '/world', title: '世界视图', description: '在地图上，追寻学术足迹', name: 'World' },
   {
@@ -38,10 +39,11 @@ const views = [
           <p class="home-coverage">
             {{ conferenceCount }} 个 AI 会议，{{ cityCount }} 座学术城市。
           </p>
+          <HomeCommunity />
         </div>
         <div class="home-atlas">
           <HomeGlobe />
-          <HomeCityRanking :entries="ranking" />
+          <HomeRankings />
         </div>
       </section>
 

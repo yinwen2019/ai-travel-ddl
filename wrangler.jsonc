@@ -1,0 +1,39 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "ai-travel-ddl",
+  "main": "services/analytics/src/index.ts",
+  "compatibility_date": "2026-10-17",
+  "workers_dev": true,
+  "preview_urls": false,
+  "build": { "command": "npm run analytics:prepare" },
+  "vars": {
+    "ALLOWED_ORIGINS": "https://aitravel.gonsun.com,https://yinwen2019.github.io",
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "ai-travel-ddl-stats",
+      "database_id": "463f8ba3-3e06-498a-83d4-bf2314d9d2d8",
+      "migrations_dir": "services/analytics/migrations",
+    },
+  ],
+  "triggers": { "crons": ["15 3 * * *"] },
+  "observability": { "enabled": false },
+  "env": {
+    "test": {
+      "name": "ai-travel-ddl-test",
+      "workers_dev": false,
+      "vars": {
+        "ALLOWED_ORIGINS": "http://127.0.0.1:5173,http://localhost:5173,http://127.0.0.1:5174",
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "ai-travel-ddl-test",
+          "database_id": "00000000-0000-0000-0000-000000000000",
+          "migrations_dir": "services/analytics/migrations",
+        },
+      ],
+    },
+  },
+}

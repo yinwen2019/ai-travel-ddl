@@ -6,6 +6,8 @@ import WorldLegend from './WorldLegend.vue'
 import WorldCityPanel from './WorldCityPanel.vue'
 import { GLOBE_LANDMARKS } from '@/data/globeLandmarks'
 import { useTheme } from '@/composables/useTheme'
+import { useCityDirectory } from '@/composables/useCityDirectory'
+import { trackEntityClick } from '@/services/analytics'
 import { GLOBE_THEMES } from '@/utils/globeTheme'
 import { loadGlobeGeometry } from '@/utils/loadGlobeGeometry'
 import '@/styles/globe.css'
@@ -68,6 +70,9 @@ function onMotionChange(event: MediaQueryListEvent) {
   syncMotion()
 }
 function selectCity(key: CityKey) {
+  const city = props.cityIndex.get(key)
+  const destination = city && useCityDirectory().findCity(city.city, city.country)
+  if (destination) trackEntityClick('city', destination.id)
   emit('pin', key)
 }
 function closePanel() {

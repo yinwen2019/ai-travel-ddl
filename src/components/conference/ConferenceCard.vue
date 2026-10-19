@@ -183,6 +183,8 @@ const statusStyle = computed(() => {
       <a
         v-if="officialHref"
         :href="officialHref"
+        data-analytics-type="conference"
+        :data-analytics-id="conference.id"
         target="_blank"
         rel="noopener noreferrer"
         class="text-link"

@@ -4,9 +4,11 @@ import type { CityKey, WorldColumn, WorldTableProps } from '@/types/worldView'
 import { CATEGORY_COLORS, CATEGORY_CONFIG } from '@/constants'
 import type { Category } from '@/types/conference'
 import CityLink from '@/components/location/CityLink.vue'
+import { useCityDirectory } from '@/composables/useCityDirectory'
 import { buildWorldTableClipboard } from '@/utils/worldTableClipboard'
 
 const props = defineProps<WorldTableProps>()
+const { findCity } = useCityDirectory()
 
 const scrollArea = ref<HTMLDivElement | null>(null)
 const tableElement = ref<HTMLTableElement | null>(null)
@@ -237,6 +239,8 @@ function locationTitle(cityName: string | null, countryName: string | null): str
             <th v-for="col in yearTable.columns" :key="col.conferenceId" scope="col">
               <button
                 class="world-table-button"
+                data-analytics-type="conference"
+                :data-analytics-id="col.conferenceId"
                 :aria-label="`定位 ${col.conferenceName} 的所有举办城市`"
                 @click="onColHeaderClick(col.conferenceId)"
               >
@@ -280,6 +284,8 @@ function locationTitle(cityName: string | null, countryName: string | null): str
                 <button
                   v-if="cell.cityKey && availableCities.has(cell.cityKey)"
                   class="world-city-locate"
+                  data-analytics-type="city"
+                  :data-analytics-id="findCity(cell.cityName, cell.countryName)?.id"
                   :title="`在地球上定位 ${cell.cityName}`"
                   :aria-label="`${yearTable.columns[colIndex]?.conferenceName} ${yearTable.years[rowIndex]}，${locationTitle(cell.cityName, cell.countryName)}，在地图定位`"
                   @click="emit('city-select', cell.cityKey)"

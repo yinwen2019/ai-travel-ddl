@@ -96,6 +96,8 @@ function goToConference(id: string) {
       <a
         v-if="conference.website"
         :href="conference.website"
+        data-analytics-type="conference"
+        :data-analytics-id="conference.id"
         target="_blank"
         rel="noopener"
         class="mt-2 inline-flex items-center gap-1 text-sm text-brand hover:underline"

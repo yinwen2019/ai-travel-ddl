@@ -68,3 +68,7 @@ push to main → checkout → npm ci → npm run validate → npm run build
 | `.github/workflows/update-data.yml` | AI 数据更新 + 创建 PR | cron weekly / manual |
 
 > 版本：v0.2.0 | 2026-05-14
+
+## 可选全站统计服务
+
+前端继续部署 GitHub Pages；全站互动另由 Cloudflare Worker + D1 提供。已实现配置、数据库建表、公开 API 地址变量和验收流程见 [21 — 全站统计接入与上线](21-analytics-service-result.md)。GitHub Actions 构建读取 Repository variable `ANALYTICS_API_URL`。未配置时仍为本机预览模式；Worker 不能直接沿用前端 `npm run build` 的部署入口。

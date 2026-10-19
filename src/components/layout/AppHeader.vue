@@ -10,6 +10,7 @@ const navItems = [
   { path: '/conference', label: 'Conference' },
   { path: '/year', label: 'Year' },
   { path: '/cities', label: 'City' },
+  { path: '/rankings', label: 'Rankings' },
 ]
 </script>
 

@@ -11,15 +11,26 @@
     "validate": "node scripts/validate.mjs",
     "lint": "eslint . --ext .vue,.ts,.mjs --fix",
     "format": "prettier --write \"src/**/*.{vue,ts,css}\"",
-    "type-check": "vue-tsc --noEmit -p tsconfig.app.json"
+    "type-check": "vue-tsc --noEmit -p tsconfig.app.json",
+    "analytics:prepare": "node services/analytics/scripts/prepare.mjs",
+    "analytics:type-check": "tsc --noEmit -p services/analytics/tsconfig.json",
+    "analytics:dev": "node services/analytics/scripts/wrangler.mjs dev --env test --ip 127.0.0.1 --port 8788",
+    "analytics:db:local": "node services/analytics/scripts/wrangler.mjs d1 migrations apply DB --local --env test",
+    "analytics:db:remote": "node services/analytics/scripts/wrangler.mjs d1 migrations apply DB --remote --env \"\"",
+    "analytics:deploy": "npm run analytics:prepare && node services/analytics/scripts/wrangler.mjs deploy --env \"\"",
+    "analytics:test": "node services/analytics/tests/integration.mjs",
+    "analytics:client-test": "node --experimental-strip-types services/analytics/tests/client.mjs"
   },
   "dependencies": {
+    "d3-geo": "^3.1.1",
     "globe.gl": "^2.46.2",
     "three": "^0.186.1",
     "vue": "^3.5.0",
     "vue-router": "^4.4.0"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^5.20261016.1",
+    "@types/d3-geo": "^3.1.1",
     "@types/geojson": "^7946.0.16",
     "@types/three": "^0.186.0",
     "@typescript-eslint/eslint-plugin": "^7.0.0",
@@ -37,6 +48,7 @@
     "three-conic-polygon-geometry": "2.1.3",
     "typescript": "~5.6.0",
     "vite": "^5.4.0",
-    "vue-tsc": "^2.1.0"
+    "vue-tsc": "^2.1.0",
+    "wrangler": "^4.151.1"
   }
 }

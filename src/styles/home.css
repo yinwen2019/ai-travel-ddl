@@ -118,6 +118,11 @@
   width: 100%;
   height: auto;
 }
+.home-ranking-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
 .home-globe-ocean {
   fill: var(--home-ocean);
   stroke: var(--home-graticule);
@@ -180,7 +185,7 @@
   gap: 12px;
   min-height: 44px;
   padding: 5px 0;
-  background: linear-gradient(90deg, var(--color-canvas), transparent);
+  background: transparent;
 }
 .home-rank-position {
   color: var(--color-text-secondary);
