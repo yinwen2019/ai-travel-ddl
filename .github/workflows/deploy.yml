@@ -48,9 +48,18 @@ jobs:
         run: npm run validate
 
       - name: Build
-        run: npm run build
+        run: |
+          node --input-type=module <<'JS'
+          const endpoint = new URL(process.env.VITE_ANALYTICS_API_URL.trim());
+          if (endpoint.protocol !== 'https:' || endpoint.username || endpoint.password || endpoint.search || endpoint.hash || endpoint.pathname !== '/') {
+            throw new Error('ANALYTICS_API_URL must be an HTTPS API origin without a path, credentials, query or fragment');
+          }
+          console.log('Statistics API configuration validated');
+          JS
+          npm run build
         env:
-          VITE_ANALYTICS_API_URL: ${{ vars.ANALYTICS_API_URL }}
+          # Public endpoint; accept either Actions configuration location and keep production connected by default.
+          VITE_ANALYTICS_API_URL: ${{ vars.ANALYTICS_API_URL || secrets.ANALYTICS_API_URL || 'https://ai-travel-ddl.yinwen1999.workers.dev' }}
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

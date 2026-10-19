@@ -63,3 +63,9 @@ VITE_ANALYTICS_API_URL=http://127.0.0.1:8788 npm run dev -- --port 5174
 - 浏览器联调：连续点赞、键盘点赞、承办期待、会议链接统计和详情刷新不重复计数通过。
 
 尚待正式环境完成：数据库建表、Worker 发布、GitHub 变量配置、Pages 重建与正式验收。
+
+## 2026-10-19 正式接入排查
+
+只读验证确认 `/health` 和 `/v1/state` 均返回 200，正式站点 Origin 的 CORS 正常；D1 已初始化，累计尚为零。自定义域名和 GitHub Pages 两处最新网页仍引用空 API 地址的构建，因此旧网页实际没有向全站统计服务提交。
+
+原部署流程只读取 Actions Variables，缺失时构建仍成功；同名 Secret 或其他环境中的变量不会自动被读取。现改为 Repository variable 优先、兼容同名 Actions secret，未配置时使用已验证的正式 Worker 地址。构建检查地址格式，避免错误配置静默发布。此次修复仅影响 GitHub Pages 构建，本地开发继续隔离正式统计。
