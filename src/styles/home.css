@@ -118,6 +118,18 @@
   width: 100%;
   height: auto;
 }
+.home-globe-canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  visibility: hidden;
+}
+.home-globe-canvas.is-ready {
+  position: relative;
+  visibility: visible;
+}
 .home-ranking-actions {
   display: flex;
   align-items: center;

@@ -45,7 +45,16 @@ following visual review. Only the continuous vector basemap is shipped.
 - The SVG contains only geographic paths, a sphere outline and graticules.
   Colors inherit from homepage CSS for both themes. There are no scripts,
   remote references, conference records or interactive city markers in this asset.
-- Imported as trusted local markup by `HomeGlobe.vue`. It is a decorative
-  background; the separate World view supplies interactive exploration.
-- No map library or Three.js is loaded by the homepage. D3 Geo was used only
-  during local asset authoring, not included in the homepage runtime.
+- Imported as trusted local fallback markup by `HomeGlobe.vue`. It appears before
+  the animated renderer is ready and remains when Canvas or the renderer fails.
+- `home-land.json` (408,618 bytes including its trailing newline) is generated
+  from the same local GeoJSON with `node tools/build-home-geography.mjs`. Its
+  0.12-degree simplification and 0.001-degree coordinate rounding preserve valid
+  rings; polygons that would invert on the sphere retain their source coordinates.
+  It contains 242 country features and 23,004 coordinate positions, with no
+  conference data or external references.
+- The homepage lazily loads D3 Geo and this geometry to draw a 40-second
+  orthographic rotation on Canvas. Theme colors match the SVG; Three.js is not
+  loaded by the homepage. Hidden/offscreen states stop the animation loop,
+  reduced motion draws a fixed view, and component disposal releases observers
+  and frame callbacks. The separate World view supplies interactive exploration.

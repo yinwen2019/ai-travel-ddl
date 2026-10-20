@@ -10,7 +10,7 @@ Mode: Persuade。让首次访问者理解会议日程与城市旅行之间的联
 
 **STORY:** 先理解投稿与城市的联系，再由历史线下举办榜看见实际足迹；主行动进入 World，次行动进入 Conference，底部补齐 Year 与 City。
 
-**FIRST VIEWPORT:** 桌面左侧两行标题「从一场会议，出发看世界。」、简介、两入口及覆盖数量；右侧 540px 静态地球叠前八城市榜；下方四个无框入口。手机依次排介绍、榜单、2×2 入口。
+**FIRST VIEWPORT:** 桌面左侧两行标题「从一场会议，出发看世界。」、简介、两入口、覆盖数量及爱心支持 / GitHub / 小红书；右侧 540px 自转地球叠四类榜单轮播，默认前八城市举办榜；下方四个无框入口。手机依次排介绍与支持、榜单、2×2 入口。
 
 **FORM:** seed: none (unavailable)
 
@@ -19,6 +19,10 @@ Mode: Persuade。让首次访问者理解会议日程与城市旅行之间的联
 ## Authority and evidence
 
 - 用户已确认蓝色原型并授权首页实现。原型：`/Users/vanesky/.codex/visualizations/2026/10/15/01a13eef-73fb-70a1-b038-4a792ba4ef1f/homepage-direction/atlas-homepage.html`；后续用户确认及当前组件、CSS 优先于原型中的旧尺寸。
-- 当前实现：`HomePage.vue`、`HomeGlobe.vue`、`HomeCityRanking.vue`、`home.css`、`main.css`；截图：`.impeccable/review/{desktop,mobile,narrow,tablet,dark}.png`。交付记录见 `.docs/16-homepage-result.md`。
+- 当前实现：`HomePage.vue`、`HomeGlobe.vue`、`HomeRankings.vue`、`HomeCommunity.vue`、`home.css`、`rankings.css`、`community.css`、`main.css`；初版截图：`.impeccable/review/{desktop,mobile,narrow,tablet,dark}.png`，四榜扩展截图：`.impeccable/review/rankings/`。交付记录见 `.docs/16-homepage-result.md` 与 `.docs/20-rankings-result.md`。
 - 本轮没有正式概念 seed、QUALITYBAR、card 或生成的 decision comp；context launcher 曾因权限拒绝未运行，改读既有 `.docs`。这些是流程证据边界，不是产品页面文案。
 - 视觉与响应式审阅未发现实质问题；唯一待修复项为方向和产品背景未持久化。补齐文档后，复核该 persistence finding 已解决，documentation-only verdict 为 `ship`；此复核范围仅覆盖文档修复，不表示重新执行全部视觉检查。
+
+- 2026-10-16 用户确认首页背景地球采用 Canvas 球面投影、12 秒一圈，保留当前外观与榜单布局；提供暂停、减少动态效果及后台 / 离屏停止。实现与验证见 `.docs/19-home-globe-motion.md`，SVG 继续用于首屏与失败回退。
+
+- 同日后续批注：自转调为 20 秒一圈，删除地球及榜单的暂停按钮和页码，将榜单翻页箭头移到内容左右两侧，不再保留底部控制行。

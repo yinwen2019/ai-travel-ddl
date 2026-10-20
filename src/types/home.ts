@@ -12,3 +12,10 @@ export interface CityRankingEntry {
 export interface HomeCityRankingProps {
   entries: CityRankingEntry[]
 }
+
+/** Lightweight orthographic canvas renderer used only by the homepage. */
+export interface HomeGlobeRenderer {
+  draw: (angle: number) => void
+  resize: () => void
+  updateTheme: () => void
+}
