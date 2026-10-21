@@ -1,137 +1,135 @@
-<div align="center">
+<h1 align="center">ConfTrip</h1>
 
-# ConfTrip ✈️
-
-### Track the deadline. Discover the destination.
-
-Conference dates and destinations for AI researchers and students.<br />
-Find submission deadlines, explore host cities, and vote for the destination you hope to visit next.
-
-<p>
-  <a href="./README.md"><img src=".github/assets/readme/lang-zh.svg" alt="切换到简体中文" width="112" height="34" /></a>
-  <a href="./README.en.md"><img src=".github/assets/readme/lang-en-active.svg" alt="English (current language)" width="112" height="34" /></a>
+<p align="center">
+  <strong>Discover a conference. Explore a city.</strong><br />
+  AI conference dates, destinations, and places to look forward to.
 </p>
 
-**[Open the website →](https://aitravel.gonsun.com/)** · [Find deadlines](https://aitravel.gonsun.com/#/conference) · [Browse rankings](https://aitravel.gonsun.com/#/rankings)
+<p align="center">
+  <a href="./README.md"><img src=".github/assets/readme/lang-zh.svg" alt="阅读简体中文版" width="112" height="34" /></a>
+  <a href="./README.en.md"><img src=".github/assets/readme/lang-en-active.svg" alt="English (current)" width="112" height="34" /></a>
+</p>
 
-No sign-up · Runs in your browser · Mobile layouts and dark mode
+<p align="center">
+  <a href="https://aitravel.gonsun.com/"><strong>Start exploring ↗</strong></a>
+  &nbsp; · &nbsp;
+  <a href="https://aitravel.gonsun.com/#/conference">Conferences</a>
+  &nbsp; · &nbsp;
+  <a href="https://aitravel.gonsun.com/#/rankings">Rankings</a>
+</p>
 
-</div>
+<p align="center"><sub>No sign-up · Mobile layouts · Dark mode</sub></p>
 
-[![ConfTrip homepage with conference navigation, four ranking boards, and the like button](.github/assets/readme/home.png)](https://aitravel.gonsun.com/)
+![ConfTrip homepage with conference and city navigation, host-city rankings, and the like button](.github/assets/readme/home.png)
 
-## A paper to finish. A city to look forward to.
+## From the next paper to the next destination
 
-When preparing a submission, you need abstract and paper deadlines. When preparing for the conference, you want to know where it takes place, when to travel, and what to explore nearby.
+ConfTrip brings conference dates, past host cities, and travel information together for AI researchers and students. Plan a submission, then get to know the city you might visit next.
 
-ConfTrip connects those questions. Follow a conference, browse a year of research events, then get to know the host cities. Rankings also show which conferences and cities attract attention. Vote for a city you would like to host a future conference, or leave a heart on the homepage to encourage the project.
+- **Plan your research calendar** — Follow events in [Conference view](https://aitravel.gonsun.com/#/conference), or browse a year of submissions and conference dates in [Year view](https://aitravel.gonsun.com/#/year).
+- **Explore a destination** — Rotate the [globe](https://aitravel.gonsun.com/#/world), or open the [city directory](https://aitravel.gonsun.com/#/cities) for sights, seasons, food, and associated conferences.
+- **Discover shared interests** — Browse [Rankings](https://aitravel.gonsun.com/#/rankings) for historical hosts and the conferences and cities attracting attention.
+- **Share your next destination** — [Vote for a city](https://aitravel.gonsun.com/#/rankings?board=city-wishlist) you would like to host a future conference, or leave a like on the homepage to encourage the project.
 
-## Where would you like to start?
+## Follow research around the world
 
-| Your goal | Start here | What you can explore |
-| --- | --- | --- |
-| Follow a conference and check its next edition | [Conference view](https://aitravel.gonsun.com/#/conference) | Search and filter conferences; browse editions, date milestones, destinations, and official websites |
-| Review a year of submission opportunities | [Year view](https://aitravel.gonsun.com/#/year) | Conference cards grouped by year, with milestones and countdowns for abstracts, papers, and conference dates |
-| See where AI research brings people together | [World view](https://aitravel.gonsun.com/#/world) | An interactive 3D globe, conference-city markers, city navigation, and a table of host cities by year |
-| Get to know your conference destination | [City view](https://aitravel.gonsun.com/#/cities) | Search cities and countries, filter by continent or guide availability, and browse associated conferences and travel information |
-| Explore community interests and share your next destination | [Rankings](https://aitravel.gonsun.com/#/rankings) | Switch between four boards, search full rankings, and vote for cities you would like to host a conference |
+One city may have hosted many academic encounters. Rotate the globe, locate host cities, and explore the geography of AI conferences. Zoom in to discover original miniature landmarks in selected cities.
 
-## From research footprints to future destinations
+![World view with the interactive globe, conference cities, and navigation controls](.github/assets/readme/world.png)
 
-Use the arrows on the homepage to **manually switch between four ranking boards**. Open “榜单详情” (ranking details) or **Rankings** in the navigation for the full lists. Search filters the results while preserving their original ranks.
+## Four boards, four perspectives
 
-| Board | What it shows | How it is counted |
-| --- | --- | --- |
-| [Host cities](https://aitravel.gonsun.com/#/rankings?board=hosting) | Cities with more recorded conference editions | Historical in-person editions in this project's dataset; online and future editions are excluded |
-| [Conference interest](https://aitravel.gonsun.com/#/rankings?board=conference-heat) | Conferences attracting attention on the site | Cumulative deliberate conference clicks, combined across editions of the same conference |
-| [City interest](https://aitravel.gonsun.com/#/rankings?board=city-heat) | Destinations visitors are curious about | Cumulative deliberate city clicks |
-| [City wishlist · evolving](https://aitravel.gonsun.com/#/rankings?board=city-wishlist) | Where visitors hope a future conference will take place | Votes for cities already in the directory; each accepted action adds one vote, and repeat votes are supported |
+Use the homepage arrows to switch boards, or open **Rankings** for the complete lists. Search preserves the original ranks, and equal totals share a rank.
 
-Interest and wishlist boards rank cumulative counts, with ties sharing a rank. Entries with no clicks or votes remain unranked. Refreshing, hovering, filtering, changing years, and switching boards do not add interest counts. **Repeat clicks and votes count separately; these totals do not represent unique visitors.**
+| Board                                                                               | Ranked by                                              |
+| :---------------------------------------------------------------------------------- | :----------------------------------------------------- |
+| [Host cities](https://aitravel.gonsun.com/#/rankings?board=hosting)                 | Recorded historical in-person conference editions      |
+| [Conference interest](https://aitravel.gonsun.com/#/rankings?board=conference-heat) | Deliberate conference clicks, combined across editions |
+| [City interest](https://aitravel.gonsun.com/#/rankings?board=city-heat)             | Deliberate city clicks                                 |
+| [City wishlist](https://aitravel.gonsun.com/#/rankings?board=city-wishlist)         | Votes for a city to host a future conference           |
 
-### Where would you like to attend a conference next?
+**Where would you like to attend a conference next?** Search for a city already in the directory and tap its heart to add a vote. Voting is connected to site-wide totals and supports repeat votes; the feature and experience are still being refined.
 
-Open the [city wishlist](https://aitravel.gonsun.com/#/rankings?board=city-wishlist), search for a destination, and tap its heart to express your wish for it to host a future conference. Voting and site-wide totals are connected; the feature and its experience are still being refined.
-
-The homepage's “点个赞” (like) button lets you encourage the project without signing in. Each click shows a `+1` animation, and you can click repeatedly. **Project likes and city votes are counted separately.** GitHub and Xiaohongshu links on the homepage make it easy to find the repository and follow updates.
-
-## Take a look
-
-### Follow research around the world
-
-Rotate the globe and locate cities to explore the geography of AI conferences. Zoom in to discover original miniature landmarks in selected cities.
-
-[![World view with the interactive globe, conference-city markers, and navigation controls](.github/assets/readme/world.png)](https://aitravel.gonsun.com/#/world)
+The homepage like button also supports repeated clicks, with a `+1` animation. Project likes and city votes are counted separately.
 
 <details>
-<summary><strong>Conference view: from the next submission to the next destination</strong></summary>
+<summary>How the rankings are counted</summary>
 
-Each conference has its own row. Browse editions horizontally, and use search and category filters to focus on the conferences you follow.
+- The host-city board includes only historical in-person editions in this project's dataset. Online and future editions are excluded.
+- Interest counts deliberate clicks. Refreshing, hovering, filtering, changing years, and switching boards do not add counts.
+- Repeat clicks and votes count separately. Totals represent interactions rather than unique visitors; entries with no clicks or votes remain unranked.
 
-[![Conference view with filters, edition cards, and date milestones](.github/assets/readme/conference.png)](https://aitravel.gonsun.com/#/conference)
+</details>
+
+## More views
+
+Expand a section to view its full-size images. Screenshots come from local preview, with some interactions in browser-local mode. Visit the [production site](https://aitravel.gonsun.com/) for current dates, countdowns, and site-wide totals.
+
+<details>
+<summary><strong>Conferences · Follow an event through its editions</strong></summary>
+
+Search by name, filter by research area, and browse editions horizontally to find milestones, destinations, and official websites.
+
+![Conference view with category filters, edition cards, and date milestones](.github/assets/readme/conference.png)
 
 </details>
 
 <details>
-<summary><strong>City view: sights, seasons, and local food</strong></summary>
+<summary><strong>Years · See a year of research events together</strong></summary>
 
-Open a host city's page to see available climate information, attractions, food, travel tips, and associated conferences. Travel guides currently cover selected cities; conference records remain available for other destinations.
+Choose a year to browse conference cards and milestones for abstracts, papers, and conference dates.
 
-[![City view with destination search, continent filters, and travel guides](.github/assets/readme/cities.png)](https://aitravel.gonsun.com/#/cities)
+![Year view with year selection, conference cards, and date milestones](.github/assets/readme/year.png)
 
 </details>
 
 <details>
-<summary><strong>Full rankings and city wishlist voting</strong></summary>
+<summary><strong>Cities · Get to know the destination</strong></summary>
 
-The host-city board shows cities, countries, associated conferences, year ranges, and edition totals. Other boards show their corresponding click or vote totals.
+Search cities and countries, filter by continent, and browse available travel guides. Conference records remain accessible for cities without a guide.
 
-[![Full rankings with four board options, search, and counting rules](.github/assets/readme/rankings.png)](https://aitravel.gonsun.com/#/rankings)
-
-[![City wishlist with candidate destinations, cumulative votes, and heart buttons](.github/assets/readme/city-wishlist.png)](https://aitravel.gonsun.com/#/rankings?board=city-wishlist)
+![City view with destination search, continent filters, and travel guides](.github/assets/readme/cities.png)
 
 </details>
 
-Screenshots show the current version in local preview, with some interactions in browser-local mode. Visit the production site for site-wide totals, current dates, countdowns, and coverage.
+<details>
+<summary><strong>Rankings · From past hosts to future hopes</strong></summary>
+
+The host-city board shows full rankings, associated conferences, and year ranges. The city wishlist lets you vote for a destination you hope to visit.
+
+![Full host-city rankings with search and counting rules](.github/assets/readme/rankings.png)
+
+![City wishlist with candidate destinations, vote totals, and heart buttons](.github/assets/readme/city-wishlist.png)
+
+</details>
 
 ## Conferences covered
 
-The project currently includes these 13 AI conferences, with historical host information and published information about future editions:
+The project currently covers 13 AI conferences, including historical host information and published details for future editions.
 
-| Area | Conferences |
-| --- | --- |
-| Computer vision | CVPR · ICCV · ECCV |
-| Natural language processing | ACL · EMNLP · NAACL |
-| Machine learning | NeurIPS · ICML · ICLR |
-| General AI and multimedia | AAAI · IJCAI · ACM MM |
-| Data mining | KDD |
+| Area                        | Conferences           |
+| :-------------------------- | :-------------------- |
+| Computer vision             | CVPR · ICCV · ECCV    |
+| Natural language processing | ACL · EMNLP · NAACL   |
+| Machine learning            | NeurIPS · ICML · ICLR |
+| General AI and multimedia   | AAAI · IJCAI · ACM MM |
+| Data mining                 | KDD                   |
 
-Suggest another conference or report an incorrect date or venue through an [Issue](https://github.com/yinwen2019/conftrip/issues).
+Conference information lives in static JSON. Scheduled AI-assisted research and validation create an update PR when data changes; updates are published after review and merge. Confirm dates and time zones on the official conference website. Unconfirmed information is marked “待公布” (to be announced).
 
-## Data and feature availability
+Travel guides cover selected cities. This README is available in Chinese and English; most website interface text is currently in Chinese.
 
-- **Maintenance:** Conference information is stored in version-controlled JSON files. GitHub Actions periodically runs AI-assisted research and validation, creating an update PR when data changes. Updates are published after review and merge.
-- **Dates:** Conference schedules can change. Confirm submission deadlines and their time zones, registration details, and travel arrangements on the official conference website. Unconfirmed information is shown as “待公布” (to be announced).
-- **Travel information:** Guides cover selected cities. Original 3D landmarks are artistic representations, not accurate city layouts or conference venues.
-- **Community statistics:** The production site uses an independent service for project likes, deliberate conference and city clicks, and city wishlist votes. Conference and travel information remains in static JSON, separate from interaction statistics.
-- **Languages:** This README is available in Chinese and English. Most website interface text is currently in Chinese.
+## What's next
 
-### Feature status
+- Refine city wishlist voting and add more city travel guides.
+- Introduce calendar export, deadline notifications, and conference bookmarks.
+- Add a Chinese/English switch to the website interface.
 
-| Status | Features |
-| --- | --- |
-| Available | Conference, year, world, and city views; four homepage ranking boards and a dedicated Rankings page |
-| Connected | Site-wide likes, conference interest, city interest, and city wishlist totals |
-| Being refined | Voting for future conference destinations and expanding city travel information |
-| Planned | Calendar export, deadline notifications, conference bookmarks, and a bilingual website interface |
+The last two items are planned and are not yet available. Tell us what would help you in an [Issue](https://github.com/yinwen2019/conftrip/issues).
 
-Share feedback through an [Issue](https://github.com/yinwen2019/conftrip/issues). Features listed as planned are not yet available.
+## Run locally
 
-## Run locally and contribute
-
-Just looking for conference information? [Open the website](https://aitravel.gonsun.com/)—no installation or API key required.
-
-For local development, use Node.js 24 (matching this project's GitHub Actions) and npm:
+Use Node.js 24 and npm:
 
 ```bash
 git clone https://github.com/yinwen2019/conftrip.git
@@ -140,40 +138,40 @@ npm ci
 npm run dev
 ```
 
-Open the address printed in your terminal, normally `http://localhost:5173`.
+Open the address printed in your terminal, normally `http://localhost:5173`. No AI service key is needed to run the frontend.
 
 <details>
-<summary><strong>Developer notes: stack, project structure, and commands</strong></summary>
+<summary><strong>Development and data maintenance</strong></summary>
 
-**Website:** Vue 3 · TypeScript · Vite · Tailwind CSS · Vue Router (hash routing) · Three.js / Globe.GL · D3 Geo · GitHub Pages.
+**Stack**
 
-**Data and interactions:** JSON Schema / Ajv · Python · GitHub Actions; an independent Cloudflare Worker + D1 service handles site-wide interactions.
+Vue 3, TypeScript, Vite, Tailwind CSS, Vue Router, Three.js / Globe.GL, and D3 Geo. GitHub Pages hosts the frontend; an independent Cloudflare Worker + D1 service handles site-wide interactions.
+
+**Project structure**
 
 ```text
-data/                Conference data, city guides, and validation schemas
-src/                 Pages, components, read-only data aggregation, and styles
-scripts/             Data validation and AI-assisted update scripts
-services/analytics/  Independent statistics API, database migrations, and isolated tests
-public/              Website assets
-.github/             Update and deployment workflows, plus README images
-.docs/               Requirements, architecture, and implementation notes
+data/                Conference data, city guides, and schemas
+src/                 Pages, components, and read-only aggregation
+scripts/             Validation and AI-assisted updates
+services/analytics/  Independent interaction statistics
+.docs/               Requirements and developer documentation
 ```
 
-| Command | Purpose |
-| --- | --- |
-| `npm run dev` | Start the development server |
-| `npm run validate` | Validate conference and city JSON data |
-| `npm run type-check` | Check TypeScript types |
-| `npm run build` | Validate data and build for production |
-| `npm run preview` | Preview the production build |
-| `npm run lint` | Run ESLint with automatic fixes |
-| `npm run format` | Format frontend code |
+**Checks before submitting**
 
-AI service keys are not needed to run the frontend. To use the data update script, see the [AI update pipeline](.docs/08-ai-update-pipeline.md) and [.env.example](.env.example). It requires Python 3.11+ and the relevant service configuration. Internal project documentation is primarily in Chinese.
+```bash
+npm run validate
+npm run type-check
+npm run build
+```
 
-**Local interaction preview:** Without a configured statistics API, likes and wishlist votes stay in the current browser, and the interest boards show that collection is disabled. Local totals are never automatically uploaded. Development mode blocks writes to the production statistics service so debugging does not affect real rankings.
+Include official sources with data changes, and verify dates and time zones. See [AGENTS.md](AGENTS.md) for conventions and the [schema documentation](.docs/04-data-schema.md) for data formats. The AI update script needs Python 3.11+ and service configuration; see the [update pipeline](.docs/08-ai-update-pipeline.md) and [.env.example](.env.example). Internal documentation is primarily in Chinese.
 
-For the complete interaction flow, see the [statistics service README](services/analytics/README.md) and [integration documentation](.docs/21-analytics-service-result.md). Use the isolated local test database:
+**Local interaction service**
+
+Without a configured statistics API, likes and city votes stay in the current browser, and interest boards show that collection is disabled. Local totals are never automatically uploaded; development mode also blocks writes to the production statistics service.
+
+For integration work, use the isolated local test database:
 
 ```bash
 npm run analytics:db:local
@@ -182,22 +180,10 @@ npm run analytics:dev
 VITE_ANALYTICS_API_URL=http://127.0.0.1:8788 npm run dev
 ```
 
-The Cloudflare service and the static frontend are maintained separately. You do not need to deploy the statistics service to browse the site or preview the frontend locally.
+See the [statistics service README](services/analytics/README.md) and [integration documentation](.docs/21-analytics-service-result.md).
 
 </details>
 
-Contributions are welcome: correct conference information, add city guides, or improve the interface. For data changes, include official source links, verify dates and time zones, and run:
-
-```bash
-npm run validate
-npm run type-check
-npm run build
-```
-
-See [AGENTS.md](AGENTS.md) for development conventions and the [data schema documentation](.docs/04-data-schema.md) for data formats.
-
 ---
 
-If this helps you plan a submission or look forward to a new city, bookmark the [website](https://aitravel.gonsun.com/), leave a like, or give the project a ⭐. Follow project updates on [Xiaohongshu](https://xhslink.cn/o/5YIh8OKvkvn).
-
-**Finish the paper, catch the flight, and explore the world.**
+If ConfTrip helps you plan a submission or look forward to a new city, bookmark the [website](https://aitravel.gonsun.com/) or give the project a ⭐. Follow updates on [Xiaohongshu](https://xhslink.cn/o/5YIh8OKvkvn).
