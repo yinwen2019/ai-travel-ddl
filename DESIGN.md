@@ -1,5 +1,5 @@
 ---
-name: AI Travel DDL
+name: ConfTrip
 description: 用冷蓝灰地图语言连接 AI 会议日程与城市旅行。
 colors:
   brand: "#295b73"
@@ -95,7 +95,7 @@ components:
     padding: "{spacing.card}"
 ---
 
-# Design System: AI Travel DDL
+# Design System: ConfTrip
 
 ## Overview
 

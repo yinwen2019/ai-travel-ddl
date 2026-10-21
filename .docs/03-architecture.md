@@ -3,7 +3,7 @@
 ## 目录结构
 
 ```
-ai-travel-ddl/
+conftrip/
 ├── .github/workflows/          # deploy.yml, update-data.yml
 ├── data/                       # conferences.json, locations.json + schemas
 ├── scripts/                    # validate.mjs, update_conferences.py + lib/

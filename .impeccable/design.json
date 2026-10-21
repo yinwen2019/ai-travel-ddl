@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "generatedAt": "2026-10-15T12:07:40.468576Z",
-  "title": "Design System: AI Travel DDL",
+  "title": "Design System: ConfTrip",
   "extensions": {
     "colorMeta": {
       "brand": {"role": "primary", "displayName": "地图蓝", "tonalRamp": ["oklch(15.0% 0.0664 231.7)", "oklch(26.4% 0.0664 231.7)", "oklch(37.9% 0.0664 231.7)", "oklch(49.3% 0.0664 231.7)", "oklch(60.7% 0.0664 231.7)", "oklch(72.1% 0.0664 231.7)", "oklch(83.6% 0.0664 231.7)", "oklch(95.0% 0.0664 231.7)"]},

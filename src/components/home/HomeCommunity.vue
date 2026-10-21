@@ -135,7 +135,7 @@ onUnmounted(() => {
 
       <div class="home-community-links">
         <a
-          href="https://github.com/yinwen2019/ai-travel-ddl"
+          href="https://github.com/yinwen2019/conftrip"
           target="_blank"
           rel="noopener noreferrer"
           class="home-community-link"

@@ -17,9 +17,9 @@ const navItems = [
 <template>
   <header class="app-header">
     <div class="container-page header-inner">
-      <router-link to="/" class="brand-link" aria-label="AI Travel DDL 首页">
+      <router-link to="/" class="brand-link" aria-label="ConfTrip 首页">
         <BrandMark />
-        <span>AI Travel DDL</span>
+        <span>ConfTrip</span>
       </router-link>
       <nav class="main-nav" aria-label="主导航">
         <router-link

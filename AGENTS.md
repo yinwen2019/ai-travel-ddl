@@ -1,6 +1,6 @@
 # AGENTS.md
 
-## Project: AI Travel DDL
+## Project: ConfTrip
 
 AI 顶会信息聚合展示平台 — 当前数据包含 13 个 AI 会议，展示其历年举办地、投稿 DDL、开会时间。
 纯静态站点，Vue 3 + Vite + Tailwind CSS，部署至 GitHub Pages。
@@ -40,7 +40,7 @@ AI 顶会信息聚合展示平台 — 当前数据包含 13 个 AI 会议，展�
 ## Directory Layout
 
 ```
-ai-travel-ddl/
+conftrip/
 ├── .docs/                          # Project context
 ├── .github/workflows/              # deploy.yml, update-data.yml
 ├── data/

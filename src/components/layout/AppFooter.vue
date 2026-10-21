@@ -18,7 +18,7 @@ const updatedText = computed(() => {
   <footer class="site-footer">
     <div class="container-page footer-inner">
       <div>
-        <p class="footer-brand">AI Travel DDL</p>
+        <p class="footer-brand">ConfTrip</p>
         <p>会议信息来自各会议官方网站，日期与时区请以官方公告为准。</p>
       </div>
       <p>
