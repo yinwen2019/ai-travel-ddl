@@ -92,7 +92,7 @@ The host-city board shows cities, countries, associated conferences, year ranges
 
 </details>
 
-Screenshots are snapshots of the production website. Dates, countdowns, ranking totals, and coverage change over time; visit the site for the current information.
+Screenshots show the current version in local preview, with some interactions in browser-local mode. Visit the production site for site-wide totals, current dates, countdowns, and coverage.
 
 ## Conferences covered
 
